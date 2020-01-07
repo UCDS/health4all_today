@@ -54,7 +54,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 						{ if($a->question_id == $value->question_id) { ?>
 						<li>
 							<span class="answer" for=<?php echo $a->question_id ?> data-val=<?php echo $a->correct_option;?>> 
-								<?php echo $a->answer." | ".$a->correct_option; ?> 
+								<?php echo $a->answer?> 
 							</span>
 						</li>   
 						<?php }  } ?>
