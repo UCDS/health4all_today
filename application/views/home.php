@@ -32,14 +32,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <main role="main" class="flex-shrink-0">
   <div class="container">
 	<div class="jumbotron">
-	<h4><?php echo $banner_text; ?></h4>
-	<hr class="my-4">
+	<h4 style="margin-top:-25px"><?php echo $banner_text; ?></h4>
+	<hr class="my-2">
 	</div>
   </div>
   <div class="container">
         <div class="card">
            <div class="card-header bg-primary text-white" style="text-align:center">
-            <b>START ANSWERING THE QUESTIONS....</b>
+            <b>START ANSWERING THE QUESTIONS !</b>
            </div>
            <?php 
             foreach($questions as $q=>$value) { 
@@ -50,11 +50,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					<div class="col">
 						<ul class="answers">
 						<?php
+                         $i = 'a';
 							foreach($answer_options as $a) 
 						{ if($a->question_id == $value->question_id) { ?>
 						<li>
 							<span class="answer" for=<?php echo $a->question_id ?> data-val=<?php echo $a->correct_option;?>> 
-								<?php echo $a->answer?> 
+								<?php echo $i++.". ".$a->answer?> 
 							</span>
 						</li>   
 						<?php }  } ?>
@@ -78,18 +79,65 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         // option validation and response  
         $(".answer").click(function(e){
             e.preventDefault();
-                if($(this).attr("data-val")==='0'){
+                var answers_list =  $(this).parent('li').parent('ul').children().children();
+                var selected_answers = [];
+                var answers = [];
+                var all_correct_options_picked = false;
+                //if wrong option is selected , option highlighted in red and disabling other options
+                if($(this).attr("data-val")==='0'){ 
                         $(this).css({
                         background:"#ff4d4d",
                         color:"#FFFFFF" 
                     });
+                    // if wrong option is clicked , all other options are disabled anf correct option is highlighted  
+                    $(this).parent('li').siblings().children().off('click');   
+                    $(answers_list).each(function (index, element) {
+                        console.log("########", element);
+                        if($(element).attr("data-val")==='1'){ 
+                            $(element).css({
+                                background:"#90ee90",
+                                color:"#000" 
+                            });
+                        }
+                    });    
                 } else {
+                /* 
+                    if any one of the multiple is correct option is selected then,
+                    option highlighted in blue color indicationg that it is partially ccorrect 
+                */
                     $(this).css({
-                        background:"#90ee90",
-                        color:"#FFFFFF" 
+                        background:"#add8e6",
+                        color:"#000" 
                     });
-                }      
-            $(this).parent('li').siblings().children().off('click');     
+                    $(this).attr("isActive", "true");
+                }
+
+                
+                // fetchng list of all option value
+                $(answers_list).each(function (index, element) {
+                    if($(element).attr("data-val")){
+                        answers.push($(element).attr("data-val"));
+                    }
+                });
+                // fetching list after selecteing options
+                $(answers_list).each(function (index , element){
+                        selected_answers[index] = $(element).attr("isActive") ? "1" : "0";
+                });
+                //  if all the selected options are correct , highlight answers correct with green
+                if(JSON.stringify(selected_answers)==JSON.stringify(answers)){
+                    $(answers_list).each(function (index, element) {
+                        console.log(element)
+                        if( $(element).attr("isActive")==="true"){
+                            $(element).css({
+                                    background:"#90ee90",
+                                    color:"#000" 
+                            });
+                        }
+                        if($(element).attr("data-val")==='0'){
+                            $(element).off('click'); 
+                        }
+                    });
+                }
         })
 
     });
