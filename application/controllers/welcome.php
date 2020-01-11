@@ -10,8 +10,9 @@ class Welcome extends CI_Controller {
 
 	public function index()
 	{
+		$this->data['title']="";
 		$this->data['banner_text'] = $this->master_model->get_banner_text()->banner_text;
-		$this->load->view('templates/header');
+		$this->load->view('templates/header' , $this->data);
 		$this->data['questions'] = $this->master_model->get_questions();
 		$this->data['answer_options'] = $this->master_model->get_answer_options();
 		$this->load->view('home', $this->data);
