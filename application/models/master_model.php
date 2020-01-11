@@ -115,7 +115,7 @@ class master_model extends CI_Model {
         );
         // var_dump($data);
         $this->db->trans_start(); //Transaction begins
-        $this->db->insert('question',$data); //Insert into 'question' table the $data array
+        $this->db->insert('question',$data); //Insert the $data array into 'question' table 
         $question_id=$this->db->insert_id(); //Get the Question ID from the inserted record
        
          // creating tuple for link table
@@ -154,6 +154,13 @@ class master_model extends CI_Model {
 
 
     function insert_language() {
+        $language = $this->input->post('language');
+        $this->db->select('language')->from('language')->where('language',$language);
+        $query=$this->db->get();
+        // checking if language already exists
+        if($query->num_rows()>0){
+            return false;
+        }
         $data = array(
             'language' => strtoupper($this->input->post('language'))
         );
@@ -164,22 +171,38 @@ class master_model extends CI_Model {
     }
 
     function insert_level() {
+        $level = $this->input->post('level');
+        $this->db->select('level')->from('question_level')->where('level',$level);
+        $query=$this->db->get();
+        // checking if level already exists
+        if($query->num_rows()>0){
+            return false;
+        }
         $data = array(
-            'level' => $this->input->post('level')
+            'level' => strtoupper($level),
+            'level_image' => $this->input->post('level_image')
         );
         $this->db->trans_start();
-        $this->db->insert('level',$data);
+        $this->db->insert('question_level',$data);
         $this->db->trans_complete(); //Transaction Ends
         if($this->db->trans_status()===TRUE) return true; else return false; //if transaction completed successfully return true, else false.
     }
 
+    
     function insert_group() {
+        $group = $this->input->post('group');
+        $this->db->select('group_name')->from('groups')->where('group_name',$group);
+        $query=$this->db->get();
+        // checking if group already exists
+        if($query->num_rows()>0){
+            return false;
+        }
         $data = array(
-            'group' => $this->input->post('group'),
+            'group_name' => strtoupper($group),
             'group_image' => $this->input->post('group_image')
         );
         $this->db->trans_start();
-        $this->db->insert('group',$data);
+        $this->db->insert('groups',$data);
         $this->db->trans_complete(); //Transaction Ends
         if($this->db->trans_status()===TRUE) return true; else return false; //if transaction completed successfully return true, else false.
     }
@@ -195,5 +218,66 @@ class master_model extends CI_Model {
         $this->db->trans_complete(); //Transaction Ends
         if($this->db->trans_status()===TRUE) return true; else return false; //if transaction completed successfully return true, else false.
     }
+
+    function login($username, $password){
+        $this->db->select('user.*');
+        $this->db->from('user');
+        $this->db->where('username', $username);
+        $this->db->where('password', MD5($password));
+        $query = $this->db->get();
+        if($query)
+        {
+          return $query->row();
+        }
+        else
+        {
+          return false;
+        }
+     }
+
+     function create_user(){
+        $data = array(
+            'first_name'=>$this->input->post('first_name'),
+            'last_name'=>$this->input->post('last_name'),
+            'email'=>$this->input->post('email'),
+            'phone'=>$this->input->post('phone'),
+            'gender'=>$this->input->post('gender'),
+            'note'=>$this->input->post('note'),
+            'username'=>$this->input->post('username'),
+            'password'=>md5($this->input->post('password')),
+        );
+        $this->db->trans_start(); //Transaction begins
+        $this->db->insert('user',$data); //Insert the $data array into 'user' table 
+        $user_id=$this->db->insert_id(); //Get the User ID from the inserted record
+
+
+         // creating tuple for user access table
+         $user_access_data =  array(
+            'user_id'=>$user_id,
+            'language_id'=>$this->input->post('language'),
+            // 'expiry_date'=>$this->input->post('expiry_date')
+        );
+        $this->db->insert('user_access',$user_access_data); 
+        $this->db->trans_complete(); //Transaction Ends
+		if($this->db->trans_status()===TRUE) return true; else return false; //if transaction completed successfully return true, else false.
+     }
+
+     function change_password($user_id) {
+         //select the old password from the database
+        $this->db->select('password')->from('user')->where('user_id',$user_id);
+		$query=$this->db->get();
+        $password=$query->row();
+        $form_password=$this->input->post('old_password'); //get the old password from the form
+        if($password->password==md5($form_password)){ //match both the old passwords
+			$this->db->where('user_id',$user_id); //search for the user in db
+			if($this->db->update('user',array('password'=>md5($this->input->post('password'))))){ 
+				//if the user table has been updated successfully, return true else false.
+				return true;
+				}
+			else return false;
+		}
+		else return false; //if the old password entered doesn't match the database password, return false.
+     }
+
 
 }
