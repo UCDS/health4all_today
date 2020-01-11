@@ -4,9 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
-        <title>Health4all Today</title>
-    <script src="<?php echo base_url();?>assets/js/jquery.min.js"></script>
+        <title>Health4All Today<?php  if($title){ echo " | ".$title;} ?></title>
     <link href="<?php echo base_url();?>assets/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">  
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/css/font-awesome.min.css" >
+  
+    <script src="<?php echo base_url();?>assets/js/jquery.min.js"></script>
     <script src="<?php echo base_url();?>assets/js/bootstrap.min.js"></script>
 
     <style>
@@ -31,20 +33,37 @@
   <body class="d-flex flex-column h-100">
     <header>
   <!-- Fixed navbar -->
-  <nav class="navbar navbar-expand-md navbar-dark  bg-dark">
-    <a class="navbar-brand" href="<?php echo base_url();?>">Health4all.today</a>
+  <nav class="navbar navbar-expand-md navbar-dark  bg-dark justify-content-between">
+    <a class="navbar-brand" href="<?php echo base_url();?>">Health4All.today</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapse">
-      <ul class="navbar-nav mr-auto">
+      <ul class="navbar-nav navbar-left mr-auto">
+      <?php 
+        $logged_in=$this->session->userdata('logged_in');
+      if($logged_in) { ?>
         <li class="nav-item active">
-          <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="<?php echo base_url();?>admin">Admin <span class="sr-only">(current)</span></a>
+          <a class="nav-link" href="<?php echo base_url();?>admin">Home <span class="sr-only">(current)</span></a>
         </li>
       </ul>
+      <ul class="navbar-nav navbar-right ">  
+          <li class="nav-item">
+             <a class="nav-link" href="#"> <?php echo $logged_in['username']." | " ; ?></a>
+          </li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown"><i class="fa fa-gear"></i> Settings <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <a class="dropdown-item" href="<?php echo base_url()."admin/change_password";?>"><i class="fa fa-edit"></i> Change Password</a>
+              <a class="dropdown-item" href="<?php echo base_url();?>admin/logout"><i class="fa fa-sign-out"></i> Logout</a>
+            </ul>
+          </li>
+        <?php } else {?>
+          <li class="nav-item   <?php if(preg_match("^".base_url()."admin/login^",current_url())){ echo " active";}?>">
+            <a class="nav-link" href="<?php echo base_url()."admin/login";?>" style="text-decoration:none; color:white"><i class="fa fa-sign-in" style="color:white;"></i> Login</a>
+          </li>
+      </ul>
+        <?php }?>
       <form class="form-inline mt-2 mt-md-0">
         <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
