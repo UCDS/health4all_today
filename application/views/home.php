@@ -34,6 +34,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         text-align: left;
         font-size: 17px;
     }
+    select{
+        cursor:pointer;
+    }
+    
 </style>
 
 
@@ -44,6 +48,56 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	<h4 ><?php echo $banner_text; ?></h4>
 	<hr >
 	</div>
+  </div>
+  <div class="container">
+        <div class="row">
+            <div class="form-group col-md-3">
+                <select class="form-control shadow-none" name="group" id="groupId" required>
+                    <option value="" selected disabled>Group</option>
+                    <?php
+                        foreach($groups as $r){
+                            echo "<option  value='".$r->group_id."'";
+                            if($this->input->post('group_name') && $this->input->post('group_name') == $r->group_id) echo " selected ";
+                            echo ">".$r->group_name."</option>";
+                        }
+                    ?>
+                </select>
+            </div>
+            <div class="form-group col-md-3">
+                <select class="form-control" name="sub_group" id="subGroupId">
+                    <option value="" selected disabled>Sub Group</option>
+                    <?php
+                        foreach($sub_groups as $r){
+                            echo "<option value='".$r->sub_group_id."'";
+                            if($this->input->post('sub_group') && $this->input->post('sub_group') == $r->sub_group_id) echo " selected ";
+                            echo ">".$r->sub_group."</option>";
+                        }
+                    ?>
+                </select>        
+            </div>
+            <div class="form-group col-md-3">
+                <select class="form-control" name="question_level" required>
+                    <option value="" selected disabled>Question Level</option>
+                    <?php
+                        foreach($question_levels as $r){ ?>
+                        <option value="<?php echo $r->level_id;?>"    
+                        <?php if($this->input->post('level') == $r->level_id) echo " selected "; ?>
+                        ><?php echo $r->level;?></option>    
+                        <?php }  ?>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select class="form-control"  name="language" id="language" required>
+                    <option value="" selected disabled>Language</option>
+                    <?php
+                        foreach($languages as $r){ ?>
+                        <option value="<?php echo $r->language_id;?>"    
+                        <?php if($this->input->post('language') == $r->language_id) echo " selected "; ?>
+                        ><?php echo $r->language;?></option>    
+                        <?php }  ?>
+                </select>
+            </div>
+        </div>
   </div>
   <div class="container">
         <div class="card">
@@ -107,7 +161,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     // if wrong option is clicked , all other options are disabled and correct option is highlighted in green 
                     $(this).parent('li').siblings().children().off('click');   
                     $(answers_list).each(function (index, element) {
-                        console.log("########", element);
+                        // console.log("########", element);
                         if($(element).attr("data-val")==='1'){ 
                             $(element).css({
                                 background:"#90ee90",
@@ -143,7 +197,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 //  if all the selected options are correct , highlight answers correct with green
                 if(JSON.stringify(selected_answers)==JSON.stringify(answers)){
                     $(answers_list).each(function (index, element) {
-                        console.log(element)
+                        // console.log(element)
                         if( $(element).attr("isActive")==="true"){
                             $(element).css({
                                     background:"#90ee90",

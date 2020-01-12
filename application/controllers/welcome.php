@@ -13,6 +13,10 @@ class Welcome extends CI_Controller {
 		$this->data['title']="";
 		$this->data['banner_text'] = $this->master_model->get_banner_text()->banner_text;
 		$this->load->view('templates/header' , $this->data);
+		$this->data['groups'] = $this->master_model->get_groups();
+		$this->data['sub_groups'] = $this->master_model->get_sub_groups();
+		$this->data['question_levels'] = $this->master_model->get_question_levels();
+		$this->data['languages'] = $this->master_model->get_languages();
 		$this->data['questions'] = $this->master_model->get_questions();
 		$this->data['answer_options'] = $this->master_model->get_answer_options();
 		$this->load->view('home', $this->data);
