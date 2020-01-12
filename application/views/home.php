@@ -31,9 +31,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <!-- Begin page content -->
 <main role="main" class="flex-shrink-0">
   <div class="container">
-	<div class="jumbotron">
-	<h4 style="margin-top:-25px"><?php echo $banner_text; ?></h4>
-	<hr class="my-2">
+	<div class="jumbotron" style="padding-top:1rem;padding-bottom:1rem;">
+	<h4 ><?php echo $banner_text; ?></h4>
+	<hr >
 	</div>
   </div>
   <div class="container">
