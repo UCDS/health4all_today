@@ -25,6 +25,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     background-image: -o-linear-gradient(top,#f9f9f9,#f2f2f2);
     border: 1px solid #f2f2f2;
     }
+    .explanation{
+        display: block;
+        background: #add8e6;
+        border: 2px solid #48b4e0;
+        padding: 12px 20px;
+        border-radius: 4px;
+        text-align: left;
+        font-size: 17px;
+    }
 </style>
 
 
@@ -60,6 +69,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 						</li>   
 						<?php }  } ?>
 						</ul>
+                       <?php if($value->explanation) {?> 
+                        <div class="explanation" name=<?php echo "Question_explanation_". $q++; ?> >
+                         <h5><?php echo "Question ". $q++ ." Explanation:";?></h5>
+                        <?php echo $value->explanation; ?>
+                        </div>
+                       <?php }?>
 					</div>
                     <!-- TODO: Explanation block , image ... -->
 					<!-- <div class="col-6">
@@ -75,7 +90,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 <script>
     $(function() {
-
+        $(".explanation").hide();
         // option validation and response  
         $(".answer").click(function(e){
             e.preventDefault();
@@ -89,7 +104,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         background:"#ff4d4d",
                         color:"#FFFFFF" 
                     });
-                    // if wrong option is clicked , all other options are disabled anf correct option is highlighted  
+                    // if wrong option is clicked , all other options are disabled and correct option is highlighted in green 
                     $(this).parent('li').siblings().children().off('click');   
                     $(answers_list).each(function (index, element) {
                         console.log("########", element);
@@ -100,6 +115,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             });
                         }
                     });    
+                    // on clicking the wrong option , show the explanation
+                    $(this).parent('li').parent('ul').next(".explanation").show();
                 } else {
                 /* 
                     if any one of the multiple is correct option is selected then,
@@ -137,6 +154,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             $(element).off('click'); 
                         }
                     });
+                    $(answers_list).parent().parent().next(".explanation").show();
                 }
         })
 
