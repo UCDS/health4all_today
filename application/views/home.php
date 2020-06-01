@@ -117,17 +117,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     const GREEN_COLOR = "#90ee90";
     $(function() {
         
-        // $("#quiz").on("load", ".explanation", function (e) {
-        //     $(this).hide();
-        // });
-        
         // Start : Quiz validation logic
         $("#quiz").on("click" , ".answer" , function(e){
             e.preventDefault();
                 var answers_list =  $(this).parent('li').parent('ul').children().children();
                 var selected_answers = [];
                 var answers = [];
-                // var all_correct_options_picked = false;
+    
                 //if wrong option is selected , option highlighted in red and disabling other options
                 if($(this).attr("data-val")==='0'){ 
                         $(this).css({
@@ -190,7 +186,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         // End : Quiz validation logic
 
                 
-        // on selecting a group , filtering all the sub_groups based of the selected group
+        // on selecting a group , filtering all the sub_groups based on the selected group and fetching all quiz data
         $("#group_id").change(function (e) { 
             filter_sub_groups();
             selected_group = $("#group_id").val();
@@ -201,6 +197,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             
         }); 
 
+        // on change of sub_group or question_level ,  fetching all quiz data
         $("#sub_group_id , #question_level_id").change(function (e) { 
             selected_group = $("#group_id").val();
             selected_sub_group = $("#sub_group_id").val();
@@ -212,12 +209,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         selected_group = $("#group_id").val();
         selected_sub_group = $("#sub_group_id").val();
         selected_question_level = $("#question_level_id").val();
-        console.log("selected_question_level" , selected_question_level);
+        // console.log("selected_question_level" , selected_question_level);
+        // on page load fetching quiz data , pages_count and filtering sub groups
         load_quiz_data(1  , selected_group ,selected_sub_group , selected_question_level);
         get_pages_count(selected_group , selected_sub_group , selected_question_level);
         filter_sub_groups(); 
     });
 
+    // function to filter sub_groups based on a selected group 
     function filter_sub_groups(){
         // fetching list of all subgroups
         var sub_groups = <?php echo json_encode($sub_groups); ?>;
@@ -237,12 +236,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     //api call to get pages count and to mount pagination on DOM 
     function get_pages_count(group , sub_group , question_level){
         $(".pagination").remove();
+        if(sub_group===null)
+            sub_group=0;
+        if(question_level===null)
+            question_level=0;
         $.ajax({
             type: "GET",
             accepts: {
                 contentType: "application/json"
             },
-            url: "<?= base_url() ?>welcome/pages_count/"+group,
+            url: "<?= base_url() ?>welcome/pages_count/"+group+"/"+sub_group+"/"+question_level,
             dataType: "text",
             success: function (response) {
              var pages_count = JSON.parse(response);
@@ -266,9 +269,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     // api call to get quiz data and mount it on DOM
     function load_quiz_data(page , group , sub_group , question_level){
         if(sub_group===null)
-            sub_group="all";
+            sub_group=0;
         if(question_level===null)
-            question_level="all";
+            question_level=0;
         
         // console.log(sub_group);
         $(".card-body").remove();

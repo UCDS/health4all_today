@@ -32,15 +32,15 @@ class Welcome extends CI_Controller {
 		foreach( json_decode($questions) as $q){
 			$question_answers_list[$q->question_id]  = (object)[ "question"=>$q, "answers"=> json_decode($this->master_model->get_answer_options_by_question_id($q->question_id))];
 		}
-		// var_dump($questions);
+		
 		print  json_encode($question_answers_list);				
-		// print $questions;				
+						
 	}
 
 
 	public function pages_count( $group="" , $sub_group="" ,  $level="" ){
 		$rows_per_page="10"; 
-		$pages_count = $this->master_model->get_pages_count($rows_per_page , $group , $sub_group);
+		$pages_count = $this->master_model->get_pages_count($rows_per_page , $group , $sub_group  , $level);
 		print json_encode($pages_count);
 	}
 
