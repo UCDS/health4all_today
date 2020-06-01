@@ -10,7 +10,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     .answers {
         list-style:none;
     }
-    .answers li span {
+    .card-footer{
+        color:blue;
+        height:4rem;
+    }
+    li span {
     display: block;
     margin-top: 3px;
     padding: 12px 20px;
@@ -52,12 +56,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   <div class="container">
         <div class="row">
             <div class="form-group col-md-3">
-                <select class="form-control shadow-none" name="group" id="groupId" required>
+                <select class="form-control shadow-none " name="group" id="groupId" required>
                     <option value="" selected disabled>Group</option>
                     <?php
                         foreach($groups as $r){
                             echo "<option  value='".$r->group_id."'";
                             if($this->input->post('group_name') && $this->input->post('group_name') == $r->group_id) echo " selected ";
+                            if($r->default_group == 1) echo "selected";
                             echo ">".$r->group_name."</option>";
                         }
                     ?>
@@ -65,18 +70,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </div>
             <div class="form-group col-md-3">
                 <select class="form-control" name="sub_group" id="subGroupId">
-                    <option value="" selected disabled>Sub Group</option>
-                    <?php
-                        foreach($sub_groups as $r){
-                            echo "<option value='".$r->sub_group_id."'";
-                            if($this->input->post('sub_group') && $this->input->post('sub_group') == $r->sub_group_id) echo " selected ";
-                            echo ">".$r->sub_group."</option>";
-                        }
-                    ?>
+                <option value="" selected disabled>Sub Group</option>
                 </select>        
             </div>
             <div class="form-group col-md-3">
-                <select class="form-control" name="question_level" required>
+                <select class="form-control" name="question_level" id="question_level" required>
                     <option value="" selected disabled>Question Level</option>
                     <?php
                         foreach($question_levels as $r){ ?>
@@ -99,86 +97,72 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </div>
         </div>
   </div>
-  <div class="container">
+  <div class="container" id="quiz" style="margin-top:15px;">
         <div class="card">
            <div class="card-header bg-primary text-white" style="text-align:center">
-            <b>START ANSWERING THE QUESTIONS !</b>
+            <b>START ANSWERING THE QUESTIONS !</b> <?php echo $pages_count ?>
            </div>
-           <?php 
-            foreach($questions as $q=>$value) { 
-                ?> 
-            <div class="card-body" style="align-items:center">
-                <h4 class="card-text"><?php echo 1+$q.". ".$value->question;?></h4>
-                <div class="row">
-					<div class="col">
-						<ul class="answers">
-						<?php
-                         $i = 'a';
-							foreach($answer_options as $a) 
-						{ if($a->question_id == $value->question_id) { ?>
-						<li>
-							<span class="answer" for=<?php echo $a->question_id ?> data-val=<?php echo $a->correct_option;?>> 
-								<?php echo $i++.". ".$a->answer?> 
-							</span>
-						</li>   
-						<?php }  } ?>
-						</ul>
-                       <?php if($value->explanation) {?> 
-                        <div class="explanation" name=<?php echo "Question_explanation_". $q++; ?> >
-                         <h5><?php echo "Question ". $q++ ." Explanation:";?></h5>
-                        <?php echo $value->explanation; ?>
-                        </div>
-                       <?php }?>
-					</div>
-                    <!-- TODO: Explanation block , image ... -->
-					<!-- <div class="col-6">
-						
-					</div> -->
-            	</div>
-            </div>
-           <?php } ?>
-        </div>  
+        </div>
+        <div class="card-footer">
+            <ul class="pagination justify-content-center">
+                <?php $i=1; 
+                    while($i<= $pages_count){
+                        ?>        
+                    <li class="page-item"><a class="page-link" onclick='load_quiz_data(<?=$i?>)'><?= $i ;?></a></li>
+                    <?php $i++; } ?>  
+            </ul>
+        </div>
 	</div>
 </main>
 
 
 <script>
+    const BLACK_COLOR = "#000";
+    const WHITE_COLOR = "#FFFFFF";
+    const RED_COLOR = "#ff4d4d";
+    const BLUE_COLOR = "#add8e6"
+    const GREEN_COLOR = "#90ee90";
     $(function() {
-        $(".explanation").hide();
+        
+        // $("#quiz").on("load", ".explanation", function (e) {
+        //     $(this).hide();
+        // });
+        
         // option validation and response  
-        $(".answer").click(function(e){
+        $("#quiz").on("click" , ".answer" , function(e){
             e.preventDefault();
                 var answers_list =  $(this).parent('li').parent('ul').children().children();
                 var selected_answers = [];
                 var answers = [];
-                var all_correct_options_picked = false;
+                // var all_correct_options_picked = false;
                 //if wrong option is selected , option highlighted in red and disabling other options
                 if($(this).attr("data-val")==='0'){ 
                         $(this).css({
-                        background:"#ff4d4d",
-                        color:"#FFFFFF" 
+                        background:RED_COLOR,
+                        color:WHITE_COLOR 
                     });
-                    // if wrong option is clicked , all other options are disabled and correct option is highlighted in green 
-                    $(this).parent('li').siblings().children().off('click');   
+                    // if wrong option is clicked , all options are disabled and correct option is highlighted in green 
+                    
                     $(answers_list).each(function (index, element) {
-                        // console.log("########", element);
+                        console.log("$$$$$", element);
                         if($(element).attr("data-val")==='1'){ 
                             $(element).css({
-                                background:"#90ee90",
-                                color:"#000" 
+                                background:GREEN_COLOR,
+                                color:BLACK_COLOR 
                             });
                         }
+                        $(element).css({pointerEvents:"none"});
                     });    
                     // on clicking the wrong option , show the explanation
                     $(this).parent('li').parent('ul').next(".explanation").show();
                 } else {
                 /* 
-                    if any one of the multiple is correct option is selected then,
+                    if any one of the multiple correct option is selected, then
                     option highlighted in blue color indicationg that it is partially ccorrect 
                 */
                     $(this).css({
-                        background:"#add8e6",
-                        color:"#000" 
+                        background:BLUE_COLOR,
+                        color:BLACK_COLOR 
                     });
                     $(this).attr("isActive", "true");
                 }
@@ -197,20 +181,87 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 //  if all the selected options are correct , highlight answers correct with green
                 if(JSON.stringify(selected_answers)==JSON.stringify(answers)){
                     $(answers_list).each(function (index, element) {
-                        // console.log(element)
+                        
                         if( $(element).attr("isActive")==="true"){
                             $(element).css({
-                                    background:"#90ee90",
-                                    color:"#000" 
+                                    background:GREEN_COLOR,
+                                    color:BLACK_COLOR 
                             });
                         }
                         if($(element).attr("data-val")==='0'){
-                            $(element).off('click'); 
+                            $(element).css({pointerEvents:"none"});
                         }
                     });
                     $(answers_list).parent().parent().next(".explanation").show();
                 }
-        })
+        });
+        // fetching list of all subgroups
+        var sub_groups = <?php echo json_encode($sub_groups); ?>;
+        //  id of selected group
+        var selected_group = $("#groupId").val();
+        var filtered_sub_groups;
+        // on selecting a group , filtering all the sub_groups based of the selected group
+        $("#groupId").change(function (e) { 
+            selected_group = $("#groupId").val();
+            $('#subGroupId').empty().append(`<option value="" selected disabled>Sub Group</option>`);
+             filtered_sub_groups = $.grep(sub_groups , function(v){
+                return v.group_id == selected_group;
+            }) ;
+            // iterating the selected sub groups
+            $.each(filtered_sub_groups, function (indexInArray, valueOfElement) { 
+                const {sub_group_id ,sub_group} = valueOfElement;
+                $("#subGroupId").append($('<option></option>').val(sub_group_id).html(sub_group));
+            });
+        }); 
 
+
+        load_quiz_data(1);
+        
+         
     });
+    
+    function load_quiz_data(page){
+        $(".card-body").remove();
+            $.ajax({
+                type: "GET",
+                accepts: {
+                    contentType: "application/json"
+                },
+                url: "<?= base_url() ?>welcome/quiz/"+page,
+                dataType: "text",
+                success: function (data) {
+                    var question_answers_list =  JSON.parse(data);
+                    // console.log(question_answers_list)
+                    $.each(question_answers_list, function (indexInArray, valueOfElement) { 
+                        const {question , answers} = valueOfElement;
+                        const question_id = question.question_id; 
+                         $(".card").append(
+                            `<div class="card-body" style="align-items:center">
+                            <h4 class="card-text">${indexInArray+". "+question.question}</h4>
+                                <div class="row">
+                                    <div class="col">
+                                    <ul class="answers answers-${question_id}">
+                                    </ul>
+                                    </div>
+                                </div>
+                                <div class="explanation" hidden name= "Question_explanation_"+${indexInArray} >
+                                    <h5>Question ${question_id}  Explanation:</h5>
+                                        ${question.explanation}
+                                </div>
+                            </div>`);
+                            var i = 0;
+                            var c ='a';
+                            $.each(answers, function (indexInArray, option) { 
+                                 $(".answers-"+question_id).append(
+                                     `<li>
+                                        <span class="answer" for=${question_id} data-val=${option.correct_option}> 
+                                          ${String.fromCharCode(c.charCodeAt(0)+ i++)  +". "+option.answer}
+                                        </span>
+                                     </li>`
+                                 );
+                            });
+                    });
+                }
+            });
+        }
 </script>

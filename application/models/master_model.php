@@ -10,15 +10,17 @@ class Master_model extends CI_Model {
        return $query->row();
     }
 
-    function count_all(){
+    function get_pages_count($per_page){
         $query = $this->db->get("question");
-        return $query->num_rows();
+        
+        return ceil($query->num_rows() / $per_page)  ;
     }
 
-    function get_questions($level="") { 
-        $this->db->select('question_id , question , explanation')
+    /* function get_questions(){
+        $this->db->select('question.question_id , question , explanation')
             ->from('question')
-            ->order_by('question_id','asc');;
+            ->order_by('question.question_id','asc');
+            // ->limit($limit , $start);
         $query = $this->db->get();
         $result =  $query->result();
         if($result){
@@ -26,9 +28,36 @@ class Master_model extends CI_Model {
            }else{
                return false;
            }
+    } */
+
+    function get_questions($limit , $start ) { 
+        $this->db->select('question.question_id , question , explanation')
+            ->from('question')
+            ->order_by('question.question_id','asc')
+            ->limit($limit , $start);
+        $query = $this->db->get();
+        $result =  json_encode( $query->result() , JSON_PRETTY_PRINT);
+        if($result){
+            return $result;       
+           }else{
+               return false;
+           }
     }
 
-    
+    function get_answer_options_by_question_id($question_id) {
+        $this->db->select('answer_option_id , answer , correct_option , question_id , answer_image')
+            ->from('answer_option')
+            ->order_by('answer_option_id','asc')
+            ->where('answer_option.question_id' , $question_id);
+        $query = $this->db->get();
+        $result = json_encode($query->result());
+        if($result){
+            return $result;       
+           }else{
+               return false;
+           }
+    }
+
     function get_answer_options() {
         $this->db->select('answer_option_id , answer , correct_option , question_id , answer_image')
             ->from('answer_option')
@@ -103,8 +132,8 @@ class Master_model extends CI_Model {
 			'question'=>$this->input->post('question'),
 			'explanation'=>$this->input->post('question_explanation'),
             'status_id'=>'1',
-            'question_image'=>$this->input->post('question_image'), // to be filled
-            'explanation_image'=>$this->input->post('explanation_image'), //to be filled
+            // 'question_image'=>$this->input->post('question_image'), // to be filled
+            // 'explanation_image'=>$this->input->post('explanation_image'), //to be filled
             'level_id'=>$this->input->post('question_level'),
             'language_id'=>$this->input->post('language'),
             'default_question_id'=>$this->input->post('language'),
@@ -122,7 +151,7 @@ class Master_model extends CI_Model {
          $question_grouping_data =  array(
             'question_id'=>$question_id,
             'group_id'=>$this->input->post('group'),
-            'sub_group_id'=>$this->input->post('sub_group')
+            // 'sub_group_id'=>$this->input->post('sub_group')
         );
         // inserting the data into question group link table
         $this->db->insert('question_grouping',$question_grouping_data); 
@@ -208,13 +237,20 @@ class Master_model extends CI_Model {
     }
 
     function insert_sub_group() {
+        $sub_group = $this->input->post('sub_group');
+        $this->db->select('sub_group')->from('sub_groups')->where('sub_group',$sub_group);
+        $query=$this->db->get();
+        // checking if group already exists
+        if($query->num_rows()>0){
+            return false;
+        }
         $data = array(
-            'sub_group' => $this->input->post('sub_group'),
+            'sub_group' => strtoupper($sub_group),
             'group_id' => $this->input->post('group_id'),
             'sub_group_image' => $this->input->post('sub_group_image')
         );
         $this->db->trans_start();
-        $this->db->insert('group',$data);
+        $this->db->insert('sub_groups',$data);
         $this->db->trans_complete(); //Transaction Ends
         if($this->db->trans_status()===TRUE) return true; else return false; //if transaction completed successfully return true, else false.
     }
