@@ -195,6 +195,32 @@ class Admin extends CI_Controller {
 		}
 	}
 
+	public function create_sub_group(){
+		if($this->session->userdata('logged_in') &&  $this->session->userdata('logged_in')['admin']==1){
+			$this->load->helper('form');
+			$this->load->library('form_validation');
+			$this->data['title']="Create Sub Group";
+			$this->load->library('form_validation');
+			$this->load->view('templates/header',$this->data);
+			$this->data['groups'] = $this->master_model->get_groups();
+			$this->form_validation->set_rules('group_id','group_id','required');
+			$this->form_validation->set_rules('sub_group','sub_group','required');
+			if ($this->form_validation->run() === FALSE){
+				$this->load->view('admin/create_sub_group' , $this->data);
+			} else {
+				if($this->master_model->insert_sub_group()){
+					$this->data['msg']="Sub group created successfully";
+					$this->load->view('admin/create_sub_group',$this->data);
+				} else {
+					$this->data['msg']="Error creating sub group. Please retry.";
+					$this->load->view('admin/create_sub_group',$this->data);
+				}
+			}
+			$this->load->view('templates/footer');
+		} else {
+			show_404();
+		}
+	}
 	public function create_language(){
 		if($this->session->userdata('logged_in') &&  $this->session->userdata('logged_in')['admin']==1){
 			$this->load->helper('form');
@@ -245,7 +271,5 @@ class Admin extends CI_Controller {
 		}
 	}
 
-	public function create_sub_group(){
-
-	}
+	
 }
