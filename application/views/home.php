@@ -56,7 +56,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   <div class="container">
         <div class="row">
             <div class="form-group col-md-3">
-                <select class="form-control shadow-none " name="group" id="groupId" required>
+                <select class="form-control shadow-none " name="group" id="group_id" required>
                     <option value="" selected disabled>Group</option>
                     <?php
                         foreach($groups as $r){
@@ -69,12 +69,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </select>
             </div>
             <div class="form-group col-md-3">
-                <select class="form-control" name="sub_group" id="subGroupId">
+                <select class="form-control" name="sub_group" id="sub_group_id">
                 <option value="" selected disabled>Sub Group</option>
                 </select>        
             </div>
             <div class="form-group col-md-3">
-                <select class="form-control" name="question_level" id="question_level" required>
+                <select class="form-control" name="question_level" id="question_level_id" required>
                     <option value="" selected disabled>Question Level</option>
                     <?php
                         foreach($question_levels as $r){ ?>
@@ -189,39 +189,54 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         });
         // End : Quiz validation logic
 
+                
+        // on selecting a group , filtering all the sub_groups based of the selected group
+        $("#group_id").change(function (e) { 
+            filter_sub_groups();
+            selected_group = $("#group_id").val();
+            selected_sub_group = $("#sub_group_id").val();
+            selected_question_level = $("#question_level_id").val();
+            load_quiz_data(1  , selected_group , selected_sub_group  , selected_question_level);
+            get_pages_count(selected_group ,selected_sub_group  , selected_question_level);
+            
+        }); 
+
+        $("#sub_group_id , #question_level_id").change(function (e) { 
+            selected_group = $("#group_id").val();
+            selected_sub_group = $("#sub_group_id").val();
+            selected_question_level = $("#question_level_id").val();
+            load_quiz_data(1  , selected_group , selected_sub_group ,selected_question_level );
+            get_pages_count(selected_group , selected_sub_group , selected_question_level);
+        }); 
+
+        selected_group = $("#group_id").val();
+        selected_sub_group = $("#sub_group_id").val();
+        selected_question_level = $("#question_level_id").val();
+        console.log("selected_question_level" , selected_question_level);
+        load_quiz_data(1  , selected_group ,selected_sub_group , selected_question_level);
+        get_pages_count(selected_group , selected_sub_group , selected_question_level);
+        filter_sub_groups(); 
+    });
+
+    function filter_sub_groups(){
         // fetching list of all subgroups
         var sub_groups = <?php echo json_encode($sub_groups); ?>;
-        //  id of selected group
-        var selected_group = $("#groupId").val();
+        var selected_group = $("#group_id").val();
         var filtered_sub_groups;
-        // on selecting a group , filtering all the sub_groups based of the selected group
-        $("#groupId").change(function (e) { 
-            selected_group = $("#groupId").val();
-            load_quiz_data(1  , selected_group);
-            get_pages_count(selected_group);
-            $('#subGroupId').empty().append(`<option value="" selected disabled>Sub Group</option>`);
+        $('#sub_group_id').empty().append(`<option value="" selected disabled>Sub Group</option>`);
              filtered_sub_groups = $.grep(sub_groups , function(v){
                 return v.group_id == selected_group;
             }) ;
             // iterating the selected sub groups
-            $.each(filtered_sub_groups, function (indexInArray, valueOfElement) { 
-                const {sub_group_id ,sub_group} = valueOfElement;
-                $("#subGroupId").append($('<option></option>').val(sub_group_id).html(sub_group));
-            });
-        }); 
+        $.each(filtered_sub_groups, function (indexInArray, valueOfElement) { 
+            const {sub_group_id ,sub_group} = valueOfElement;
+            $("#sub_group_id").append($('<option></option>').val(sub_group_id).html(sub_group));
+        });
+    }
 
-
-        selected_group = $("#groupId").val();
-        console.log("group_id" , selected_group);
-        load_quiz_data(1  , selected_group);
-        get_pages_count(selected_group);
-         
-    });
-
-    //api call to get pages count 
-    function get_pages_count(group){
+    //api call to get pages count and to mount pagination on DOM 
+    function get_pages_count(group , sub_group , question_level){
         $(".pagination").remove();
-        selected_group = $("#groupId").val();
         $.ajax({
             type: "GET",
             accepts: {
@@ -239,7 +254,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                  );
                  while(i<=pages_count){
                      $(".pagination").append(`
-                     <li class="page-item"><a class="page-link" onclick='load_quiz_data(${i} , ${selected_group})'>${i}</a></li>
+                     <li class="page-item"><a class="page-link" onclick='load_quiz_data(${i} , ${group} , ${sub_group} , ${question_level})'>${i}</a></li>
                      `);
                     i++;
                  }
@@ -248,20 +263,26 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         });
     }
     
-    // api call to get quiz data based 
-    function load_quiz_data(page , group){
+    // api call to get quiz data and mount it on DOM
+    function load_quiz_data(page , group , sub_group , question_level){
+        if(sub_group===null)
+            sub_group="all";
+        if(question_level===null)
+            question_level="all";
+        
+        // console.log(sub_group);
         $(".card-body").remove();
             $.ajax({
                 type: "GET",
                 accepts: {
                     contentType: "application/json"
                 },
-                url: "<?= base_url() ?>welcome/quiz/"+page+"/"+group,
+                url: "<?= base_url() ?>welcome/quiz/"+page+"/"+group+"/"+sub_group+"/"+question_level,
                 dataType: "text",
                 success: function (data) {
                     var question_answers_list =  JSON.parse(data);
                     // console.log(question_answers_list)
-                    var q=0;
+                    var q=(page-1)*10;
                     $.each(question_answers_list, function (indexInArray, valueOfElement) { 
                         
                         const {question , answers} = valueOfElement;

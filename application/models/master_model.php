@@ -10,7 +10,13 @@ class Master_model extends CI_Model {
        return $query->row();
     }
 
-    function get_pages_count($per_page ,$group){
+    function get_pages_count($per_page ,$group , $sub_group , $question_level){
+        if($sub_group != "all"){
+			$this->db->where('question_grouping.sub_group_id' , $sub_group);
+		}
+        if($question_level != "all"){
+			$this->db->where('question.level_id' , $question_level);
+		}
         $this->db->select("question.question_id")
                 ->from('question')
                 ->join('question_grouping','question.question_id=question_grouping.question_id','inner')
@@ -34,7 +40,13 @@ class Master_model extends CI_Model {
            }
     } */
 
-    function get_questions($limit , $start  , $group) { 
+    function get_questions($limit , $start  , $group , $sub_group , $question_level) { 
+        if($sub_group != "all"){
+			$this->db->where('question_grouping.sub_group_id' , $sub_group);
+		}
+        if($question_level != "all"){
+			$this->db->where('question.level_id' , $question_level);
+		}
         $this->db->select('question.question_id , question , explanation')
             ->from('question')
             ->join('question_grouping','question.question_id=question_grouping.question_id','inner')
