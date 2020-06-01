@@ -10,10 +10,14 @@ class Master_model extends CI_Model {
        return $query->row();
     }
 
-    function get_pages_count($per_page){
-        $query = $this->db->get("question");
+    function get_pages_count($per_page ,$group){
+        $this->db->select("question.question_id")
+                ->from('question')
+                ->join('question_grouping','question.question_id=question_grouping.question_id','inner')
+                ->where('question_grouping.group_id' , $group);
+        $query = $this->db->get();
         
-        return ceil($query->num_rows() / $per_page)  ;
+        return ceil($query->num_rows()/ $per_page)  ;
     }
 
     /* function get_questions(){
@@ -30,9 +34,11 @@ class Master_model extends CI_Model {
            }
     } */
 
-    function get_questions($limit , $start ) { 
+    function get_questions($limit , $start  , $group) { 
         $this->db->select('question.question_id , question , explanation')
             ->from('question')
+            ->join('question_grouping','question.question_id=question_grouping.question_id','inner')
+            ->where('question_grouping.group_id' , $group)
             ->order_by('question.question_id','asc')
             ->limit($limit , $start);
         $query = $this->db->get();

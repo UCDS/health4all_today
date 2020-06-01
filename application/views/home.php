@@ -100,17 +100,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   <div class="container" id="quiz" style="margin-top:15px;">
         <div class="card">
            <div class="card-header bg-primary text-white" style="text-align:center">
-            <b>START ANSWERING THE QUESTIONS !</b> <?php echo $pages_count ?>
+            <b>START ANSWERING THE QUESTIONS !</b>
            </div>
         </div>
         <div class="card-footer">
-            <ul class="pagination justify-content-center">
-                <?php $i=1; 
-                    while($i<= $pages_count){
-                        ?>        
-                    <li class="page-item"><a class="page-link" onclick='load_quiz_data(<?=$i?>)'><?= $i ;?></a></li>
-                    <?php $i++; } ?>  
-            </ul>
         </div>
 	</div>
 </main>
@@ -128,7 +121,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         //     $(this).hide();
         // });
         
-        // option validation and response  
+        // Start : Quiz validation logic
         $("#quiz").on("click" , ".answer" , function(e){
             e.preventDefault();
                 var answers_list =  $(this).parent('li').parent('ul').children().children();
@@ -144,7 +137,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     // if wrong option is clicked , all options are disabled and correct option is highlighted in green 
                     
                     $(answers_list).each(function (index, element) {
-                        console.log("$$$$$", element);
+                        // console.log("$$$$$", element);
                         if($(element).attr("data-val")==='1'){ 
                             $(element).css({
                                 background:GREEN_COLOR,
@@ -167,7 +160,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     $(this).attr("isActive", "true");
                 }
 
-                
                 // fetchng list of all option value
                 $(answers_list).each(function (index, element) {
                     if($(element).attr("data-val")){
@@ -195,6 +187,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     $(answers_list).parent().parent().next(".explanation").show();
                 }
         });
+        // End : Quiz validation logic
+
         // fetching list of all subgroups
         var sub_groups = <?php echo json_encode($sub_groups); ?>;
         //  id of selected group
@@ -203,6 +197,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         // on selecting a group , filtering all the sub_groups based of the selected group
         $("#groupId").change(function (e) { 
             selected_group = $("#groupId").val();
+            load_quiz_data(1  , selected_group);
+            get_pages_count(selected_group);
             $('#subGroupId').empty().append(`<option value="" selected disabled>Sub Group</option>`);
              filtered_sub_groups = $.grep(sub_groups , function(v){
                 return v.group_id == selected_group;
@@ -215,29 +211,64 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         }); 
 
 
-        load_quiz_data(1);
-        
+        selected_group = $("#groupId").val();
+        console.log("group_id" , selected_group);
+        load_quiz_data(1  , selected_group);
+        get_pages_count(selected_group);
          
     });
+
+    //api call to get pages count 
+    function get_pages_count(group){
+        $(".pagination").remove();
+        selected_group = $("#groupId").val();
+        $.ajax({
+            type: "GET",
+            accepts: {
+                contentType: "application/json"
+            },
+            url: "<?= base_url() ?>welcome/pages_count/"+group,
+            dataType: "text",
+            success: function (response) {
+             var pages_count = JSON.parse(response);
+            //  console.log("pages count" , pages_count)
+             if(pages_count>1){
+                 var i=1;
+                 $(".card-footer").append(
+                    `  <ul class="pagination justify-content-center"></ul>`       
+                 );
+                 while(i<=pages_count){
+                     $(".pagination").append(`
+                     <li class="page-item"><a class="page-link" onclick='load_quiz_data(${i} , ${selected_group})'>${i}</a></li>
+                     `);
+                    i++;
+                 }
+             }
+            }
+        });
+    }
     
-    function load_quiz_data(page){
+    // api call to get quiz data based 
+    function load_quiz_data(page , group){
         $(".card-body").remove();
             $.ajax({
                 type: "GET",
                 accepts: {
                     contentType: "application/json"
                 },
-                url: "<?= base_url() ?>welcome/quiz/"+page,
+                url: "<?= base_url() ?>welcome/quiz/"+page+"/"+group,
                 dataType: "text",
                 success: function (data) {
                     var question_answers_list =  JSON.parse(data);
                     // console.log(question_answers_list)
+                    var q=0;
                     $.each(question_answers_list, function (indexInArray, valueOfElement) { 
+                        
                         const {question , answers} = valueOfElement;
                         const question_id = question.question_id; 
                          $(".card").append(
                             `<div class="card-body" style="align-items:center">
-                            <h4 class="card-text">${indexInArray+". "+question.question}</h4>
+                            <h4 class="card-text">${++q +". "+question.question}</h4>
                                 <div class="row">
                                     <div class="col">
                                     <ul class="answers answers-${question_id}">
@@ -249,6 +280,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                         ${question.explanation}
                                 </div>
                             </div>`);
+                            
                             var i = 0;
                             var c ='a';
                             $.each(answers, function (indexInArray, option) { 
