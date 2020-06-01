@@ -50,7 +50,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   <div class="container">
 	<div class="jumbotron" style="padding-top:1rem;padding-bottom:1rem;">
 	<h4 ><?php echo $banner_text; ?></h4>
-	<hr >
 	</div>
   </div>
   <div class="container">
@@ -70,12 +69,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </div>
             <div class="form-group col-md-3">
                 <select class="form-control" name="sub_group" id="sub_group_id">
-                <option value="" selected disabled>Sub Group</option>
+                <option value="0" selected>Sub Group</option>
                 </select>        
             </div>
             <div class="form-group col-md-3">
                 <select class="form-control" name="question_level" id="question_level_id" required>
-                    <option value="" selected disabled>Question Level</option>
+                    <option value="0" selected>Question Level</option>
                     <?php
                         foreach($question_levels as $r){ ?>
                         <option value="<?php echo $r->level_id;?>"    
@@ -86,7 +85,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </div>
             <div class="col-md-3">
                 <select class="form-control"  name="language" id="language" required>
-                    <option value="" selected disabled>Language</option>
+                    <option value="0" selected >Language</option>
                     <?php
                         foreach($languages as $r){ ?>
                         <option value="<?php echo $r->language_id;?>"    
@@ -143,7 +142,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         $(element).css({pointerEvents:"none"});
                     });    
                     // on clicking the wrong option , show the explanation
-                    $(this).parent('li').parent('ul').next(".explanation").show();
+                    $(this).parent('li').parent('ul').parent('div').parent('div').next(".explanation").attr("hidden", false);
                 } else {
                 /* 
                     if any one of the multiple correct option is selected, then
@@ -180,7 +179,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             $(element).css({pointerEvents:"none"});
                         }
                     });
-                    $(answers_list).parent().parent().next(".explanation").show();
+                    $(this).parent('li').parent('ul').parent('div').parent('div').next(".explanation").attr("hidden", false);
                 }
         });
         // End : Quiz validation logic
@@ -222,7 +221,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         var sub_groups = <?php echo json_encode($sub_groups); ?>;
         var selected_group = $("#group_id").val();
         var filtered_sub_groups;
-        $('#sub_group_id').empty().append(`<option value="" selected disabled>Sub Group</option>`);
+        $('#sub_group_id').empty().append(`<option value="0" selected>Sub Group</option>`);
              filtered_sub_groups = $.grep(sub_groups , function(v){
                 return v.group_id == selected_group;
             }) ;
@@ -236,10 +235,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     //api call to get pages count and to mount pagination on DOM 
     function get_pages_count(group , sub_group , question_level){
         $(".pagination").remove();
-        if(sub_group===null)
-            sub_group=0;
-        if(question_level===null)
-            question_level=0;
         $.ajax({
             type: "GET",
             accepts: {
@@ -265,14 +260,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             }
         });
     }
-    
+    function getExplantionBlock(explantion){
+            if(explantion!==""){
+                return `<div class="explanation" hidden>
+                                    <h5> Explanation:</h5>
+                                        ${explantion}
+                                </div>`
+            } else {
+                return "";
+            }
+
+        }
+
     // api call to get quiz data and mount it on DOM
     function load_quiz_data(page , group , sub_group , question_level){
-        if(sub_group===null)
-            sub_group=0;
-        if(question_level===null)
-            question_level=0;
-        
         // console.log(sub_group);
         $(".card-body").remove();
             $.ajax({
@@ -295,14 +296,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <h4 class="card-text">${++q +". "+question.question}</h4>
                                 <div class="row">
                                     <div class="col">
-                                    <ul class="answers answers-${question_id}">
-                                    </ul>
+                                        <ul class="answers answers-${question_id}">
+                                        </ul>
                                     </div>
                                 </div>
-                                <div class="explanation" hidden name= "Question_explanation_"+${indexInArray} >
-                                    <h5>Question ${question_id}  Explanation:</h5>
-                                        ${question.explanation}
-                                </div>
+                                    ${getExplantionBlock(question.explanation)}
                             </div>`);
                             
                             var i = 0;
@@ -320,4 +318,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 }
             });
         }
+
+       
 </script>
