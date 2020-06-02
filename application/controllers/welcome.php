@@ -38,10 +38,11 @@ class Welcome extends CI_Controller {
 	}
 
 
-	public function pages_count( $group="" , $sub_group="" ,  $level="" ){
+	public function get_pagination_data( $group="" , $sub_group="" ,  $level="" ){
 		$rows_per_page="10"; 
-		$pages_count = $this->master_model->get_pages_count($rows_per_page , $group , $sub_group  , $level);
-		print json_encode($pages_count);
+		$pagination_data = $this->master_model->get_pagination_data($rows_per_page , $group , $sub_group  , $level);
+		// echo json_encode($pagination_data);
+		print json_encode($pagination_data);
 	}
 
 }

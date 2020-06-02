@@ -99,7 +99,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   <div class="container" id="quiz" style="margin-top:15px;">
         <div class="card">
            <div class="card-header bg-primary text-white" style="text-align:center">
-            <b>START ANSWERING THE QUESTIONS !</b>
+            <b>ANSWER THE <span id="no_of_questions"></span> QUESTIONS !</b>
            </div>
         </div>
         <div class="card-footer">
@@ -192,7 +192,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             selected_sub_group = $("#sub_group_id").val();
             selected_question_level = $("#question_level_id").val();
             load_quiz_data(1  , selected_group , selected_sub_group  , selected_question_level);
-            get_pages_count(selected_group ,selected_sub_group  , selected_question_level);
+            get_pagination_data(selected_group ,selected_sub_group  , selected_question_level);
             
         }); 
 
@@ -202,7 +202,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             selected_sub_group = $("#sub_group_id").val();
             selected_question_level = $("#question_level_id").val();
             load_quiz_data(1  , selected_group , selected_sub_group ,selected_question_level );
-            get_pages_count(selected_group , selected_sub_group , selected_question_level);
+            get_pagination_data(selected_group , selected_sub_group , selected_question_level);
         }); 
 
         selected_group = $("#group_id").val();
@@ -211,7 +211,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         // console.log("selected_question_level" , selected_question_level);
         // on page load fetching quiz data , pages_count and filtering sub groups
         load_quiz_data(1  , selected_group ,selected_sub_group , selected_question_level);
-        get_pages_count(selected_group , selected_sub_group , selected_question_level);
+        get_pagination_data(selected_group , selected_sub_group , selected_question_level);
         filter_sub_groups(); 
     });
 
@@ -233,18 +233,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     }
 
     //api call to get pages count and to mount pagination on DOM 
-    function get_pages_count(group , sub_group , question_level){
+    function get_pagination_data(group , sub_group , question_level){
         $(".pagination").remove();
         $.ajax({
             type: "GET",
             accepts: {
                 contentType: "application/json"
             },
-            url: "<?= base_url() ?>welcome/pages_count/"+group+"/"+sub_group+"/"+question_level,
+            url: "<?= base_url() ?>welcome/get_pagination_data/"+group+"/"+sub_group+"/"+question_level,
             dataType: "text",
             success: function (response) {
-             var pages_count = JSON.parse(response);
-            //  console.log("pages count" , pages_count)
+             var data = JSON.parse(response);
+             var {questions_count , pages_count} = data;
+             $("#no_of_questions").text(questions_count);
              if(pages_count>1){
                  var i=1;
                  $(".card-footer").append(

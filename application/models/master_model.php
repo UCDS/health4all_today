@@ -10,7 +10,7 @@ class Master_model extends CI_Model {
        return $query->row();
     }
 
-    function get_pages_count($per_page ,$group , $sub_group , $question_level){
+    function get_pagination_data($per_page ,$group , $sub_group , $question_level){
         if($sub_group != 0){
 			$this->db->where('question_grouping.sub_group_id' , $sub_group);
 		}
@@ -22,8 +22,12 @@ class Master_model extends CI_Model {
                 ->join('question_grouping','question.question_id=question_grouping.question_id','inner')
                 ->where('question_grouping.group_id' , $group);
         $query = $this->db->get();
-        
-        return ceil($query->num_rows()/ $per_page)  ;
+        $result =  (object)["questions_count"=>$query->num_rows() , "pages_count"=>ceil($query->num_rows()/ $per_page)];
+        if($result){
+            return $result;       
+           }else{
+               return false;
+           }
     }
 
     
