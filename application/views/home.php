@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 
 <style>
-    .answer {
+    select , .answer , .page-item{
         cursor: pointer;
     }
     .answers {
@@ -37,11 +37,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         border-radius: 4px;
         text-align: left;
         font-size: 17px;
-    }
-    select{
-        cursor:pointer;
-    }
-    
+    }    
 </style>
 
 
@@ -114,6 +110,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     const RED_COLOR = "#ff4d4d";
     const BLUE_COLOR = "#add8e6"
     const GREEN_COLOR = "#90ee90";
+    <?php  $logged_in=$this->session->userdata('logged_in'); ?>
     $(function() {
         
         // Start : Quiz validation logic
@@ -303,12 +300,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             `<div class="card-body" style="align-items:center">
                             <h4 class="card-text">${++q +". "+question.question}</h4>
                                 <div class="row">
-                                    <div class="col">
+                                    <div class="col-md-11">
                                         <ul class="answers answers-${question_id}">
                                         </ul>
                                     </div>
+                                    <?php if($logged_in) { ?>
+                                    <div class="col-md-1">
+                                        <button class="btn btn-primary"><i class="fa fa-edit" aria-hidden="true"></i> </button> 
+                                        <br/><br/>
+                                        <button class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i> </button>
+                                    </div>
+                                    <?php } ?>
                                 </div>
-                                    ${getExplantionBlock(question.explanation)}
+                                ${getExplantionBlock(question.explanation)}
+         
                             </div>`);
                             
                             var i = 0;
