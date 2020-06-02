@@ -253,7 +253,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                  );
                  while(i<=pages_count){
                      $(".pagination").append(`
-                     <li class="page-item"><a class="page-link" onclick='load_quiz_data(${i} , ${group} , ${sub_group} , ${question_level})'>${i}</a></li>
+                     <li class="page-item ${setPageActive(i)} "><a class="page-link" onclick='load_quiz_data(${i} , ${group} , ${sub_group} , ${question_level})'>${i}</a></li>
                      `);
                     i++;
                  }
@@ -272,10 +272,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             }
 
         }
+    
+    function setPageActive(i){
+        if(i === 1) return "active";
+        return "";
+    }
 
     // api call to get quiz data and mount it on DOM
     function load_quiz_data(page , group , sub_group , question_level){
         // console.log(sub_group);
+        $(".pagination li").removeClass("active");
+        $(`.pagination li:nth-child(${page})`).addClass("active");
         $(".card-body").remove();
             $.ajax({
                 type: "GET",
