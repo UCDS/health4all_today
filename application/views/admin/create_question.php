@@ -116,10 +116,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </div>
                 <div class="form-group col-md-2">
                     <input type="hidden" name="correct_option[]" value="0" />
-                    <input type="checkbox" id="option_1" name="correct_option[1]" value="1"  style="width: 25px;height: 25px;">
+                    <input type="checkbox"  id="option_1" name="correct_option[1]" value="1"  style="width: 25px;height: 25px;">
                 </div>
                 <div class="col-md-1">
-                    <button type="button" class="btn btn-primary add_fields" id="add_fields">+</button>
+                    <button type="button" class="btn btn-primary add_fields" id="add_fields"><i class="fa fa-plus" aria-hidden="true"></i></button>
                 </div>
             </div>
         </div>
@@ -148,7 +148,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <input type="checkbox" id="option_"${x} name="correct_option[${x}]" value="1" style="width: 25px;height: 25px;">
                         </div>
                         <div class="form-group col-md-1">
-                            <button type="button" class="btn btn-danger remove_field">X</button>
+                            <button type="button" class="btn btn-danger remove_field"><i class="fa fa-trash" aria-hidden="true"></i></button>
                         </div>
                     </div>
                 `);
