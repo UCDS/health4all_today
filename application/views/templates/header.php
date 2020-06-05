@@ -13,10 +13,11 @@
     <script src="<?php echo base_url();?>assets/js/bootstrap.min.js"></script>
 
     <style>
-       a{
-        color:"black";
-      }
-
+       .navbar
+        {
+            background-color: #f8f8f8;
+            border:1px solid #e7e7e7;
+        }
       .bd-placeholder-img {
         font-size: 1.125rem;
         text-anchor: middle;
@@ -39,23 +40,27 @@
     <header>
   <!-- Fixed navbar -->
 
-  <nav class="navbar navbar-expand-md navbar-light  bg-light justify-content-between">
-  
+  <nav class="navbar navbar-expand-md navbar-light   justify-content-between">
     <a class="navbar-brand" href="https://yousee.in/c4c" target="_blank"><span style="position:absolute;font-size:2.7em;left:5%;top:-18px" class="logo logo-yousee"></a>
+    
+    <a class="navbar-brand" href="<?php echo base_url();?>" > 
+    <span style="position:absolute;left:10%;top:10px">Health4All.Today</span></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <a class="navbar-brand" href="<?php echo base_url();?>" > <span style="position:absolute;left:10%;top:10px">Health4All.Today</style></a>
     <div class="collapse navbar-collapse" id="navbarCollapse">
-      <ul class="navbar-nav navbar-left mr-auto">
+      <ul class="navbar-nav mr-auto">
       <?php 
         $logged_in=$this->session->userdata('logged_in');
       if($logged_in) { ?>
+        <!-- <li class="nav-item active">
+          <a class="nav-link" href="<?php echo base_url();?>admin" >Home <span class="sr-only">(current)</span></a>
+        </li> -->
+      </ul>
+      <ul class="navbar-nav navbar-right ">  
         <li class="nav-item active">
           <a class="nav-link" href="<?php echo base_url();?>admin" >Home <span class="sr-only">(current)</span></a>
         </li>
-      </ul>
-      <ul class="navbar-nav navbar-right ">  
           <li class="nav-item">
              <a class="nav-link" href="#" style="text-decoration:none; color:black;"> <?php echo $logged_in['username']." | " ; ?></a>
           </li>
