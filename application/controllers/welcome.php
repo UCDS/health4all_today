@@ -45,4 +45,9 @@ class Welcome extends CI_Controller {
 		print json_encode($pagination_data);
 	}
 
+	public function delete_question($question_id){
+		$deleted = $this->master_model->delete_question($question_id);
+		print json_encode($deleted);
+	}
+
 }

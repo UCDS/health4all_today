@@ -67,6 +67,7 @@ class Master_model extends CI_Model {
            }
     }
 
+    
     function get_answer_options() {
         $this->db->select('answer_option_id , answer , correct_option , question_id , answer_image')
             ->from('answer_option')
@@ -188,6 +189,33 @@ class Master_model extends CI_Model {
        
         $this->db->trans_complete(); //Transaction Ends
 		if($this->db->trans_status()===TRUE) return true; else return false; //if transaction completed successfully return true, else false.
+    }
+
+    function delete_question($question_id){
+        $this->db->trans_start(); //Transaction begins
+
+        $this->db->select("*")->from('question')->where('question_id',$question_id);
+        $result = $this->db->get();
+        if(!$result){
+            return "question does not exists";
+        }
+        // deleting question from question table
+        $this->db->where('question_id' , $question_id);
+        $delete_question = $this->db->delete('question');
+        
+        // deleting records of this question from question_grouping 
+        $this->db->where('question_id' , $question_id);
+        $delete_question_grouping_data = $this->db->delete('question_grouping');
+        
+        // deleting records of options from answer_option table 
+        $this->db->where('question_id' , $question_id);
+        $delete_question_answer_options = $this->db->delete('answer_option');
+        
+        if(!$delete_question || !$delete_question_grouping_data || !$delete_question_answer_options ){
+            $this->db->trans_rollback();
+            return -1;
+        }
+        return 1;
     }
 
 

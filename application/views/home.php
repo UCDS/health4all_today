@@ -110,9 +110,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     const RED_COLOR = "#ff4d4d";
     const BLUE_COLOR = "#add8e6"
     const GREEN_COLOR = "#90ee90";
+    const CHECK_ICON =  "<i class='fa fa-check' aria-hidden='true'></i>";
+    const CLOSE_ICON = "<i class='fa fa-close' aria-hidden='true'></i>"
     <?php  $logged_in=$this->session->userdata('logged_in'); ?>
     $(function() {
-        
+
         // Start : Quiz validation logic
         $("#quiz").on("click" , ".answer" , function(e){
             e.preventDefault();
@@ -120,13 +122,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 var selected_answers = [];
                 var answers = [];
     
-                //if wrong option is selected , option highlighted in red and disabling other options
+                //if wrong option is selected ,wrong option is highlighted in red 
                 if($(this).attr("data-val")==='0'){ 
                         $(this).css({
                         background:RED_COLOR,
                         color:WHITE_COLOR 
                     });
-                    // if wrong option is clicked , all options are disabled and correct option is highlighted in green 
+                    $(this).append(CLOSE_ICON);
+                // if wrong option is clicked , all options are disabled and correct option is highlighted in green and adding check icon
                     
                     $(answers_list).each(function (index, element) {
                         // console.log("$$$$$", element);
@@ -135,6 +138,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 background:GREEN_COLOR,
                                 color:BLACK_COLOR 
                             });
+                            $(element).append(CHECK_ICON);
                         }
                         $(element).css({pointerEvents:"none"});
                     });    
@@ -171,6 +175,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     background:GREEN_COLOR,
                                     color:BLACK_COLOR 
                             });
+                            $(element).append(CHECK_ICON);
                         }
                         if($(element).attr("data-val")==='0'){
                             $(element).css({pointerEvents:"none"});
@@ -308,7 +313,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     <div class="col-md-1">
                                         <button class="btn btn-primary"><i class="fa fa-edit" aria-hidden="true"></i> </button> 
                                         <br/><br/>
-                                        <button class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i> </button>
+                                        <button class="btn btn-danger"  onclick="delete_question(${question_id})"><i class="fa fa-trash" aria-hidden="true"></i> </button>
                                     </div>
                                     <?php } ?>
                                 </div>
@@ -332,5 +337,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             });
         }
 
+        function delete_question(question_id){
+            $.ajax({
+                type: "DELETE",
+                accepts: {
+                    contentType: "application/json"
+                },
+                url: "<?= base_url() ?>welcome/delete_question/"+question_id,
+                dataType: "text",
+                success: function (response) {
+                    const res =  JSON.parse(response);
+                    load_quiz_data(1  , selected_group ,selected_sub_group , selected_question_level);
+                }
+            });
+        }
        
 </script>
