@@ -14,6 +14,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         color:blue;
         height:4rem;
     }
+    .round-button{
+        border-radius:100%
+    }
     li span {
     display: block;
     margin-top: 3px;
@@ -111,8 +114,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     const BLUE_COLOR = "#add8e6"
     const GREEN_COLOR = "#90ee90";
     const CHECK_ICON =  "<i class='fa fa-check' aria-hidden='true'></i>";
-    const CLOSE_ICON = "<i class='fa fa-close' aria-hidden='true'></i>"
+    const CLOSE_ICON = "<i class='fa fa-close' aria-hidden='true'></i>";
+    const LOCK_ICON = "<i class='fa fa-lock' aria-hidden='true'></i>";
+    const UNLOCK_ICON = "<i class='fa fa-unlock-alt' aria-hidden='true'></i>";
+    
     <?php  $logged_in=$this->session->userdata('logged_in'); ?>
+
     $(function() {
 
         // Start : Quiz validation logic
@@ -299,10 +306,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     var q=(page-1)*10;
                     $.each(question_answers_list, function (indexInArray, valueOfElement) { 
                         
-                        const {question , answers} = valueOfElement;
-                        const question_id = question.question_id; 
+                        const {question , answers } = valueOfElement;
+                        const {question_id , status} = question; 
                          $(".card").append(
-                            `<div class="card-body" style="align-items:center">
+                            `<div class="card-body" style="align-items:center;">
                             <h4 class="card-text">${++q +". "+question.question}</h4>
                                 <div class="row">
                                     <div class="col-md-11">
@@ -311,9 +318,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     </div>
                                     <?php if($logged_in) { ?>
                                     <div class="col-md-1">
-                                        <button class="btn btn-primary"><i class="fa fa-edit" aria-hidden="true"></i> </button> 
+                                        <button class="btn btn-primary round-button"><i class="fa fa-pencil" aria-hidden="true"></i> </button> 
                                         <br/><br/>
-                                        <button class="btn btn-danger"  onclick="delete_question(${question_id})"><i class="fa fa-trash" aria-hidden="true"></i> </button>
+                                        <button class="btn btn-warning round-button" style="background-color:${+status ? GREEN_COLOR : RED_COLOR }" onClick="archive_question(${question_id})" >${ +status ? UNLOCK_ICON : LOCK_ICON }</button> 
+                                        <br/><br/>
+                                        <button class="btn btn-danger round-button"  onclick="delete_question(${question_id})"><i class="fa fa-trash" aria-hidden="true"></i> </button>
                                     </div>
                                     <?php } ?>
                                 </div>
@@ -337,6 +346,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             });
         }
 
+        //  API call to delete a question
         function delete_question(question_id){
             $.ajax({
                 type: "DELETE",
@@ -350,6 +360,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     load_quiz_data(1  , selected_group ,selected_sub_group , selected_question_level);
                 }
             });
+        }
+
+        // API call to Archive a question 
+        function archive_question(){
+
         }
        
 </script>

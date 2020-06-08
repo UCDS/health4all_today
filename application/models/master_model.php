@@ -32,13 +32,20 @@ class Master_model extends CI_Model {
 
     
     function get_questions($limit , $start  , $group , $sub_group , $question_level) { 
+        
+        $logged_in=$this->session->userdata('logged_in'); 
+        
         if($sub_group != 0){
 			$this->db->where('question_grouping.sub_group_id' , $sub_group);
 		}
         if($question_level != 0){
 			$this->db->where('question.level_id' , $question_level);
-		}
-        $this->db->select('question.question_id , question , explanation')
+        }
+        if(!$logged_in){
+            $this->db->where('question.status_id' , 1);
+        }
+
+        $this->db->select('question.question_id , question , explanation , status_id as status')
             ->from('question')
             ->join('question_grouping','question.question_id=question_grouping.question_id','inner')
             ->where('question_grouping.group_id' , $group)
