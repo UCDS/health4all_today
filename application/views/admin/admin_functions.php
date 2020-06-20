@@ -9,6 +9,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 <!-- Begin page content -->
 <main role="main" >
+<div class="container">
+  <br>
+  <div class="row">
+    <div class="col-md-12">
+      <h3>Actions</h3>
+    </div>
+  </div>
+</div>
   <div class="container">
   <br />
   <div class="row">

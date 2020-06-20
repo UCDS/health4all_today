@@ -26,7 +26,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <div class="row">
                         <div class="col-md-6">
                             <label for="group">Language Name<span class="star" style="color:red"> *</span></label>
-                            <input type="text" class="form-control" name="language" id="language" placeholder="Enter language Name">  
+                            <input type="text" class="form-control" name="language" id="language" placeholder="Enter language Name" required>  
                         </div>
                     </div>
              </div>

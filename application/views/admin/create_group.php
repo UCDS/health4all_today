@@ -30,7 +30,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <div class="row">
                         <div class="col">
                             <label for="group">Group Name<span class="star" style="color:red"> *</span></label>
-                            <input type="text" class="form-control" name="group" id="group" placeholder="Group Name">  
+                            <input type="text" class="form-control" name="group" id="group" placeholder="Group Name" required>  
                         </div>
                         <div class="col">
                             <label for="group">Group Image</label>

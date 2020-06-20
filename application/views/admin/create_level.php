@@ -30,7 +30,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <div class="row">
                         <div class="col">
                             <label for="group">Question Level Name<span class="star" style="color:red"> *</span></label>
-                            <input type="text" class="form-control" name="level" id="level" placeholder="Enter Question Level">  
+                            <input type="text" class="form-control" name="level" id="level" placeholder="Enter Question Level" required>  
                         </div>
                         <div class="col">
                             <label for="group">Question Level Image</label>

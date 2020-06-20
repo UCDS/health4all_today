@@ -1,5 +1,6 @@
 <footer class="footer mt-auto py-3">
   <div class="container">
+    <span class="text-muted"><?php echo $banner_text[1]->banner_text;?> </span> <br> <br>
     <span class="text-muted">Website designed and developed by <a href='https://www.yousee.in/' target='_blank'>YouSee</a> volunteers.</span>
   </div>
 </footer>

@@ -43,7 +43,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         </div>
                         <div class="form-group col">
                             <label for="group">Sub Group Name<span class="star" style="color:red"> *</span></label>
-                            <input type="text" class="form-control" name="sub_group" id="sub_group" placeholder="Sub Group Name">  
+                            <input type="text" class="form-control" name="sub_group" id="sub_group" placeholder="Sub Group Name" required>  
                         </div>
                         <div class="col">
                             <label for="group">Sub Group Image</label>
