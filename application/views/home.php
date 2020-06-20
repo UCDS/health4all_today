@@ -7,6 +7,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     select , .answer , .page-item{
         cursor: pointer;
     }
+    .answer:hover {
+        background:#b3cccc;
+    }
     .answers {
         list-style:none;
     }
@@ -43,18 +46,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     }    
 </style>
 
-
+<?php  $logged_in=$this->session->userdata('logged_in'); ?>
 <!-- Begin page content -->
 <main role="main" class="flex-shrink-0">
   <div class="container">
 	<div class="jumbotron" style="padding-top:1rem;padding-bottom:1rem;">
-	<h4 ><?php echo $banner_text; ?></h4>
+	<h4 ><?php echo $banner_text[0]->banner_text;?></h4>
 	</div>
   </div>
   <div class="container">
         <div class="row">
             <div class="form-group col-md-3">
-                <select class="form-control shadow-none " name="group" id="group_id" required>
+                <select class="form-control shadow-none " name="group" id="group_id" required >
                     <option value="" selected disabled>Group</option>
                     <?php
                         foreach($groups as $r){
@@ -94,6 +97,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </select>
             </div>
         </div>
+        <?php if($logged_in) {?>
+            <div class="row ">
+                <div class="form-group admin-features col-md-3">
+                    <select class="form-control shadow-none " name="group" id="group_id" required >
+                        <option value="0" selected>All Questions</option>
+                        <option value="1">Archived Questions</option>
+                        <option value="2">Un Archived Questions</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <button class="btn btn-info" id="toggleView"> User View</button>
+                </div>
+            </div>
+
+        <?php } ?>
   </div>
   <div class="container" id="quiz" style="margin-top:15px;">
         <div class="card">
@@ -118,10 +136,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     const LOCK_ICON = "<i class='fa fa-lock' aria-hidden='true'></i>";
     const UNLOCK_ICON = "<i class='fa fa-unlock-alt' aria-hidden='true'></i>";
     
-    <?php  $logged_in=$this->session->userdata('logged_in'); ?>
-
-    $(function() {
-
+    
+    $(function() {                
         // Start : Quiz validation logic
         $("#quiz").on("click" , ".answer" , function(e){
             e.preventDefault();
@@ -184,9 +200,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             });
                             $(element).append(CHECK_ICON);
                         }
-                        if($(element).attr("data-val")==='0'){
+                            // disabling all options
                             $(element).css({pointerEvents:"none"});
-                        }
+                        
                     });
                     $(this).parent('li').parent('ul').parent('div').parent('div').next(".explanation").attr("hidden", false);
                 }
@@ -317,10 +333,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                         </ul>
                                     </div>
                                     <?php if($logged_in) { ?>
-                                    <div class="col-md-1">
+                                    <div class="col-md-1 admin-features">
                                         <button class="btn btn-primary round-button"><i class="fa fa-pencil" aria-hidden="true"></i> </button> 
                                         <br/><br/>
-                                        <button class="btn btn-warning round-button" style="background-color:${+status ? GREEN_COLOR : RED_COLOR }" onClick="archive_question(${question_id})" >${ +status ? UNLOCK_ICON : LOCK_ICON }</button> 
+                                        <button class="btn btn-warning round-button" style="background-color:${+status ? GREEN_COLOR : RED_COLOR }" onClick="toggle_question_status(${question_id})" >${ +status ? UNLOCK_ICON : LOCK_ICON }</button> 
                                         <br/><br/>
                                         <button class="btn btn-danger round-button"  onclick="delete_question(${question_id})"><i class="fa fa-trash" aria-hidden="true"></i> </button>
                                     </div>
@@ -363,8 +379,37 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         }
 
         // API call to Archive a question 
-        function archive_question(){
+        function toggle_question_status(question_id){
+            $.ajax({
+                type: "PUT",
+                accepts: {
+                    contentType: "application/json"
+                },
+                url: "<?= base_url() ?>welcome/toggle_question_status/"+question_id,
+                dataType: "text",
+                success: function (response) {
+                    const res =  JSON.parse(response);
+                    // if(res[0]){
+                    //     alert("Success");
+                    // }
+                    load_quiz_data(1  , selected_group ,selected_sub_group , selected_question_level);
+                }
+            });
 
         }
+        
+        //Toggle  Between user and admin view
+        function toggleView(){
+            
+        }
+        $(function () {
+          $("#toggleView").on('click', function () {
+            $(".admin-features").toggle();  
+            $(this).text(function(i, text){
+                return text === "ADMIN VIEW" ? "USER VIEW" : "ADMIN VIEW";
+            });
+          });   
+        });
+         
        
 </script>

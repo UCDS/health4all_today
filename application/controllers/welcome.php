@@ -11,7 +11,7 @@ class Welcome extends CI_Controller {
 	public function index()
 	{
 		$this->data['title']="";
-		$this->data['banner_text'] = $this->master_model->get_banner_text()->banner_text;
+		$this->data['banner_text'] = $this->master_model->get_banner_text();
 		$this->load->view('templates/header' , $this->data);
 		$this->data['groups'] = $this->master_model->get_groups();
 		$this->data['sub_groups'] = $this->master_model->get_sub_groups();
@@ -20,7 +20,7 @@ class Welcome extends CI_Controller {
 		// $this->data['questions'] = $this->master_model->get_questions();
 		// $this->data['answer_options'] = $this->master_model->get_answer_options();
 		$this->load->view('home', $this->data);
-		$this->load->view('templates/footer');
+		$this->load->view('templates/footer' ,$this->data);
 	}
 
 	public function quiz($page , $group , $sub_group , $question_level){
@@ -48,6 +48,11 @@ class Welcome extends CI_Controller {
 	public function delete_question($question_id){
 		$deleted = $this->master_model->delete_question($question_id);
 		print json_encode($deleted);
+	}
+
+	public function toggle_question_status($question_id){
+		$updated = $this->master_model->toggle_question_status($question_id);
+		print json_encode($updated);
 	}
 
 }

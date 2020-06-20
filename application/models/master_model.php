@@ -7,7 +7,12 @@ class Master_model extends CI_Model {
     function get_banner_text(){
        $this->db->select("banner_text")->from('banner_text')->where('status',1);
        $query = $this->db->get();
-       return $query->row();
+       $result =  $query->result();
+        if($result){
+            return $result;       
+        }else{
+            return false;
+        }
     }
 
     function get_pagination_data($per_page ,$group , $sub_group , $question_level){
@@ -165,13 +170,22 @@ class Master_model extends CI_Model {
         $question_id=$this->db->insert_id(); //Get the Question ID from the inserted record
        
          // creating tuple for link table
-         $question_grouping_data =  array(
-            'question_id'=>$question_id,
-            'group_id'=>$this->input->post('group'),
-            // 'sub_group_id'=>$this->input->post('sub_group')
-        );
-        // inserting the data into question group link table
-        $this->db->insert('question_grouping',$question_grouping_data); 
+         $groups = $this->input->post('group');
+         $sub_groups = $this->input->post('sub_group');
+         $question_grouping_data = array();
+         foreach($groups as $key=>$value){
+            $question_grouping_data[]= array(
+                'question_id'=>$question_id,
+                'group_id'=>$groups[$key],
+                'sub_group_id'=>$sub_groups[$key]
+            ); 
+         }
+
+         var_dump($groups);
+         var_dump($sub_groups);
+         
+        // inserting the question grouping data into question group link table
+        $this->db->insert_batch('question_grouping',$question_grouping_data); 
 
         $answer_option=$this->input->post('answer_option'); //Get the answer options wrote by the user.
         $correct_option=$this->input->post('correct_option'); // Get the correct/incorrect value for answer options 
@@ -223,6 +237,30 @@ class Master_model extends CI_Model {
             return -1;
         }
         return 1;
+    }
+
+    // Toggles the question status between 1 and 0 
+    function toggle_question_status($question_id){
+        $this->db->trans_start(); //Transaction begins
+        $this->db->select("status_id")->from('question')->where('question_id',$question_id);
+        $result = $this->db->get();
+        
+        if(!$result){
+            return "question does not exists";
+        }
+        $current_status_id = $result->row()->status_id;
+        $status_id = $current_status_id == "1" ? "0" : "1";
+        $this->db->where('question_id' , $question_id);
+        $updated = $this->db->update('question',array('status_id'=>$status_id));
+        //Transaction ends here.
+		$this->db->trans_complete();
+		if($this->db->trans_status() === FALSE) {
+			$this->db->trans_rollback();
+			return false;
+		}
+		else {
+        return [true , $status_id];
+        }
     }
 
 
