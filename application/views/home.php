@@ -18,7 +18,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         height:4rem;
     }
     .round-button{
-        border-radius:100%
+        border-radius:100%;
+        border: solid 1px;
     }
     li span {
     display: block;
@@ -135,6 +136,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     const CLOSE_ICON = "<i class='fa fa-close' aria-hidden='true'></i>";
     const LOCK_ICON = "<i class='fa fa-lock' aria-hidden='true'></i>";
     const UNLOCK_ICON = "<i class='fa fa-unlock-alt' aria-hidden='true'></i>";
+    const EDIT_ICON = "<i class='fa fa-pencil' aria-hidden='true'></i>";
     
     
     $(function() {                
@@ -334,9 +336,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     </div>
                                     <?php if($logged_in) { ?>
                                     <div class="col-md-1 admin-features">
-                                        <button class="btn btn-primary round-button"><i class="fa fa-pencil" aria-hidden="true"></i> </button> 
+                                        <button class="btn btn-light round-button" onclick="update_question(${question_id})">${EDIT_ICON}</button> 
                                         <br/><br/>
-                                        <button class="btn btn-warning round-button" style="background-color:${+status ? GREEN_COLOR : RED_COLOR }" onClick="toggle_question_status(${question_id})" >${ +status ? UNLOCK_ICON : LOCK_ICON }</button> 
+                                        <button class="btn btn-light round-button"  onClick="toggle_question_status(${question_id})" >${ +status ? UNLOCK_ICON : LOCK_ICON }</button> 
                                         <br/><br/>
                                         <button class="btn btn-danger round-button"  onclick="delete_question(${question_id})"><i class="fa fa-trash" aria-hidden="true"></i> </button>
                                     </div>
@@ -362,7 +364,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             });
         }
 
-        //  API call to delete a question
+        // API call to update a question and its details
+        function update_question(question_id){
+            window.location = `<?=base_url()?>welcome/update_question/${question_id}`
+        }
+
+        //  API call to delete a question   
         function delete_question(question_id){
             $.ajax({
                 type: "DELETE",

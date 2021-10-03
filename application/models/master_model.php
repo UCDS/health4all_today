@@ -65,6 +65,33 @@ class Master_model extends CI_Model {
            }
     }
 
+    function get_question_by_id($question_id){
+        $this->db->select('question.question_id, question, question_image, explanation, explanation_image, level_id, language_id')
+            ->from('question')
+            ->join('question_grouping', 'question.question_id=question_grouping.question_id', 'inner')
+            ->where('question.question_id', $question_id);
+        $query = $this->db->get();
+        $result = $query->result();
+        if($result){
+            return $result;       
+            }else{
+                return false;
+            }
+    }
+
+    function get_group_info_by_question_id($question_id){
+        $this->db->select('grouping_id, group_id,sub_group_id')
+            ->from('question_grouping')
+            ->where('question_grouping.question_id' , $question_id);
+        $query = $this->db->get();
+        $result = $query->result();
+        if($result){
+            return $result;       
+        }else{
+            return false;
+        }
+    }
+
     function get_answer_options_by_question_id($question_id) {
         $this->db->select('answer_option_id , answer , correct_option , question_id , answer_image')
             ->from('answer_option')
@@ -181,8 +208,8 @@ class Master_model extends CI_Model {
             ); 
          }
 
-         var_dump($groups);
-         var_dump($sub_groups);
+        //  var_dump($groups);
+        //  var_dump($sub_groups);
          
         // inserting the question grouping data into question group link table
         $this->db->insert_batch('question_grouping',$question_grouping_data); 
@@ -207,6 +234,85 @@ class Master_model extends CI_Model {
         }
         // insert all the answer options into the answer table
         $this->db->insert_batch('answer_option' ,$answer_option_data);
+       
+        $this->db->trans_complete(); //Transaction Ends
+		if($this->db->trans_status()===TRUE) return true; else return false; //if transaction completed successfully return true, else false.
+    }
+
+    function update_question($question_id) {
+        $data=array(
+			'question'=>$this->input->post('question'),
+			'explanation'=>$this->input->post('question_explanation'),
+            'status_id'=>'1',
+            // 'question_image'=>$this->input->post('question_image'), // to be filled
+            // 'explanation_image'=>$this->input->post('explanation_image'), //to be filled
+            'level_id'=>$this->input->post('question_level'),
+            'language_id'=>$this->input->post('language'),
+            'default_question_id'=>$this->input->post('language'),
+            // 'created_by'=>$this->input->post(''), //get from session data
+            // 'created_date_time'=>$this->input->post(''),
+            // 'last_modified_by'=>$this->input->post(''),
+            'last_modified_date_time'=>date("Y-m-d H:i:s")
+        );
+        // var_dump($data);  
+
+        $this->db->trans_start(); //Transaction begins
+        $this->db->where('question_id',$question_id);
+        $this->db->update('question',$data); //updating the question w.r.t question_id
+
+        // $groups = $this->input->post('group');
+        // $sub_groups = $this->input->post('sub_group'); 
+        // var_dump($groups);
+        // var_dump($sub_groups);
+
+        $answer_option=$this->input->post('answer_option'); //Get the answer options wrote by the user.
+        $correct_option=$this->input->post('correct_option'); // Get the correct/incorrect value for answer options 
+        // var_dump($answer_option);
+        // var_dump($correct_option);
+        $answer_option_data=array();
+        foreach($answer_option as $key=>$value) { //loop through the answer options 
+            $answer_option_data[]=array(
+                'answer_option_id'=>$key,
+                'answer'=>$answer_option[$key],
+                'question_id'=>$question_id,
+                'correct_option'=>$correct_option[$key],
+                // 'answer_image'=>$a->answer_image,
+                // 'reference_note'=>$a->reference_note,
+                // 'created_by'=>$a->created_by, // will get from session data
+                // 'created_date_time'=>$this->input->post(''),
+                // 'last_modified_by'=>$this->input->post(''),
+                // 'last_modified_date_time'=>$this->input->post(''),
+            );
+        }
+        $this->db->update_batch('answer_option',$answer_option_data, 'answer_option_id');
+        //clean up , redundant data:  delete all other answer options whose key is not present in the $answer_option and has given question_id
+        $to_be_deleted_answer_option_ids = array_keys($answer_option);
+        $this->db->where('question_id',$question_id);
+        $this->db->where_not_in('answer_option_id', $to_be_deleted_answer_option_ids);
+        $delete_question_answer_options = $this->db->delete('answer_option');
+
+
+        $new_answer_option=$this->input->post('new_answer_option'); //Get the new answer options wrote by the user.
+        $new_correct_option=$this->input->post('new_correct_option'); // Get the new correct/incorrect value for answer options 
+
+        $new_answer_option_data=array();
+        if(isset($new_answer_option)){
+            foreach($new_answer_option as $key=>$value) { //loop through the new answer options 
+                $new_answer_option_data[]=array(
+                    'answer'=>$new_answer_option[$key],
+                    'question_id'=>$question_id,
+                    'correct_option'=>$new_correct_option[$key],
+                    // 'answer_image'=>$a->answer_image,
+                    // 'reference_note'=>$a->reference_note,
+                    // 'created_by'=>$a->created_by, // will get from session data
+                    // 'created_date_time'=>$this->input->post(''),
+                    // 'last_modified_by'=>$this->input->post(''),
+                    // 'last_modified_date_time'=>$this->input->post(''),
+                );
+            }
+            // insert all the answer options into the answer table
+            $this->db->insert_batch('answer_option' ,$new_answer_option_data);
+        }
        
         $this->db->trans_complete(); //Transaction Ends
 		if($this->db->trans_status()===TRUE) return true; else return false; //if transaction completed successfully return true, else false.
