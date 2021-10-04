@@ -15,12 +15,15 @@ class Master_model extends CI_Model {
         }
     }
 
-    function get_pagination_data($per_page ,$group , $sub_group , $question_level){
+    function get_pagination_data($per_page ,$group , $sub_group , $question_level, $language){
         if($sub_group != 0){
 			$this->db->where('question_grouping.sub_group_id' , $sub_group);
 		}
         if($question_level != 0){
 			$this->db->where('question.level_id' , $question_level);
+		}
+        if($language != 0){
+			$this->db->where('question.language_id' , $language);
 		}
         $this->db->select("question.question_id")
                 ->from('question')
@@ -36,7 +39,7 @@ class Master_model extends CI_Model {
     }
 
     
-    function get_questions($limit , $start  , $group , $sub_group , $question_level) { 
+    function get_questions($limit , $start  , $group , $sub_group , $question_level, $language) { 
         
         $logged_in=$this->session->userdata('logged_in'); 
         
@@ -45,6 +48,9 @@ class Master_model extends CI_Model {
 		}
         if($question_level != 0){
 			$this->db->where('question.level_id' , $question_level);
+        }
+        if($language != 0){
+			$this->db->where('question.language_id' , $language);
         }
         if(!$logged_in){
             $this->db->where('question.status_id' , 1);
