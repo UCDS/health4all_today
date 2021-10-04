@@ -23,24 +23,23 @@ class Welcome extends CI_Controller {
 		$this->load->view('templates/footer' ,$this->data);
 	}
 
-	public function quiz($page , $group , $sub_group , $question_level){
+	public function quiz($page , $group , $sub_group, $question_level, $language){
 		// $this->data['title']="Quiz page";
 		$per_page = 10;
 		$start = ($page -1 ) * $per_page;
 		$question_answers_list = array();
-		$questions =  $this->master_model->get_questions($per_page ,$start , $group , $sub_group , $question_level);
+		$questions =  $this->master_model->get_questions($per_page ,$start , $group , $sub_group , $question_level, $language);
 		foreach( json_decode($questions) as $q){
 			$question_answers_list[$q->question_id]  = (object)[ "question"=>$q, "answers"=> json_decode($this->master_model->get_answer_options_by_question_id($q->question_id))];
 		}
-		
 		print json_encode($question_answers_list);				
 						
 	}
 
 
-	public function get_pagination_data( $group="" , $sub_group="" ,  $level="" ){
+	public function get_pagination_data( $group="", $sub_group="",  $level="", $language="" ){
 		$rows_per_page="10"; 
-		$pagination_data = $this->master_model->get_pagination_data($rows_per_page , $group , $sub_group  , $level);
+		$pagination_data = $this->master_model->get_pagination_data($rows_per_page, $group, $sub_group, $level, $language);
 		// echo json_encode($pagination_data);
 		print json_encode($pagination_data);
 	}
