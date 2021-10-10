@@ -118,9 +118,10 @@ class Admin extends CI_Controller {
 
 	public function create_question()
 	{
-		
+
 		if($this->session->userdata('logged_in')){
 			$this->load->helper('form');
+			$this->load->helper('directory');
 			$this->data['title']="Create Question";
 			$this->data['banner_text'] = $this->master_model->get_banner_text();
 			$this->load->view('templates/header' , $this->data);
@@ -128,6 +129,7 @@ class Admin extends CI_Controller {
 			$this->data['groups'] = $this->master_model->get_groups();
 			$this->data['sub_groups'] = $this->master_model->get_sub_groups();
 			$this->data['question_levels'] = $this->master_model->get_question_levels();
+			$this->data['images_list'] = directory_map("./assets/images/quiz",TRUE,FALSE);
 			$this->load->library('form_validation');
 			$this->form_validation->set_rules('question','question','required');
 			if ($this->form_validation->run() === FALSE) {
@@ -282,5 +284,29 @@ class Admin extends CI_Controller {
 		}
 	}
 
-	
+	public function upload_image(){
+		if($this->session->userdata('logged_in') &&  $this->session->userdata('logged_in')['admin']==1){
+				$this->load->helper('form');
+				$this->load->library('form_validation');
+				$this->data['title']="Upload image";
+				$this->data['banner_text'] = $this->master_model->get_banner_text();
+				$this->load->view('templates/header',$this->data);
+				$this->form_validation->set_rules('image','image','required');
+				if ($this->form_validation->run() === FALSE){
+					$this->load->view('admin/upload_image' , $this->data);
+					var_dump("VALIDTION");
+				} else {
+					if($this->master_model->upload_image()){
+						$this->data['msg']="Imagae uploaded successfully";
+						$this->load->view('admin/upload_image',$this->data);
+					} else {
+						$this->data['msg']="Error creating group. Please retry.";
+						$this->load->view('admin/upload_image',$this->data);
+					}
+				}
+				$this->load->view('templates/footer',$this->data);
+			} else {
+				show_404();
+			}
+	}
 }

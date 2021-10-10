@@ -69,6 +69,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       </div>
     </div>
   </div>
+  <div class="col-sm-4">
+    <div class="card">
+      <div class="card-body">
+        <p class="card-text">upload a image</p>
+        <a href="<?php echo base_url();?>admin/upload_image" class="btn btn-primary">upload image</a>
+      </div>
+    </div>
+  </div>
   <?php } ?>
 </div>
   </div>

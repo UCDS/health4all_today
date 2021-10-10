@@ -509,5 +509,21 @@ class Master_model extends CI_Model {
 		else return false; //if the old password entered doesn't match the database password, return false.
      }
 
+     function upload_image(){
+         var_dump("MODEL");
+        if($this->input->post('image')){
+            $image_name = $this->input->post('image_name');
+			$image = $this->input->post('image');
+            $type = pathinfo($image, PATHINFO_EXTENSION);
+            $base64 = 'data:image/' . $type . ';base64,' . base64_encode($image);
+			$binary_data = base64_decode( $base64 );
+            
+			 
+			// save to server (beware of permissions)
+			$result = file_put_contents("assets/images/quiz/$image_name.jpg", $binary_data );
+			if (!$result) die("Could not save image!  Check file permissions.");
+		}
+        return true;
+    }
 
 }

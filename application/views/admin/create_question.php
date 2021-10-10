@@ -93,6 +93,46 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </div>
             </div>    
         </div>
+        <div class="question_images_wrapper">
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="questionImage">Select Question Image <span class="star" style="color:red"> *</span></label>
+                    <select class="form-control" name="question_image" id="question_image" required onChange="showImagePreview('question_image', 'questionImagePreview')">
+                    <option  selected disabled>--Select--</option>
+                    <?php
+                        foreach($images_list as $r){
+                            echo "<option value='".$r."'";
+                            if($this->input->post('question_image') && $this->input->post('question_image') == $r) echo " selected ";
+                            echo ">".$r."</option>";
+                        }
+                    ?>
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="explanationImage">Select Explanation Question Image <span class="star" style="color:red"> *</span></label>
+                    <select class="form-control" name="explanation_image" id="explanation_image" required onChange="showImagePreview('explanation_image', 'explanationImagePreview')">
+                    <option  selected disabled>--Select--</option>
+                    <?php
+                        foreach($images_list as $r){
+                            echo "<option value='".$r."'";
+                            if($this->input->post('explanation_image') && $this->input->post('explanation_image') == $r->group_id) echo " selected ";
+                            echo ">".$r."</option>";
+                        }
+                    ?>
+                    </select>
+                </div>
+            </div>    
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="questionImagePreview">Question Image preview </label> <br>
+                    <img id="questionImagePreview" src="" width="250" height="250">
+                </div>
+                <div class="col-md-6">
+                    <label for="explanationImagePreview">Explanation Image preview </label> <br>
+                    <img id="explanationImagePreview" src="" width="250" height="250" >
+                </div>
+            </div>
+        </div>
         <div class="form-group">
             <label for="explanation">Question Explanation</label>
             <textarea class="form-control" name="question_explanation" rows="2"></textarea>
@@ -217,4 +257,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             $(`#${id}`).append($('<option></option>').val(sub_group_id).html(sub_group));
         });
     }
+
+    function showImagePreview(imageSrc, previewImageId){
+        var selectedImageName = $(`#${imageSrc}`).val();
+        var imagePath = `<?= base_url() ?>assets/images/quiz/${selectedImageName}`;
+        $(`#${previewImageId}`).attr("src", imagePath);
+    }
+
 </script>
