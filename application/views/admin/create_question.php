@@ -122,7 +122,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     </select>
                 </div>
             </div>    
-            <div class="row">
+            <div class="row" style="text-align:center;margin-bottom:10px;">
                 <div class="col-md-6">
                     <label for="questionImagePreview">Question Image preview </label> <br>
                     <img id="questionImagePreview" src="" width="250" height="250">

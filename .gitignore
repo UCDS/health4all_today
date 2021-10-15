@@ -16,6 +16,7 @@ composer.lock
 
 user_guide/
 /vendor/
+assets/images/quiz
 
 # IDE Files
 #-------------------------

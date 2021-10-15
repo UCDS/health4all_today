@@ -133,8 +133,7 @@ class Admin extends CI_Controller {
 			
 			$images_list = directory_map("./assets/images/quiz",TRUE,FALSE);
 				foreach($images_list as &$image_name){
-					$image_name = strtoupper(pathinfo($image_name)['filename']);
-					var_dump($image_name);
+					$image_name = pathinfo($image_name)['filename'];
 				}
 				$this->data['images_list']= $images_list;
 			$this->form_validation->set_rules('question','question','required');

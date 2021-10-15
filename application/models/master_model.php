@@ -187,8 +187,8 @@ class Master_model extends CI_Model {
 			'question'=>$this->input->post('question'),
 			'explanation'=>$this->input->post('question_explanation'),
             'status_id'=>'1',
-            // 'question_image'=>$this->input->post('question_image'), // to be filled
-            // 'explanation_image'=>$this->input->post('explanation_image'), //to be filled
+            'question_image'=>$this->input->post('question_image'), // to be filled
+            'explanation_image'=>$this->input->post('explanation_image'), //to be filled
             'level_id'=>$this->input->post('question_level'),
             'language_id'=>$this->input->post('language'),
             'default_question_id'=>$this->input->post('language'),
@@ -511,7 +511,7 @@ class Master_model extends CI_Model {
 
      function upload_image(){
         if($this->input->post('image')){
-            $image_name = $this->input->post('image_name');
+            $image_name = strtoupper($this->input->post('image_name'));
 			$image = $this->input->post('image_val');
             $extension = explode('/', mime_content_type($image))[1];
             $imgdata =  explode(",", $image)[1];
