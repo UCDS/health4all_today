@@ -291,6 +291,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             }
         });
     }
+  
     function getExplantionBlock(explantion, explanationImage){
             if(explantion!==""){
                 return `<div class="explanation" hidden>
@@ -304,7 +305,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
         }
     
-    function getImageBlock(image){
+    
+        function getImageBlock(image){
         if(image){
             return `<img src="${<?=base_url()?>}/assets/images/quiz/${image}.jpeg" width="50" height="50"/>`
         } else{
@@ -365,10 +367,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             var c ='a';
                             $.each(answers, function (indexInArray, option) { 
                                  $(".answers-"+question_id).append(
-                                     `<li>
-                                        <span class="answer" for=${question_id} data-val=${option.correct_option}> 
+                                     `<li class="row" style=""justify->
+                                        <span class="answer col-md-${option.answer_image ? '10' : '12'}" for=${question_id} data-val=${option.correct_option}> 
                                           ${String.fromCharCode(c.charCodeAt(0)+ i++)  +". "+option.answer}
                                         </span>
+                                        ${ option.answer_image ?  getImageBlock(option.answer_image) : ""   }
                                      </li>`
                                  );
                             });
