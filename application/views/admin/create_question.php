@@ -115,7 +115,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <?php
                         foreach($images_list as $r){
                             echo "<option value='".$r."'";
-                            if($this->input->post('explanation_image') && $this->input->post('explanation_image') == $r->group_id) echo " selected ";
+                            if($this->input->post('explanation_image') && $this->input->post('explanation_image') == $r) echo " selected ";
                             echo ">".$r."</option>";
                         }
                     ?>
@@ -145,6 +145,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <input type="text" class="form-control" name="answer_option[]" required/>
                 </div>
                 <div class="form-group col-md-2">
+                    <select class="form-control" name="answer_option_image[0]"  required>
+                        <option  selected disabled>Select Image</option>
+                        <?php
+                            foreach($images_list as $r){
+                                echo "<option value='".$r."'";
+                                if($this->input->post('explanation_image') && $this->input->post('explanation_image') == $r) echo " selected ";
+                                echo ">".$r."</option>";
+                            }
+                        ?>
+                    </select>
+                </div>
+                <div class="form-group col-md-2">
                     <input type="hidden" name="correct_option[]" value="0" />
                     <input type="checkbox" id="option_0" name="correct_option[0]" value="1" style="width: 25px;height: 25px;" />
                 </div>
@@ -152,6 +164,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <div class="row">
                 <div class="form-group col-md-6">
                     <input type="text" class="form-control" name="answer_option[]" required/>
+                </div>
+                <div class="form-group col-md-2">
+                    <select class="form-control" name="answer_option_image[1]"  required>
+                        <option  selected disabled>Select Image</option>
+                        <?php
+                            foreach($images_list as $r){
+                                echo "<option value='".$r."'";
+                                if($this->input->post('explanation_image') && $this->input->post('explanation_image') == $r) echo " selected ";
+                                echo ">".$r."</option>";
+                            }
+                        ?>
+                    </select>
                 </div>
                 <div class="form-group col-md-2">
                     <input type="hidden" name="correct_option[]" value="0" />
@@ -183,8 +207,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <input type="text" name="answer_option[]" class="form-control" /> 
                         </div>
                         <div class="form-group col-md-2">
+                            <select class="form-control" id='answer_option_${x}' name="answer_option_image[${x}]"  required>
+                                <option  selected disabled>Select Image</option>
+                                <?php
+                                    foreach($images_list as $r){
+                                        echo "<option value='".$r."'";
+                                        if($this->input->post('explanation_image') && $this->input->post('explanation_image') == $r) echo " selected ";
+                                        echo ">".$r."</option>";
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-2">
                         <input type="hidden" name="correct_option[]" value="" />
-                        <input type="checkbox" id="option_"${x} name="correct_option[${x}]" value="1" style="width: 25px;height: 25px;">
+                        <input type="checkbox" id='option_${x}' name="correct_option[${x}]" value="1" style="width: 25px;height: 25px;">
                         </div>
                         <div class="form-group col-md-1">
                             <button type="button" class="btn btn-danger remove_field"><i class="fa fa-trash" aria-hidden="true"></i></button>
