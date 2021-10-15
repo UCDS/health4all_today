@@ -187,8 +187,8 @@ class Master_model extends CI_Model {
 			'question'=>$this->input->post('question'),
 			'explanation'=>$this->input->post('question_explanation'),
             'status_id'=>'1',
-            'question_image'=>$this->input->post('question_image'), // to be filled
-            'explanation_image'=>$this->input->post('explanation_image'), //to be filled
+            'question_image'=>$this->input->post('question_image'), 
+            'explanation_image'=>$this->input->post('explanation_image'), 
             'level_id'=>$this->input->post('question_level'),
             'language_id'=>$this->input->post('language'),
             'default_question_id'=>$this->input->post('language'),
