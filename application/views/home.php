@@ -291,11 +291,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             }
         });
     }
-    function getExplantionBlock(explantion){
+    function getExplantionBlock(explantion, explanationImage){
             if(explantion!==""){
                 return `<div class="explanation" hidden>
                                     <h5> Explanation:</h5>
                                         ${explantion}
+                                        ${getImageBlock(explanationImage)}
                                 </div>`
             } else {
                 return "";
@@ -303,6 +304,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
         }
     
+    function getImageBlock(image){
+        if(image){
+            return `<img src="${<?=base_url()?>}/assets/images/quiz/${image}.jpeg" width="50" height="50"/>`
+        } else{
+            return "";
+        }
+    }
+
     function setPageActive(i){
         if(i === 1) return "active";
         return "";
@@ -331,7 +340,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         const {question_id , status} = question; 
                          $(".card").append(
                             `<div class="card-body" style="align-items:center;">
-                            <h4 class="card-text">${++q +". "+question.question}</h4>
+                                <h4 class="card-text">${++q +". "+question.question}</h4>
+                                ${getImageBlock(question.question_image)}
                                 <div class="row">
                                     <div class="col-md-11">
                                         <ul class="answers answers-${question_id}">
@@ -347,7 +357,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     </div>
                                     <?php } ?>
                                 </div>
-                                ${getExplantionBlock(question.explanation)}
+                                ${getExplantionBlock(question.explanation, question.explanation_image)}
          
                             </div>`);
                             

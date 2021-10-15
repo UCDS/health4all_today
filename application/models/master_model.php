@@ -56,7 +56,7 @@ class Master_model extends CI_Model {
             $this->db->where('question.status_id' , 1);
         }
 
-        $this->db->select('question.question_id , question , explanation , status_id as status')
+        $this->db->select('question.question_id, question, explanation, question_image, explanation_image, status_id as status')
             ->from('question')
             ->join('question_grouping','question.question_id=question_grouping.question_id','inner')
             ->where('question_grouping.group_id' , $group)
