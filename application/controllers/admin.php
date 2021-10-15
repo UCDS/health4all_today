@@ -122,6 +122,7 @@ class Admin extends CI_Controller {
 		if($this->session->userdata('logged_in')){
 			$this->load->helper('form');
 			$this->load->helper('directory');
+			$this->load->library('form_validation');
 			$this->data['title']="Create Question";
 			$this->data['banner_text'] = $this->master_model->get_banner_text();
 			$this->load->view('templates/header' , $this->data);
@@ -129,8 +130,13 @@ class Admin extends CI_Controller {
 			$this->data['groups'] = $this->master_model->get_groups();
 			$this->data['sub_groups'] = $this->master_model->get_sub_groups();
 			$this->data['question_levels'] = $this->master_model->get_question_levels();
-			$this->data['images_list'] = directory_map("./assets/images/quiz",TRUE,FALSE);
-			$this->load->library('form_validation');
+			
+			$images_list = directory_map("./assets/images/quiz",TRUE,FALSE);
+				foreach($images_list as &$image_name){
+					$image_name = strtoupper(pathinfo($image_name)['filename']);
+					var_dump($image_name);
+				}
+				$this->data['images_list']= $images_list;
 			$this->form_validation->set_rules('question','question','required');
 			if ($this->form_validation->run() === FALSE) {
 				$this->load->view('admin/create_question',$this->data);
@@ -286,6 +292,7 @@ class Admin extends CI_Controller {
 
 	public function upload_image(){
 		if($this->session->userdata('logged_in') &&  $this->session->userdata('logged_in')['admin']==1){
+			// var_dump($_FILES);
 				$this->load->helper('form');
 				$this->load->library('form_validation');
 				$this->data['title']="Upload image";
@@ -294,10 +301,9 @@ class Admin extends CI_Controller {
 				$this->form_validation->set_rules('image','image','required');
 				if ($this->form_validation->run() === FALSE){
 					$this->load->view('admin/upload_image' , $this->data);
-					var_dump("VALIDTION");
 				} else {
 					if($this->master_model->upload_image()){
-						$this->data['msg']="Imagae uploaded successfully";
+						$this->data['msg']="Image uploaded successfully";
 						$this->load->view('admin/upload_image',$this->data);
 					} else {
 						$this->data['msg']="Error creating group. Please retry.";

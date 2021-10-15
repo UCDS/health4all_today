@@ -35,8 +35,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <div class="col">
                             <label for="group">Image<span class="star" style="color:red"> *</span></label>
                             <div class="form-group">
-                                <input type="file" accept="images/*" name="image" class="form-control">
-                                <!-- <label class="custom-file-label" for="inputGroupFile01">Choose file</label> -->
+                                <input type="file" accept="image/*" name="image" id="image" class="form-control" onchange="encodeImgtoBase64(this)" required>
+                                <input type="hidden" name="image_val" id="image_val">
                             </div>
                         </div>
                     </div>
@@ -48,3 +48,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         </div>
     </form>
 </div>
+
+<script>
+    function encodeImgtoBase64(element) {
+    var file = element.files[0];
+    var reader = new FileReader();
+    reader.onloadend = function() {
+      $("#image_val").val(reader.result);
+      $("#base64Img").attr("src", reader.result);
+    }
+    reader.readAsDataURL(file);
+  }
+</script>
