@@ -286,7 +286,7 @@ class Master_model extends CI_Model {
         $answer_option=$this->input->post('answer_option'); //Get the answer options wrote by the user.
         $correct_option=$this->input->post('correct_option'); // Get the correct/incorrect value for answer options 
         $answer_option_image=$this->input->post('answer_option_image'); // Get the image names for answer options 
-        var_dump($answer_option_image);
+        // var_dump($answer_option_image);
         // var_dump($correct_option);
         $answer_option_data=array();
         foreach($answer_option as $key=>$value) { //loop through the answer options 
