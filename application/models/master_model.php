@@ -15,6 +15,17 @@ class Master_model extends CI_Model {
         }
     }
 
+    function get_defaults($id) {
+        $this->db->select('*')->from('defaults')->where('default_id',$id);
+       $query = $this->db->get();
+       $result =  $query->result();
+        if($result){
+            return $result;       
+        }else{
+            return false;
+        }
+    }
+
     function get_pagination_data($per_page ,$group , $sub_group , $question_level, $language){
         if($sub_group != 0){
 			$this->db->where('question_grouping.sub_group_id' , $sub_group);

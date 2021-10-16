@@ -308,7 +308,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     
         function getImageBlock(image){
         if(image){
-            return `<img src="${<?=base_url()?>}/assets/images/quiz/${image}.jpeg" width="50" height="50"/>`
+            return `<img src="${<?=base_url()?>}/assets/images/quiz/${image}.jpeg" width="${<?= $display_max_width[0]->value?>}" />`
         } else{
             return "";
         }
@@ -370,8 +370,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                      `<li class="row" style=""justify->
                                         <span class="answer col-md-${option.answer_image ? '10' : '12'}" for=${question_id} data-val=${option.correct_option}> 
                                           ${String.fromCharCode(c.charCodeAt(0)+ i++)  +". "+option.answer}
+                                          ${ option.answer_image ?  getImageBlock(option.answer_image) : "" }
                                         </span>
-                                        ${ option.answer_image ?  getImageBlock(option.answer_image) : ""   }
                                      </li>`
                                  );
                             });
