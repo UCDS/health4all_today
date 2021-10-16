@@ -175,13 +175,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <div class="form-group col-md-6">
                                 <input type="text" name="answer_option[${element.answer_option_id}]" class="form-control" value="${element.answer}" ${[0,1].includes(index) ? "required" :''} /> 
                             </div>
-                            <div class="form-group col-md-2">
+                            <div class="form-group col-md-4">
                                 <select class="form-control" id='answer_option_[${element.answer_option_id}]' name="answer_option_image[${element.answer_option_id}]"  required>
                                     <option  selected disabled>Select Image</option>
                                     ${ getPopulatedOptions(ImagesList, element.answer_image) }
                                 </select>
                             </div>
-                            <div class="form-group col-md-2">
+                            <div class="form-group col-md-1">
                             <input type="hidden" name="correct_option[${element.answer_option_id}]" value="0" />
                             <input type="checkbox" name="correct_option[${element.answer_option_id}]" value="1" ${ element.correct_option==="1" && "checked"}  style="width: 25px;height: 25px;">
                             </div>
@@ -211,7 +211,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <div class="form-group col-md-6">
                         <input type="text" name="new_answer_option[]" class="form-control" /> 
                     </div>
-                    <div class="form-group col-md-2">
+                    <div class="form-group col-md-4">
                         <select class="form-control" name="new_answer_option_image[]"  required>
                             <option  selected disabled>Select Image</option>
                             <?php
@@ -223,7 +223,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             ?>
                         </select>
                     </div>
-                    <div class="form-group col-md-2">
+                    <div class="form-group col-md-1">
                     <input type="hidden" name="new_correct_option[]" value="" />
                     <input type="checkbox" id="option_${x}" name="new_correct_option[${x}]" value="1" style="width: 25px;height: 25px;">
                     </div>

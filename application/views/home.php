@@ -318,7 +318,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     function getExplantionBlock(explantion, explanationImage, displayImage){
             if(explantion!==""){
                 return `<div class="explanation row" hidden>
-                                <div class="col-md-${ displayImage ? <?= $bootstrap_question_col_values[0]->lower_range; ?> :'12'}"> 
+                                <div class="col-md-${ displayImage && explanationImage ? <?= $bootstrap_question_col_values[0]->lower_range; ?> :'12'}"> 
                                     <h5> Explanation:</h5>
                                     ${explantion}
                                 </div>
@@ -336,7 +336,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     
     function getImageBlock(image, displayImage){
         if(image && displayImage){
-            return `<img src="${<?=base_url()?>}/assets/images/quiz/${image}.jpeg" width="${<?= $display_max_width[0]->value?>}" />`
+            return `<img src=<?=base_url()?>assets/images/quiz/${image}.jpeg width="${<?= $display_max_width[0]->value?>}" />`
         } else{
             return "";
         }
