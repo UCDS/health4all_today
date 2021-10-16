@@ -7,7 +7,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     select , .answer , .page-item{
         cursor: pointer;
     }
-    .answer:hover {
+    .answer-option:hover {
         background:#b3cccc;
     }
     .answers {
@@ -21,8 +21,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         border-radius:100%;
         border: solid 1px;
     }
-    li span {
-    display: block;
+    .answer-option {
+    cursor: pointer;
     margin-top: 3px;
     padding: 12px 20px;
     background: #f2f2f2;
@@ -36,8 +36,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     background-image: -o-linear-gradient(top,#f9f9f9,#f2f2f2);
     border: 1px solid #f2f2f2;
     }
+
+    li>span.answer {
+    display: block;
+    margin-top: 3px;
+    padding: 12px 20px;
+    color: #222;
+    }
+    
     .explanation{
-        display: block;
+        /* display: block; */
+        justify-content: center;
+        margin-left:25px;
+        margin-right:25px;
         background: #add8e6;
         border: 2px solid #48b4e0;
         padding: 12px 20px;
@@ -98,6 +109,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </select>
             </div>
         </div>
+        <?php if($display_images[0]->value) { ?>
+            <div class="row">
+                <div class="col-md-3" style="display:inline-flex; margin-top:10px;">
+                    <input  type="checkbox" name="show_images" id="show_images" style="width:25px;height:25px;" <?php echo $user_display_images[0]->value ? 'checked' :''  ?>>
+                    <label for="showImages" style="padding-left:10px;">Show Images</label>
+                </div>
+            </div>
+        <?php } ?>
         <?php if($logged_in) {?>
             <div class="row ">
                 <div class="form-group admin-features col-md-3">
@@ -149,7 +168,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     
                 //if wrong option is selected ,wrong option is highlighted in red 
                 if($(this).attr("data-val")==='0'){ 
-                        $(this).css({
+                        $(this).parent().css({
                         background:RED_COLOR,
                         color:WHITE_COLOR 
                     });
@@ -159,13 +178,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     $(answers_list).each(function (index, element) {
                         // console.log("$$$$$", element);
                         if($(element).attr("data-val")==='1'){ 
-                            $(element).css({
+                            $(element).parent().css({
                                 background:GREEN_COLOR,
                                 color:BLACK_COLOR 
                             });
                             $(element).append(CHECK_ICON);
                         }
-                        $(element).css({pointerEvents:"none"});
+                        $(element).parent().css({pointerEvents:"none"});
                     });    
                     // on clicking the wrong option , show the explanation
                     $(this).parent('li').parent('ul').parent('div').parent('div').next(".explanation").attr("hidden", false);
@@ -174,11 +193,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     if any one of the multiple correct option is selected, then
                     option highlighted in blue color indicationg that it is partially ccorrect 
                 */
-                    $(this).css({
+                    $(this).parent().css({
                         background:BLUE_COLOR,
                         color:BLACK_COLOR 
                     });
-                    $(this).attr("isActive", "true");
+                    $(this).parent().attr("isActive", "true");
                 }
 
                 // fetchng list of all option value
@@ -187,23 +206,24 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         answers.push($(element).attr("data-val"));
                     }
                 });
+                // console.log("ANSWERS:", answers);
                 // fetching list after selecteing options
-                $(answers_list).each(function (index , element){
-                        selected_answers[index] = $(element).attr("isActive") ? "1" : "0";
+                $(answers_list).filter('.answer').each(function (index , element){
+                        selected_answers[index] = $(element).parent().attr("isActive") ? "1" : "0";
                 });
+                // console.log("SELECTED ANSWERS:", selected_answers);
                 //  if all the selected options are correct , highlight answers correct with green
                 if(JSON.stringify(selected_answers)==JSON.stringify(answers)){
-                    $(answers_list).each(function (index, element) {
-                        
-                        if( $(element).attr("isActive")==="true"){
-                            $(element).css({
+                    $(answers_list).filter('.answer').each(function (index, element) {
+                        if( $(element).parent().attr("isActive")==="true"){
+                            $(element).parent().css({
                                     background:GREEN_COLOR,
                                     color:BLACK_COLOR 
                             });
                             $(element).append(CHECK_ICON);
                         }
                             // disabling all options
-                            $(element).css({pointerEvents:"none"});
+                            $(element).parent().css({pointerEvents:"none"});
                         
                     });
                     $(this).parent('li').parent('ul').parent('div').parent('div').next(".explanation").attr("hidden", false);
@@ -219,29 +239,32 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             selected_sub_group = $("#sub_group_id").val();
             selected_question_level = $("#question_level_id").val();
             selected_language = $("#language").val();
-            load_quiz_data(1  , selected_group , selected_sub_group  , selected_question_level, selected_language);
-            get_pagination_data(selected_group ,selected_sub_group  , selected_question_level, selected_language);
+            show_images = $("#show_images").is(':checked');
+            load_quiz_data(1  , selected_group , selected_sub_group  , selected_question_level, selected_language, show_images);
+            get_pagination_data(selected_group ,selected_sub_group  , selected_question_level, selected_language, show_images);
             
         }); 
 
         // on change of sub_group or question_level ,  fetching all quiz data
-        $("#sub_group_id , #question_level_id, #language").change(function (e) { 
+        $("#sub_group_id , #question_level_id, #language, #show_images").change(function (e) { 
             selected_group = $("#group_id").val();
             selected_sub_group = $("#sub_group_id").val();
             selected_question_level = $("#question_level_id").val();
             selected_language = $("#language").val();
-            load_quiz_data(1  , selected_group , selected_sub_group ,selected_question_level, selected_language );
-            get_pagination_data(selected_group , selected_sub_group , selected_question_level, selected_language);
+            show_images = $("#show_images").is(':checked');
+            load_quiz_data(1  , selected_group , selected_sub_group ,selected_question_level, selected_language, show_images );
+            get_pagination_data(selected_group , selected_sub_group , selected_question_level, selected_language, show_images);
         }); 
 
         selected_group = $("#group_id").val();
         selected_sub_group = $("#sub_group_id").val();
         selected_question_level = $("#question_level_id").val();
         selected_language = $("#language").val();
+        show_images = $("#show_images").is(':checked');
         // console.log("selected_question_level" , selected_question_level);
         // on page load fetching quiz data , pages_count and filtering sub groups
-        load_quiz_data(1, selected_group, selected_sub_group, selected_question_level, selected_language);
-        get_pagination_data(selected_group, selected_sub_group, selected_question_level, selected_language);
+        load_quiz_data(1, selected_group, selected_sub_group, selected_question_level, selected_language, show_images);
+        get_pagination_data(selected_group, selected_sub_group, selected_question_level, selected_language, show_images);
         filter_sub_groups(); 
     });
 
@@ -263,7 +286,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     }
 
     //api call to get pages count and to mount pagination on DOM 
-    function get_pagination_data(group , sub_group , question_level, language){
+    function get_pagination_data(group , sub_group , question_level, language, show_images){
         $(".pagination").remove();
         $.ajax({
             type: "GET",
@@ -283,7 +306,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                  );
                  while(i<=pages_count){
                      $(".pagination").append(`
-                     <li class="page-item ${setPageActive(i)} "><a class="page-link" onclick='load_quiz_data(${i} , ${group} , ${sub_group} , ${question_level}, ${language})'>${i}</a></li>
+                     <li class="page-item ${setPageActive(i)} "><a class="page-link" onclick='load_quiz_data(${i} , ${group} , ${sub_group} , ${question_level}, ${language}, ${show_images})'>${i}</a></li>
                      `);
                     i++;
                  }
@@ -291,25 +314,41 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             }
         });
     }
-    function getExplantionBlock(explantion){
+  
+    function getExplantionBlock(explantion, explanationImage, displayImage){
             if(explantion!==""){
-                return `<div class="explanation" hidden>
+                return `<div class="explanation row" hidden>
+                                <div class="col-md-${ displayImage ? <?= $bootstrap_question_col_values[0]->lower_range; ?> :'12'}"> 
                                     <h5> Explanation:</h5>
-                                        ${explantion}
-                                </div>`
+                                    ${explantion}
+                                </div>
+                                <div class="col-md-<?= $bootstrap_question_col_values[0]->upper_range; ?>" style="text-align:center">
+                                    ${getImageBlock(explanationImage, displayImage)}
+                                </div>
+                            </div>
+                        </div>`
             } else {
                 return "";
             }
 
         }
     
+    
+    function getImageBlock(image, displayImage){
+        if(image && displayImage){
+            return `<img src="${<?=base_url()?>}/assets/images/quiz/${image}.jpeg" width="${<?= $display_max_width[0]->value?>}" />`
+        } else{
+            return "";
+        }
+    }
+
     function setPageActive(i){
         if(i === 1) return "active";
         return "";
     }
 
     // api call to get quiz data and mount it on DOM
-    function load_quiz_data(page , group , sub_group , question_level, language_id){
+    function load_quiz_data(page , group , sub_group , question_level, language_id, show_images){
         // console.log(sub_group);
         $(".pagination li").removeClass("active");
         $(`.pagination li:nth-child(${page})`).addClass("active");
@@ -329,9 +368,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         
                         const {question , answers } = valueOfElement;
                         const {question_id , status} = question; 
+                        const displayImage = <?php echo $display_images[0]->value; ?> && show_images;
                          $(".card").append(
                             `<div class="card-body" style="align-items:center;">
-                            <h4 class="card-text">${++q +". "+question.question}</h4>
+                                
+                                <div class="row">
+                                    <div class="col-md-${ displayImage && question.question_image ? '<?= $bootstrap_question_col_values[0]->lower_range; ?>': '12'}">
+                                        <h4 class="card-text">${++q +". "+question.question}</h4>
+                                    </div>
+                                    <div class="col-md-<?= $bootstrap_question_col_values[0]->upper_range; ?>" style="text-align:center">
+                                        ${getImageBlock(question.question_image, displayImage)}
+                                    </div>
+                                </div>
                                 <div class="row">
                                     <div class="col-md-11">
                                         <ul class="answers answers-${question_id}">
@@ -347,7 +395,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     </div>
                                     <?php } ?>
                                 </div>
-                                ${getExplantionBlock(question.explanation)}
+                                ${getExplantionBlock(question.explanation, question.explanation_image, displayImage)}
          
                             </div>`);
                             
@@ -355,10 +403,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             var c ='a';
                             $.each(answers, function (indexInArray, option) { 
                                  $(".answers-"+question_id).append(
-                                     `<li>
-                                        <span class="answer" for=${question_id} data-val=${option.correct_option}> 
+                                     `<li class="row answer-option">
+                                        <span class="answer col-md-${displayImage && option.answer_image ? <?= $bootstrap_question_col_values[0]->lower_range; ?> :'12'}" for=${question_id} data-val=${option.correct_option}> 
                                           ${String.fromCharCode(c.charCodeAt(0)+ i++)  +". "+option.answer}
                                         </span>
+                                            ${ option.answer_image ? `<span class="col-md-<?= $bootstrap_question_col_values[0]->upper_range; ?>" style="text-align:center"> ${getImageBlock(option.answer_image, displayImage)} </span>` : "" }
                                      </li>`
                                  );
                             });
@@ -383,7 +432,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 dataType: "text",
                 success: function (response) {
                     const res =  JSON.parse(response);
-                    load_quiz_data(1  , selected_group ,selected_sub_group , selected_question_level);
+                    load_quiz_data(1  , selected_group ,selected_sub_group , selected_question_level, show_images);
                 }
             });
         }
@@ -402,7 +451,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     // if(res[0]){
                     //     alert("Success");
                     // }
-                    load_quiz_data(1  , selected_group ,selected_sub_group , selected_question_level);
+                    load_quiz_data(1  , selected_group ,selected_sub_group , selected_question_level, show_images);
                 }
             });
 

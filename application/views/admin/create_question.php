@@ -93,6 +93,46 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </div>
             </div>    
         </div>
+        <div class="question_images_wrapper">
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="questionImage">Select Question Image <span class="star" style="color:red"> *</span></label>
+                    <select class="form-control" name="question_image" id="question_image" required onChange="showImagePreview('question_image', 'questionImagePreview')">
+                    <option  selected disabled>--Select--</option>
+                    <?php
+                        foreach($images_list as $r){
+                            echo "<option value='".$r."'";
+                            if($this->input->post('question_image') && $this->input->post('question_image') == $r) echo " selected ";
+                            echo ">".$r."</option>";
+                        }
+                    ?>
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="explanationImage">Select Explanation Question Image <span class="star" style="color:red"> *</span></label>
+                    <select class="form-control" name="explanation_image" id="explanation_image" required onChange="showImagePreview('explanation_image', 'explanationImagePreview')">
+                    <option  selected disabled>--Select--</option>
+                    <?php
+                        foreach($images_list as $r){
+                            echo "<option value='".$r."'";
+                            if($this->input->post('explanation_image') && $this->input->post('explanation_image') == $r) echo " selected ";
+                            echo ">".$r."</option>";
+                        }
+                    ?>
+                    </select>
+                </div>
+            </div>    
+            <div class="row" style="text-align:center;margin-bottom:10px;">
+                <div class="col-md-6">
+                    <label for="questionImagePreview">Question Image preview </label> <br>
+                    <img id="questionImagePreview" src="" width="250" height="250">
+                </div>
+                <div class="col-md-6">
+                    <label for="explanationImagePreview">Explanation Image preview </label> <br>
+                    <img id="explanationImagePreview" src="" width="250" height="250" >
+                </div>
+            </div>
+        </div>
         <div class="form-group">
             <label for="explanation">Question Explanation</label>
             <textarea class="form-control" name="question_explanation" rows="2"></textarea>
@@ -105,6 +145,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <input type="text" class="form-control" name="answer_option[]" required/>
                 </div>
                 <div class="form-group col-md-2">
+                    <select class="form-control" name="answer_option_image[0]"  required>
+                        <option  selected disabled>Select Image</option>
+                        <?php
+                            foreach($images_list as $r){
+                                echo "<option value='".$r."'";
+                                if($this->input->post('explanation_image') && $this->input->post('explanation_image') == $r) echo " selected ";
+                                echo ">".$r."</option>";
+                            }
+                        ?>
+                    </select>
+                </div>
+                <div class="form-group col-md-2">
                     <input type="hidden" name="correct_option[]" value="0" />
                     <input type="checkbox" id="option_0" name="correct_option[0]" value="1" style="width: 25px;height: 25px;" />
                 </div>
@@ -112,6 +164,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <div class="row">
                 <div class="form-group col-md-6">
                     <input type="text" class="form-control" name="answer_option[]" required/>
+                </div>
+                <div class="form-group col-md-2">
+                    <select class="form-control" name="answer_option_image[1]"  required>
+                        <option  selected disabled>Select Image</option>
+                        <?php
+                            foreach($images_list as $r){
+                                echo "<option value='".$r."'";
+                                if($this->input->post('explanation_image') && $this->input->post('explanation_image') == $r) echo " selected ";
+                                echo ">".$r."</option>";
+                            }
+                        ?>
+                    </select>
                 </div>
                 <div class="form-group col-md-2">
                     <input type="hidden" name="correct_option[]" value="0" />
@@ -143,8 +207,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <input type="text" name="answer_option[]" class="form-control" /> 
                         </div>
                         <div class="form-group col-md-2">
+                            <select class="form-control" id='answer_option_${x}' name="answer_option_image[${x}]"  required>
+                                <option  selected disabled>Select Image</option>
+                                <?php
+                                    foreach($images_list as $r){
+                                        echo "<option value='".$r."'";
+                                        if($this->input->post('explanation_image') && $this->input->post('explanation_image') == $r) echo " selected ";
+                                        echo ">".$r."</option>";
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-2">
                         <input type="hidden" name="correct_option[]" value="" />
-                        <input type="checkbox" id="option_"${x} name="correct_option[${x}]" value="1" style="width: 25px;height: 25px;">
+                        <input type="checkbox" id='option_${x}' name="correct_option[${x}]" value="1" style="width: 25px;height: 25px;">
                         </div>
                         <div class="form-group col-md-1">
                             <button type="button" class="btn btn-danger remove_field"><i class="fa fa-trash" aria-hidden="true"></i></button>
@@ -217,4 +293,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             $(`#${id}`).append($('<option></option>').val(sub_group_id).html(sub_group));
         });
     }
+
+    function showImagePreview(imageSrc, previewImageId){
+        var selectedImageName = $(`#${imageSrc}`).val();
+        var imagePath = `<?= base_url() ?>assets/images/quiz/${selectedImageName}`;
+        $(`#${previewImageId}`).attr("src", imagePath);
+    }
+
 </script>

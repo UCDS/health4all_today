@@ -15,6 +15,17 @@ class Master_model extends CI_Model {
         }
     }
 
+    function get_defaults($id) {
+        $this->db->select('*')->from('defaults')->where('default_id',$id);
+       $query = $this->db->get();
+       $result =  $query->result();
+        if($result){
+            return $result;       
+        }else{
+            return false;
+        }
+    }
+
     function get_pagination_data($per_page ,$group , $sub_group , $question_level, $language){
         if($sub_group != 0){
 			$this->db->where('question_grouping.sub_group_id' , $sub_group);
@@ -56,7 +67,7 @@ class Master_model extends CI_Model {
             $this->db->where('question.status_id' , 1);
         }
 
-        $this->db->select('question.question_id , question , explanation , status_id as status')
+        $this->db->select('question.question_id, question, explanation, question_image, explanation_image, status_id as status')
             ->from('question')
             ->join('question_grouping','question.question_id=question_grouping.question_id','inner')
             ->where('question_grouping.group_id' , $group)
@@ -187,8 +198,8 @@ class Master_model extends CI_Model {
 			'question'=>$this->input->post('question'),
 			'explanation'=>$this->input->post('question_explanation'),
             'status_id'=>'1',
-            // 'question_image'=>$this->input->post('question_image'), // to be filled
-            // 'explanation_image'=>$this->input->post('explanation_image'), //to be filled
+            'question_image'=>$this->input->post('question_image'), 
+            'explanation_image'=>$this->input->post('explanation_image'), 
             'level_id'=>$this->input->post('question_level'),
             'language_id'=>$this->input->post('language'),
             'default_question_id'=>$this->input->post('language'),
@@ -222,6 +233,7 @@ class Master_model extends CI_Model {
 
         $answer_option=$this->input->post('answer_option'); //Get the answer options wrote by the user.
         $correct_option=$this->input->post('correct_option'); // Get the correct/incorrect value for answer options 
+        $answer_option_image=$this->input->post('answer_option_image'); // Get the image names for answer options 
         // var_dump($answer_option);
         // var_dump($correct_option);
         $answer_option_data=array();
@@ -230,7 +242,7 @@ class Master_model extends CI_Model {
                 'answer'=>$answer_option[$key],
                 'question_id'=>$question_id,
                 'correct_option'=>$correct_option[$key],
-                // 'answer_image'=>$a->answer_image,
+                'answer_image'=>$answer_option_image[$key],
                 // 'reference_note'=>$a->reference_note,
                 // 'created_by'=>$a->created_by, // will get from session data
                 // 'created_date_time'=>$this->input->post(''),
@@ -250,8 +262,8 @@ class Master_model extends CI_Model {
 			'question'=>$this->input->post('question'),
 			'explanation'=>$this->input->post('question_explanation'),
             'status_id'=>'1',
-            // 'question_image'=>$this->input->post('question_image'), // to be filled
-            // 'explanation_image'=>$this->input->post('explanation_image'), //to be filled
+            'question_image'=>$this->input->post('question_image'), 
+            'explanation_image'=>$this->input->post('explanation_image'),
             'level_id'=>$this->input->post('question_level'),
             'language_id'=>$this->input->post('language'),
             'default_question_id'=>$this->input->post('language'),
@@ -273,7 +285,8 @@ class Master_model extends CI_Model {
 
         $answer_option=$this->input->post('answer_option'); //Get the answer options wrote by the user.
         $correct_option=$this->input->post('correct_option'); // Get the correct/incorrect value for answer options 
-        // var_dump($answer_option);
+        $answer_option_image=$this->input->post('answer_option_image'); // Get the image names for answer options 
+        var_dump($answer_option_image);
         // var_dump($correct_option);
         $answer_option_data=array();
         foreach($answer_option as $key=>$value) { //loop through the answer options 
@@ -282,6 +295,7 @@ class Master_model extends CI_Model {
                 'answer'=>$answer_option[$key],
                 'question_id'=>$question_id,
                 'correct_option'=>$correct_option[$key],
+                'answer_image'=>$answer_option_image[$key],
                 // 'answer_image'=>$a->answer_image,
                 // 'reference_note'=>$a->reference_note,
                 // 'created_by'=>$a->created_by, // will get from session data
@@ -300,6 +314,7 @@ class Master_model extends CI_Model {
 
         $new_answer_option=$this->input->post('new_answer_option'); //Get the new answer options wrote by the user.
         $new_correct_option=$this->input->post('new_correct_option'); // Get the new correct/incorrect value for answer options 
+        $new_answer_option_image=$this->input->post('new_answer_option_image'); // Get the new correct/incorrect value for answer options 
 
         $new_answer_option_data=array();
         if(isset($new_answer_option)){
@@ -308,7 +323,7 @@ class Master_model extends CI_Model {
                     'answer'=>$new_answer_option[$key],
                     'question_id'=>$question_id,
                     'correct_option'=>$new_correct_option[$key],
-                    // 'answer_image'=>$a->answer_image,
+                    'answer_image'=>$new_answer_option_image[$key],
                     // 'reference_note'=>$a->reference_note,
                     // 'created_by'=>$a->created_by, // will get from session data
                     // 'created_date_time'=>$this->input->post(''),
@@ -509,5 +524,18 @@ class Master_model extends CI_Model {
 		else return false; //if the old password entered doesn't match the database password, return false.
      }
 
+     function upload_image(){
+        if($this->input->post('image')){
+            $image_name = strtoupper($this->input->post('image_name'));
+			$image = $this->input->post('image_val');
+            $extension = explode('/', mime_content_type($image))[1];
+            $imgdata =  explode(",", $image)[1];
+            $imgdata = base64_decode($imgdata);
+			// save to server (beware of permissions)
+			$result = file_put_contents("assets/images/quiz/$image_name.jpeg", $imgdata );
+			if (!$result) die("Could not save image!  Check file permissions.");
+		}
+        return true;
+    }
 
 }
