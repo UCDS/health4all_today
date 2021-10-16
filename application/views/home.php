@@ -21,7 +21,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         border-radius:100%;
         border: solid 1px;
     }
-    li span {
+    li>span {
     display: block;
     margin-top: 3px;
     padding: 12px 20px;
@@ -37,7 +37,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     border: 1px solid #f2f2f2;
     }
     .explanation{
-        display: block;
+        /* display: block; */
+        justify-content: center;
+        margin-left:25px;
+        margin-right:25px;
         background: #add8e6;
         border: 2px solid #48b4e0;
         padding: 12px 20px;
@@ -294,11 +297,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   
     function getExplantionBlock(explantion, explanationImage){
             if(explantion!==""){
-                return `<div class="explanation" hidden>
+                return `<div class="explanation row" hidden>
+                                <div class="col-md-8"> 
                                     <h5> Explanation:</h5>
-                                        ${explantion}
-                                        ${getImageBlock(explanationImage)}
-                                </div>`
+                                    ${explantion}
+                                </div>
+                                <div class="col-md-4" style="text-align:center">
+                                    ${getImageBlock(explanationImage)}
+                                </div>
+                            </div>
+                        </div>`
             } else {
                 return "";
             }
@@ -374,11 +382,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             var c ='a';
                             $.each(answers, function (indexInArray, option) { 
                                  $(".answers-"+question_id).append(
-                                     `<li class="row" style=""justify->
-                                        <span class="answer col-md-12" for=${question_id} data-val=${option.correct_option}> 
+                                     `<li class="row">
+                                        <span class="answer col-md-8" for=${question_id} data-val=${option.correct_option}> 
                                           ${String.fromCharCode(c.charCodeAt(0)+ i++)  +". "+option.answer}
-                                          ${ option.answer_image ?  getImageBlock(option.answer_image) : "" }
                                         </span>
+                                        ${ option.answer_image ?  getImageBlock(option.answer_image) : "" }
                                      </li>`
                                  );
                             });
