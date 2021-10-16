@@ -7,7 +7,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     select , .answer , .page-item{
         cursor: pointer;
     }
-    .answer:hover {
+    .answer-option:hover {
         background:#b3cccc;
     }
     .answers {
@@ -21,8 +21,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         border-radius:100%;
         border: solid 1px;
     }
-    li>span {
-    display: block;
+    .answer-option {
+    cursor: pointer;
     margin-top: 3px;
     padding: 12px 20px;
     background: #f2f2f2;
@@ -36,6 +36,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     background-image: -o-linear-gradient(top,#f9f9f9,#f2f2f2);
     border: 1px solid #f2f2f2;
     }
+
+    li>span.answer {
+    display: block;
+    margin-top: 3px;
+    padding: 12px 20px;
+    color: #222;
+    }
+    
     .explanation{
         /* display: block; */
         justify-content: center;
@@ -152,7 +160,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     
                 //if wrong option is selected ,wrong option is highlighted in red 
                 if($(this).attr("data-val")==='0'){ 
-                        $(this).css({
+                        $(this).parent().css({
                         background:RED_COLOR,
                         color:WHITE_COLOR 
                     });
@@ -162,13 +170,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     $(answers_list).each(function (index, element) {
                         // console.log("$$$$$", element);
                         if($(element).attr("data-val")==='1'){ 
-                            $(element).css({
+                            $(element).parent().css({
                                 background:GREEN_COLOR,
                                 color:BLACK_COLOR 
                             });
                             $(element).append(CHECK_ICON);
                         }
-                        $(element).css({pointerEvents:"none"});
+                        $(element).parent().css({pointerEvents:"none"});
                     });    
                     // on clicking the wrong option , show the explanation
                     $(this).parent('li').parent('ul').parent('div').parent('div').next(".explanation").attr("hidden", false);
@@ -177,11 +185,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     if any one of the multiple correct option is selected, then
                     option highlighted in blue color indicationg that it is partially ccorrect 
                 */
-                    $(this).css({
+                    $(this).parent().css({
                         background:BLUE_COLOR,
                         color:BLACK_COLOR 
                     });
-                    $(this).attr("isActive", "true");
+                    $(this).parent().attr("isActive", "true");
                 }
 
                 // fetchng list of all option value
@@ -190,23 +198,27 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         answers.push($(element).attr("data-val"));
                     }
                 });
+                console.log("ANSWERS:", answers);
                 // fetching list after selecteing options
-                $(answers_list).each(function (index , element){
-                        selected_answers[index] = $(element).attr("isActive") ? "1" : "0";
+                $(answers_list).filter('.answer').each(function (index , element){
+                        selected_answers[index] = $(element).parent().attr("isActive") ? "1" : "0";
                 });
+                    console.log("SELECTED ANSWERS:", selected_answers);
                 //  if all the selected options are correct , highlight answers correct with green
                 if(JSON.stringify(selected_answers)==JSON.stringify(answers)){
                     $(answers_list).each(function (index, element) {
                         
-                        if( $(element).attr("isActive")==="true"){
-                            $(element).css({
+                        if( $(element).parent().attr("isActive")==="true"){
+                            $(element).parent().css({
                                     background:GREEN_COLOR,
                                     color:BLACK_COLOR 
                             });
-                            $(element).append(CHECK_ICON);
+                            if(index%2==0){
+                                $(element).append(CHECK_ICON);
+                            }
                         }
                             // disabling all options
-                            $(element).css({pointerEvents:"none"});
+                            $(element).parent().css({pointerEvents:"none"});
                         
                     });
                     $(this).parent('li').parent('ul').parent('div').parent('div').next(".explanation").attr("hidden", false);
@@ -355,7 +367,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     <div class="col-md-${question.question_image ? '<?= $bootstrap_question_col_values[0]->lower_range; ?>': '12'}">
                                         <h4 class="card-text">${++q +". "+question.question}</h4>
                                     </div>
-                                    <div class="col-md-'<?= $bootstrap_question_col_values[0]->lower_range; ?>'" style="text-align:center">
+                                    <div class="col-md-<?= $bootstrap_question_col_values[0]->upper_range; ?>" style="text-align:center">
                                         ${getImageBlock(question.question_image)}
                                     </div>
                                 </div>
@@ -382,11 +394,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             var c ='a';
                             $.each(answers, function (indexInArray, option) { 
                                  $(".answers-"+question_id).append(
-                                     `<li class="row">
-                                        <span class="answer col-md-8" for=${question_id} data-val=${option.correct_option}> 
+                                     `<li class="row answer-option">
+                                        <span class="answer col-md-${option.answer_image ? <?= $bootstrap_question_col_values[0]->lower_range; ?> :'12'}" for=${question_id} data-val=${option.correct_option}> 
                                           ${String.fromCharCode(c.charCodeAt(0)+ i++)  +". "+option.answer}
                                         </span>
-                                        ${ option.answer_image ?  getImageBlock(option.answer_image) : "" }
+                                            ${ option.answer_image ? `<span class="col-md-<?= $bootstrap_question_col_values[0]->upper_range; ?>" style="text-align:center"> ${getImageBlock(option.answer_image)} </span>` : "" }
                                      </li>`
                                  );
                             });
