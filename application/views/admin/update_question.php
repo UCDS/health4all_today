@@ -55,6 +55,35 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </select>
             </div>
         </div>
+        <div class="question_images_wrapper">
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="questionImage">Select Question Image <span class="star" style="color:red"> *</span></label>
+                    <select class="form-control" name="question_image" id="question_image" required onChange="showImagePreview('question_image', 'questionImagePreview')">
+                    <option  selected disabled>--Select--</option>
+                    <?php
+                        foreach($images_list as $r){
+                            echo "<option value='".$r."'";
+                            if($this->input->post('question_image') == $r || $question_details[0]->question_image ==$r) echo " selected ";
+                            echo ">".$r."</option>";
+                        }
+                    ?>
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="explanationImage">Select Explanation Question Image <span class="star" style="color:red"> *</span></label>
+                    <select class="form-control" name="explanation_image" id="explanation_image" required onChange="showImagePreview('explanation_image', 'explanationImagePreview')">
+                    <option  selected disabled>--Select--</option>
+                    <?php
+                        foreach($images_list as $r){
+                            echo "<option value='".$r."'";
+                            if($this->input->post('explanation_image') == $r || $question_details[0]->explanation_image ==$r ) echo " selected ";
+                            echo ">".$r."</option>";
+                        }
+                    ?>
+                    </select>
+                </div>
+            </div>    
         <!-- <div class="groups_wrapper">
             <div class="row">
                 <div class="form-group col-md-4">
@@ -125,15 +154,32 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         });
     }
 
+        function getPopulatedOptions(imagesList, selectedImage) {
+            console.log("selectedImage", selectedImage);
+            let options = ""
+            imagesList.forEach((imageName,index, arr) => {
+                options = options+`<option value=${imageName} ${ selectedImage === imageName ? 'selected' :''} >${imageName}</option>`
+            });
+            return options;
+        }
     $(function() {
         var answer_options_wrapper    = $(".answer_options_wrapper"); //Input fields answer_options_wrapper
         var answer_details = <?php echo $answer_details;?>;
         if(answer_details){
+            console.log(answer_details)
+            const ImagesList =  <?=json_encode($images_list); ?>;
             answer_details.forEach((element, index) => {     
+                console.log(element);
                 $(answer_options_wrapper).append(`
                         <div class="row">
                             <div class="form-group col-md-6">
                                 <input type="text" name="answer_option[${element.answer_option_id}]" class="form-control" value="${element.answer}" ${[0,1].includes(index) ? "required" :''} /> 
+                            </div>
+                            <div class="form-group col-md-2">
+                                <select class="form-control" id='answer_option_[${element.answer_option_id}]' name="answer_option_image[${element.answer_option_id}]"  required>
+                                    <option  selected disabled>Select Image</option>
+                                    ${ getPopulatedOptions(ImagesList, element.answer_image) }
+                                </select>
                             </div>
                             <div class="form-group col-md-2">
                             <input type="hidden" name="correct_option[${element.answer_option_id}]" value="0" />
@@ -164,6 +210,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <div class="row">
                     <div class="form-group col-md-6">
                         <input type="text" name="new_answer_option[]" class="form-control" /> 
+                    </div>
+                    <div class="form-group col-md-2">
+                        <select class="form-control" name="new_answer_option_image[]"  required>
+                            <option  selected disabled>Select Image</option>
+                            <?php
+                                foreach($images_list as $r){
+                                    echo "<option value='".$r."'";
+                                    echo $r;
+                                    echo ">".$r."</option>";
+                                }
+                            ?>
+                        </select>
                     </div>
                     <div class="form-group col-md-2">
                     <input type="hidden" name="new_correct_option[]" value="" />

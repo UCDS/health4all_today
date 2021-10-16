@@ -262,8 +262,8 @@ class Master_model extends CI_Model {
 			'question'=>$this->input->post('question'),
 			'explanation'=>$this->input->post('question_explanation'),
             'status_id'=>'1',
-            // 'question_image'=>$this->input->post('question_image'), // to be filled
-            // 'explanation_image'=>$this->input->post('explanation_image'), //to be filled
+            'question_image'=>$this->input->post('question_image'), 
+            'explanation_image'=>$this->input->post('explanation_image'),
             'level_id'=>$this->input->post('question_level'),
             'language_id'=>$this->input->post('language'),
             'default_question_id'=>$this->input->post('language'),
@@ -285,7 +285,8 @@ class Master_model extends CI_Model {
 
         $answer_option=$this->input->post('answer_option'); //Get the answer options wrote by the user.
         $correct_option=$this->input->post('correct_option'); // Get the correct/incorrect value for answer options 
-        // var_dump($answer_option);
+        $answer_option_image=$this->input->post('answer_option_image'); // Get the image names for answer options 
+        var_dump($answer_option_image);
         // var_dump($correct_option);
         $answer_option_data=array();
         foreach($answer_option as $key=>$value) { //loop through the answer options 
@@ -294,6 +295,7 @@ class Master_model extends CI_Model {
                 'answer'=>$answer_option[$key],
                 'question_id'=>$question_id,
                 'correct_option'=>$correct_option[$key],
+                'answer_image'=>$answer_option_image[$key],
                 // 'answer_image'=>$a->answer_image,
                 // 'reference_note'=>$a->reference_note,
                 // 'created_by'=>$a->created_by, // will get from session data
@@ -312,6 +314,7 @@ class Master_model extends CI_Model {
 
         $new_answer_option=$this->input->post('new_answer_option'); //Get the new answer options wrote by the user.
         $new_correct_option=$this->input->post('new_correct_option'); // Get the new correct/incorrect value for answer options 
+        $new_answer_option_image=$this->input->post('new_answer_option_image'); // Get the new correct/incorrect value for answer options 
 
         $new_answer_option_data=array();
         if(isset($new_answer_option)){
@@ -320,7 +323,7 @@ class Master_model extends CI_Model {
                     'answer'=>$new_answer_option[$key],
                     'question_id'=>$question_id,
                     'correct_option'=>$new_correct_option[$key],
-                    // 'answer_image'=>$a->answer_image,
+                    'answer_image'=>$new_answer_option_image[$key],
                     // 'reference_note'=>$a->reference_note,
                     // 'created_by'=>$a->created_by, // will get from session data
                     // 'created_date_time'=>$this->input->post(''),

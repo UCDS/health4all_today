@@ -62,6 +62,7 @@ class Welcome extends CI_Controller {
 	public function update_question($question_id){
 		if($this->session->userdata('logged_in')){
 			$this->load->helper('form');
+			$this->load->helper('directory');
 			$this->data['title']="Update Question";
 			$this->load->view('templates/header' , $this->data);
 			$this->data['question_id'] = $question_id;
@@ -73,6 +74,11 @@ class Welcome extends CI_Controller {
 			$this->data['question_details']=$this->master_model->get_question_by_id($question_id);
 			$this->data['answer_details']=$this->master_model->get_answer_options_by_question_id($question_id);
 			$this->data['grouping_details']=$this->master_model->get_group_info_by_question_id($question_id);
+			$images_list = directory_map("./assets/images/quiz",TRUE,FALSE);
+				foreach($images_list as &$image_name){
+					$image_name = pathinfo($image_name)['filename'];
+				}
+			$this->data['images_list']= $images_list;
 			$this->load->library('form_validation');
 			$this->form_validation->set_rules('question','question','required');
 			if ($this->form_validation->run() === FALSE) {
