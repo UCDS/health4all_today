@@ -307,15 +307,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         });
     }
   
-    function getExplantionBlock(explantion, explanationImage){
+    function getExplantionBlock(explantion, explanationImage, displayImage){
             if(explantion!==""){
                 return `<div class="explanation row" hidden>
-                                <div class="col-md-8"> 
+                                <div class="col-md-${ displayImage ? <?= $bootstrap_question_col_values[0]->lower_range; ?> :'12'}"> 
                                     <h5> Explanation:</h5>
                                     ${explantion}
                                 </div>
-                                <div class="col-md-4" style="text-align:center">
-                                    ${getImageBlock(explanationImage)}
+                                <div class="col-md-<?= $bootstrap_question_col_values[0]->upper_range; ?>" style="text-align:center">
+                                    ${getImageBlock(explanationImage, displayImage)}
                                 </div>
                             </div>
                         </div>`
@@ -326,8 +326,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         }
     
     
-        function getImageBlock(image){
-        if(image){
+    function getImageBlock(image, displayImage){
+        if(image && displayImage){
             return `<img src="${<?=base_url()?>}/assets/images/quiz/${image}.jpeg" width="${<?= $display_max_width[0]->value?>}" />`
         } else{
             return "";
@@ -360,15 +360,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         
                         const {question , answers } = valueOfElement;
                         const {question_id , status} = question; 
+                        const displayImage = <?php echo $display_images[0]->value; ?>;
                          $(".card").append(
                             `<div class="card-body" style="align-items:center;">
                                 
                                 <div class="row">
-                                    <div class="col-md-${question.question_image ? '<?= $bootstrap_question_col_values[0]->lower_range; ?>': '12'}">
+                                    <div class="col-md-${ displayImage && question.question_image ? '<?= $bootstrap_question_col_values[0]->lower_range; ?>': '12'}">
                                         <h4 class="card-text">${++q +". "+question.question}</h4>
                                     </div>
                                     <div class="col-md-<?= $bootstrap_question_col_values[0]->upper_range; ?>" style="text-align:center">
-                                        ${getImageBlock(question.question_image)}
+                                        ${getImageBlock(question.question_image, displayImage)}
                                     </div>
                                 </div>
                                 <div class="row">
@@ -386,7 +387,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     </div>
                                     <?php } ?>
                                 </div>
-                                ${getExplantionBlock(question.explanation, question.explanation_image)}
+                                ${getExplantionBlock(question.explanation, question.explanation_image, displayImage)}
          
                             </div>`);
                             
@@ -395,10 +396,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             $.each(answers, function (indexInArray, option) { 
                                  $(".answers-"+question_id).append(
                                      `<li class="row answer-option">
-                                        <span class="answer col-md-${option.answer_image ? <?= $bootstrap_question_col_values[0]->lower_range; ?> :'12'}" for=${question_id} data-val=${option.correct_option}> 
+                                        <span class="answer col-md-${displayImage && option.answer_image ? <?= $bootstrap_question_col_values[0]->lower_range; ?> :'12'}" for=${question_id} data-val=${option.correct_option}> 
                                           ${String.fromCharCode(c.charCodeAt(0)+ i++)  +". "+option.answer}
                                         </span>
-                                            ${ option.answer_image ? `<span class="col-md-<?= $bootstrap_question_col_values[0]->upper_range; ?>" style="text-align:center"> ${getImageBlock(option.answer_image)} </span>` : "" }
+                                            ${ option.answer_image ? `<span class="col-md-<?= $bootstrap_question_col_values[0]->upper_range; ?>" style="text-align:center"> ${getImageBlock(option.answer_image, displayImage)} </span>` : "" }
                                      </li>`
                                  );
                             });
