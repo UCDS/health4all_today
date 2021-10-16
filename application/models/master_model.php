@@ -528,7 +528,6 @@ class Master_model extends CI_Model {
         if($this->input->post('image')){
             $image_name = strtoupper($this->input->post('image_name'));
 			$image = $this->input->post('image_val');
-            $extension = explode('/', mime_content_type($image))[1];
             $imgdata =  explode(",", $image)[1];
             $imgdata = base64_decode($imgdata);
 			// save to server (beware of permissions)
