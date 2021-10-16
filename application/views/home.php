@@ -336,7 +336,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     
     function getImageBlock(image, displayImage){
         if(image && displayImage){
-            return `<img src="${<?=base_url()?>}/assets/images/quiz/${image}.jpeg" width="${<?= $display_max_width[0]->value?>}" />`
+            return `<img src=<?=base_url()?>assets/images/quiz/${image}.jpeg width="${<?= $display_max_width[0]->value?>}" />`
         } else{
             return "";
         }
