@@ -109,6 +109,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </select>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-3" style="display:inline-flex; margin-top:10px;">
+                <input  type="checkbox" name="show_images" id="show_images" style="width:25px;height:25px;" checked>
+                <label for="showImages" style="padding-left:10px;">Show Images</label>
+            </div>
+        </div>
         <?php if($logged_in) {?>
             <div class="row ">
                 <div class="form-group admin-features col-md-3">
@@ -234,29 +240,32 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             selected_sub_group = $("#sub_group_id").val();
             selected_question_level = $("#question_level_id").val();
             selected_language = $("#language").val();
-            load_quiz_data(1  , selected_group , selected_sub_group  , selected_question_level, selected_language);
-            get_pagination_data(selected_group ,selected_sub_group  , selected_question_level, selected_language);
+            show_images = $("#show_images").is(':checked');
+            load_quiz_data(1  , selected_group , selected_sub_group  , selected_question_level, selected_language, show_images);
+            get_pagination_data(selected_group ,selected_sub_group  , selected_question_level, selected_language, show_images);
             
         }); 
 
         // on change of sub_group or question_level ,  fetching all quiz data
-        $("#sub_group_id , #question_level_id, #language").change(function (e) { 
+        $("#sub_group_id , #question_level_id, #language, #show_images").change(function (e) { 
             selected_group = $("#group_id").val();
             selected_sub_group = $("#sub_group_id").val();
             selected_question_level = $("#question_level_id").val();
             selected_language = $("#language").val();
-            load_quiz_data(1  , selected_group , selected_sub_group ,selected_question_level, selected_language );
-            get_pagination_data(selected_group , selected_sub_group , selected_question_level, selected_language);
+            show_images = $("#show_images").is(':checked');
+            load_quiz_data(1  , selected_group , selected_sub_group ,selected_question_level, selected_language, show_images );
+            get_pagination_data(selected_group , selected_sub_group , selected_question_level, selected_language, show_images);
         }); 
 
         selected_group = $("#group_id").val();
         selected_sub_group = $("#sub_group_id").val();
         selected_question_level = $("#question_level_id").val();
         selected_language = $("#language").val();
+        show_images = $("#show_images").is(':checked');
         // console.log("selected_question_level" , selected_question_level);
         // on page load fetching quiz data , pages_count and filtering sub groups
-        load_quiz_data(1, selected_group, selected_sub_group, selected_question_level, selected_language);
-        get_pagination_data(selected_group, selected_sub_group, selected_question_level, selected_language);
+        load_quiz_data(1, selected_group, selected_sub_group, selected_question_level, selected_language, show_images);
+        get_pagination_data(selected_group, selected_sub_group, selected_question_level, selected_language, show_images);
         filter_sub_groups(); 
     });
 
@@ -278,7 +287,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     }
 
     //api call to get pages count and to mount pagination on DOM 
-    function get_pagination_data(group , sub_group , question_level, language){
+    function get_pagination_data(group , sub_group , question_level, language, show_images){
         $(".pagination").remove();
         $.ajax({
             type: "GET",
@@ -298,7 +307,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                  );
                  while(i<=pages_count){
                      $(".pagination").append(`
-                     <li class="page-item ${setPageActive(i)} "><a class="page-link" onclick='load_quiz_data(${i} , ${group} , ${sub_group} , ${question_level}, ${language})'>${i}</a></li>
+                     <li class="page-item ${setPageActive(i)} "><a class="page-link" onclick='load_quiz_data(${i} , ${group} , ${sub_group} , ${question_level}, ${language}, ${show_images})'>${i}</a></li>
                      `);
                     i++;
                  }
@@ -340,7 +349,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     }
 
     // api call to get quiz data and mount it on DOM
-    function load_quiz_data(page , group , sub_group , question_level, language_id){
+    function load_quiz_data(page , group , sub_group , question_level, language_id, show_images){
         // console.log(sub_group);
         $(".pagination li").removeClass("active");
         $(`.pagination li:nth-child(${page})`).addClass("active");
@@ -360,7 +369,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         
                         const {question , answers } = valueOfElement;
                         const {question_id , status} = question; 
-                        const displayImage = <?php echo $display_images[0]->value; ?>;
+                        const displayImage = <?php echo $display_images[0]->value; ?> && show_images;
                          $(".card").append(
                             `<div class="card-body" style="align-items:center;">
                                 
@@ -424,7 +433,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 dataType: "text",
                 success: function (response) {
                     const res =  JSON.parse(response);
-                    load_quiz_data(1  , selected_group ,selected_sub_group , selected_question_level);
+                    load_quiz_data(1  , selected_group ,selected_sub_group , selected_question_level, show_images);
                 }
             });
         }
@@ -443,7 +452,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     // if(res[0]){
                     //     alert("Success");
                     // }
-                    load_quiz_data(1  , selected_group ,selected_sub_group , selected_question_level);
+                    load_quiz_data(1  , selected_group ,selected_sub_group , selected_question_level, show_images);
                 }
             });
 
