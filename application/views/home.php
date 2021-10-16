@@ -109,12 +109,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </select>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-3" style="display:inline-flex; margin-top:10px;">
-                <input  type="checkbox" name="show_images" id="show_images" style="width:25px;height:25px;" checked>
-                <label for="showImages" style="padding-left:10px;">Show Images</label>
+        <?php if($display_images[0]->value) { ?>
+            <div class="row">
+                <div class="col-md-3" style="display:inline-flex; margin-top:10px;">
+                    <input  type="checkbox" name="show_images" id="show_images" style="width:25px;height:25px;" <?php echo $user_display_images[0]->value ? 'checked' :''  ?>>
+                    <label for="showImages" style="padding-left:10px;">Show Images</label>
+                </div>
             </div>
-        </div>
+        <?php } ?>
         <?php if($logged_in) {?>
             <div class="row ">
                 <div class="form-group admin-features col-md-3">
@@ -204,24 +206,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         answers.push($(element).attr("data-val"));
                     }
                 });
-                console.log("ANSWERS:", answers);
+                // console.log("ANSWERS:", answers);
                 // fetching list after selecteing options
                 $(answers_list).filter('.answer').each(function (index , element){
                         selected_answers[index] = $(element).parent().attr("isActive") ? "1" : "0";
                 });
-                    console.log("SELECTED ANSWERS:", selected_answers);
+                // console.log("SELECTED ANSWERS:", selected_answers);
                 //  if all the selected options are correct , highlight answers correct with green
                 if(JSON.stringify(selected_answers)==JSON.stringify(answers)){
-                    $(answers_list).each(function (index, element) {
-                        
+                    $(answers_list).filter('.answer').each(function (index, element) {
                         if( $(element).parent().attr("isActive")==="true"){
                             $(element).parent().css({
                                     background:GREEN_COLOR,
                                     color:BLACK_COLOR 
                             });
-                            if(index%2==0){
-                                $(element).append(CHECK_ICON);
-                            }
+                            $(element).append(CHECK_ICON);
                         }
                             // disabling all options
                             $(element).parent().css({pointerEvents:"none"});

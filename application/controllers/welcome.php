@@ -16,6 +16,7 @@ class Welcome extends CI_Controller {
 		$this->data['display_max_width'] = $this->master_model->get_defaults('display_max_width');
 		$this->data['bootstrap_question_col_values'] = $this->master_model->get_defaults('bootstrap_question_col_values');
 		$this->data['display_images'] = $this->master_model->get_defaults('display_images');
+		$this->data['user_display_images'] = $this->master_model->get_defaults('user_display_images');
 		$this->load->view('templates/header' , $this->data);
 		$this->data['groups'] = $this->master_model->get_groups();
 		$this->data['sub_groups'] = $this->master_model->get_sub_groups();
