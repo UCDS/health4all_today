@@ -342,8 +342,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         const {question_id , status} = question; 
                          $(".card").append(
                             `<div class="card-body" style="align-items:center;">
-                                <h4 class="card-text">${++q +". "+question.question}</h4>
-                                ${getImageBlock(question.question_image)}
+                                
+                                <div class="row">
+                                    <div class="col-md-${question.question_image ? '<?= $bootstrap_question_col_values[0]->lower_range; ?>': '12'}">
+                                        <h4 class="card-text">${++q +". "+question.question}</h4>
+                                    </div>
+                                    <div class="col-md-'<?= $bootstrap_question_col_values[0]->lower_range; ?>'" style="text-align:center">
+                                        ${getImageBlock(question.question_image)}
+                                    </div>
+                                </div>
                                 <div class="row">
                                     <div class="col-md-11">
                                         <ul class="answers answers-${question_id}">
@@ -368,7 +375,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             $.each(answers, function (indexInArray, option) { 
                                  $(".answers-"+question_id).append(
                                      `<li class="row" style=""justify->
-                                        <span class="answer col-md-${option.answer_image ? '10' : '12'}" for=${question_id} data-val=${option.correct_option}> 
+                                        <span class="answer col-md-12" for=${question_id} data-val=${option.correct_option}> 
                                           ${String.fromCharCode(c.charCodeAt(0)+ i++)  +". "+option.answer}
                                           ${ option.answer_image ?  getImageBlock(option.answer_image) : "" }
                                         </span>
