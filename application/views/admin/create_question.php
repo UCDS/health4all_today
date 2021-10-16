@@ -296,7 +296,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
     function showImagePreview(imageSrc, previewImageId){
         var selectedImageName = $(`#${imageSrc}`).val();
-        var imagePath = `<?= base_url() ?>assets/images/quiz/${selectedImageName}`;
+        var imagePath = `<?= base_url() ?>assets/images/quiz/${selectedImageName}.jpeg`;
         $(`#${previewImageId}`).attr("src", imagePath);
     }
 
