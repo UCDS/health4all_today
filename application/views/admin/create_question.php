@@ -26,20 +26,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <label for="Question">Question<span class="star" style="color:red"> *</span></label>
             <input type="text" class="form-control" name="question" placeholder="Question" required>
         </div>
-<!--         <div class="row">
-            <div class="form-group col-md-3">
-                <label for="questionImage">Question Image</label>
-                <input type="file" class="form-control-file" name="question_image">
-            </div>
-            <div class="form-group col-md-3" >
-                <label for="explanationImage">Explanation Image</label>
-                <input type="file" class="form-control-file"  name="explanation_image">
-            </div>
-            <div class="form-group col-md-4">
-                <label for="defaultQuestionId">Default Question ID</label>
-                <input type="number" class="form-control" name="default_question_id" placeholder="Enter the default question id">
-            </div>
-        </div> -->
         <div class="row">
             <div class="form-group col-md-6">
                 <label for="levelOfQuestion">Select The Level of Question<span class="star" style="color:red"> *</span></label>

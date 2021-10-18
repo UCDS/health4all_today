@@ -84,39 +84,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     </select>
                 </div>
             </div>    
-        <!-- <div class="groups_wrapper">
-            <div class="row">
-                <div class="form-group col-md-4">
-                    <label for="groupId">Select Group <span class="star" style="color:red"> *</span></label>
-                    <select class="form-control" name="group[]" id="group_1" onChange="filter_sub_groups('group_1' , 'sub_group_1')" required>
-                    <option  selected disabled>--Select--</option>
-                    <?php
-                        foreach($groups as $r){
-                            echo "<option value='".$r->group_id."'";
-                            if(($this->input->post('group_name') && $this->input->post('group_name') == $r->group_id) || $grouping_details[0]->group_id == $r->group_id ) echo " selected ";
-                            echo ">".$r->group_name."</option>";
-                        }
-                    ?>
-                </select>
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="subGroupId">Select Sub Group</label>
-                    <select class="form-control" name="sub_group[]" id="sub_group_1">
-                        <?php 
-                            foreach($sub_groups as $sg){
-                                echo "<option value='".$sg->sub_group_id."'";
-                                if(($this->input->post('sub_group') && $this->input->post('sub_group') == $sg->sub_group_id) || $question_details[0]->sub_group_id == $sg->sub_group_id ) echo " selected ";
-                                echo ">".$sg->sub_group."</option>";
-                            }
-                         ?>
-                    </select>
-                </div>
-                <div class="form-group col-md-1">
-                <label for="">Add</label>  
-                    <button type="button" class="btn btn-primary" id="addGroupAndSubGroup"><i class="fa fa-plus" aria-hidden="true"></i></button>
-                </div>
-            </div>    
-        </div> -->
         <div class="form-group">
             <label for="explanation">Question Explanation</label>
             <textarea class="form-control" name="question_explanation" rows="4"><?php echo $question_details[0]->explanation;?></textarea>
