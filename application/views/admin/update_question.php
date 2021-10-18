@@ -27,7 +27,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       <form id="update_question" action="<?php echo base_url('welcome/update_question/').$question_id ?>" method="POST">
         <div class="form-group">
             <label for="Question">Question<span class="star" style="color:red"> *</span></label>
-            <input type="text" class="form-control" name="question" placeholder="Question" value="<?php echo $question_details[0]->question ;?>"  required>
+            <!-- <input type="text" class="form-control" name="question" placeholder="Question" value="<?php echo $question_details[0]->question ;?>"  required> -->
+            <textarea  class="form-control" name="question" placeholder="Question"  rows="1"  required ><?php echo $question_details[0]->question ;?></textarea>
         </div>
         <div class="row">
             <div class="form-group col-md-6">
@@ -157,7 +158,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 $(answer_options_wrapper).append(`
                         <div class="row">
                             <div class="form-group col-md-6">
-                                <input type="text" name="answer_option[${element.answer_option_id}]" class="form-control" value="${element.answer}" ${[0,1].includes(index) ? "required" :''} /> 
+                                <textarea name="answer_option[${element.answer_option_id}]" class="form-control" ${[0,1].includes(index) ? "required" :''} rows='1' >${element.answer} </textarea>
                             </div>
                             <div class="form-group col-md-4">
                                 <select class="form-control" id='answer_option_[${element.answer_option_id}]' name="answer_option_image[${element.answer_option_id}]"  required>
@@ -193,7 +194,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             $(answer_options_wrapper).append(`
                 <div class="row">
                     <div class="form-group col-md-6">
-                        <input type="text" name="new_answer_option[]" class="form-control" /> 
+                        <textarea name="new_answer_option[]" class="form-control" rows="1"></textarea>
                     </div>
                     <div class="form-group col-md-4">
                         <select class="form-control" name="new_answer_option_image[]"  required>

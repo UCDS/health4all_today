@@ -24,7 +24,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       <form id="create_question" action="<?= base_url('admin/create_question') ?>" method="POST">
         <div class="form-group">
             <label for="Question">Question<span class="star" style="color:red"> *</span></label>
-            <input type="text" class="form-control" name="question" placeholder="Question" required>
+            <textarea name="question" class="form-control" id="question"  rows="1" required></textarea>
         </div>
         <div class="row">
             <div class="form-group col-md-6">
@@ -128,7 +128,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <div class="answer_options_wrapper">
             <div class="row">
                 <div class="form-group col-md-6">
-                    <input type="text" class="form-control" name="answer_option[]" required/>
+                    <!-- <input type="text" class="form-control" name="answer_option[]" required/> -->
+                    <textarea class="form-control" name="answer_option[]" rows="1" required></textarea>
                 </div>
                 <div class="form-group col-md-4">
                     <select class="form-control" name="answer_option_image[0]"  required>
@@ -149,7 +150,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </div>
             <div class="row">
                 <div class="form-group col-md-6">
-                    <input type="text" class="form-control" name="answer_option[]" required/>
+                    <textarea class="form-control" name="answer_option[]" rows="1" required></textarea>
                 </div>
                 <div class="form-group col-md-4">
                     <select class="form-control" name="answer_option_image[1]"  required>
@@ -190,7 +191,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 $(answer_options_wrapper).append(`
                     <div class="row">
                         <div class="form-group col-md-6">
-                            <input type="text" name="answer_option[]" class="form-control" /> 
+                            <textarea class="form-control" name="answer_option[]" rows="1" required></textarea>
                         </div>
                         <div class="form-group col-md-4">
                             <select class="form-control" id='answer_option_${x}' name="answer_option_image[${x}]"  required>
