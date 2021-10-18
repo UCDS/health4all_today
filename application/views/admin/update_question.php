@@ -83,7 +83,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     ?>
                     </select>
                 </div>
-            </div>    
+            </div>
+            <div class="row" style="text-align:center;margin-bottom:10px;">
+                <div class="col-md-6">
+                    <label for="questionImagePreview">Question Image preview </label> <br>
+                    <img id="questionImagePreview" src="" width="250" height="250">
+                </div>
+                <div class="col-md-6">
+                    <label for="explanationImagePreview">Explanation Image preview </label> <br>
+                    <img id="explanationImagePreview" src="" width="250" height="250" >
+                </div>
+            </div> 
         <div class="form-group">
             <label for="explanation">Question Explanation</label>
             <textarea class="form-control" name="question_explanation" rows="4"><?php echo $question_details[0]->explanation;?></textarea>
@@ -121,14 +131,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         });
     }
 
-        function getPopulatedOptions(imagesList, selectedImage) {
-            console.log("selectedImage", selectedImage);
-            let options = ""
-            imagesList.forEach((imageName,index, arr) => {
-                options = options+`<option value=${imageName} ${ selectedImage === imageName ? 'selected' :''} >${imageName}</option>`
-            });
-            return options;
-        }
+    function getPopulatedOptions(imagesList, selectedImage) {
+        console.log("selectedImage", selectedImage);
+        let options = ""
+        imagesList.forEach((imageName,index, arr) => {
+            options = options+`<option value=${imageName} ${ selectedImage === imageName ? 'selected' :''} >${imageName}</option>`
+        });
+        return options;
+    }
+
+    function showImagePreview(imageSrc, previewImageId){
+        var selectedImageName = $(`#${imageSrc}`).val();
+        var imagePath = `<?= base_url() ?>assets/images/quiz/${selectedImageName}.jpeg`;
+        $(`#${previewImageId}`).attr("src", imagePath);
+    }
+
     $(function() {
         var answer_options_wrapper    = $(".answer_options_wrapper"); //Input fields answer_options_wrapper
         var answer_details = <?php echo $answer_details;?>;
@@ -247,6 +264,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             x--; 
         });
 
+        // calling function to showPreview of question and explanation image
+        showImagePreview('question_image', 'questionImagePreview');
+        showImagePreview('explanation_image', 'explanationImagePreview');
+        
         /* Autoclosing alert box  */
         $("#alert-success").fadeTo(2000, 500).slideUp(500, function(){
             $("#alert-success").slideUp(500);
