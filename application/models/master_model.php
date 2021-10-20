@@ -67,7 +67,7 @@ class Master_model extends CI_Model {
             $this->db->where('question.status_id' , 1);
         }
 
-        $this->db->select('question.question_id, question, explanation, question_image, explanation_image, status_id as status')
+        $this->db->select('question.question_id, question, explanation, question_image, question_image_width, explanation_image, explanation_image_width, status_id as status')
             ->from('question')
             ->join('question_grouping','question.question_id=question_grouping.question_id','inner')
             ->where('question_grouping.group_id' , $group)
@@ -83,7 +83,7 @@ class Master_model extends CI_Model {
     }
 
     function get_question_by_id($question_id){
-        $this->db->select('question.question_id, question, question_image, explanation, explanation_image, level_id, language_id')
+        $this->db->select('question.question_id, question, question_image, question_image_width, explanation, explanation_image, explanation_image_width, level_id, language_id')
             ->from('question')
             ->join('question_grouping', 'question.question_id=question_grouping.question_id', 'inner')
             ->where('question.question_id', $question_id);
@@ -110,7 +110,7 @@ class Master_model extends CI_Model {
     }
 
     function get_answer_options_by_question_id($question_id) {
-        $this->db->select('answer_option_id , answer , correct_option , question_id , answer_image')
+        $this->db->select('answer_option_id , answer , correct_option , question_id , answer_image, answer_image_width')
             ->from('answer_option')
             ->order_by('answer_option_id','asc')
             ->where('answer_option.question_id' , $question_id);
@@ -199,7 +199,9 @@ class Master_model extends CI_Model {
 			'explanation'=>$this->input->post('question_explanation'),
             'status_id'=>'1',
             'question_image'=>$this->input->post('question_image'), 
+            'question_image_width'=>$this->input->post('question_image_width'), 
             'explanation_image'=>$this->input->post('explanation_image'), 
+            'explanation_image_width'=>$this->input->post('explanation_image_width'), 
             'level_id'=>$this->input->post('question_level'),
             'language_id'=>$this->input->post('language'),
             'default_question_id'=>$this->input->post('language'),

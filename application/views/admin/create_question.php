@@ -8,6 +8,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     .container{
         margin-top:5px;
     }
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        margin: 0; 
+    }
 </style>
 <div class="container">
         <?php if(isset($msg)){ ?>
@@ -81,7 +88,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         </div>
         <div class="question_images_wrapper">
             <div class="row">
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-5">
                     <label for="questionImage">Select Question Image <span class="star" style="color:red"> *</span></label>
                     <select class="form-control" name="question_image" id="question_image" required onChange="showImagePreview('question_image', 'questionImagePreview')">
                     <option  selected disabled>--Select--</option>
@@ -94,7 +101,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     ?>
                     </select>
                 </div>
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-1">
+                    <label for="questionImageWidth">Width</label>
+                    <input class="form-control" type="number" name="question_image_width" id="question_image_width"/>
+                </div>
+                <div class="form-group col-md-5">
                     <label for="explanationImage">Select Explanation Question Image <span class="star" style="color:red"> *</span></label>
                     <select class="form-control" name="explanation_image" id="explanation_image" required onChange="showImagePreview('explanation_image', 'explanationImagePreview')">
                     <option  selected disabled>--Select--</option>
@@ -106,6 +117,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         }
                     ?>
                     </select>
+                </div>
+                <div class="form-group col-md-1">
+                    <label for="explanationImageWidth">Width</label>
+                    <input class="form-control" type="number" name="explanation_image_width" id="explanation_image_width" min=<?= $display_max_width[0]->lower_range;?> max=<?= $display_max_width[0]->upper_range; ?> />
                 </div>
             </div>    
             <div class="row" style="text-align:center;margin-bottom:10px;">

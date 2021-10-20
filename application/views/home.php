@@ -315,7 +315,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         });
     }
   
-    function getExplantionBlock(explantion, explanationImage, displayImage){
+    function getExplantionBlock(explantion, explanationImage, explanationImageWIdth, displayImage){
             if(explantion!==""){
                 return `<div class="explanation row" hidden>
                                 <div class="col-md-${ displayImage && explanationImage!='NULL' ? <?= $bootstrap_question_col_values[0]->lower_range; ?> :'12'}"> 
@@ -323,7 +323,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     ${explantion}
                                 </div>
                                 <div class="col-md-<?= $bootstrap_question_col_values[0]->upper_range; ?>" style="text-align:center">
-                                    ${getImageBlock(explanationImage, displayImage)}
+                                    ${getImageBlock(explanationImage, explanationImageWIdth, displayImage)}
                                 </div>
                             </div>
                         </div>`
@@ -334,10 +334,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         }
     
     
-    function getImageBlock(image, displayImage){
+    function getImageBlock(image, width, displayImage){
         console.log(image)
         if(image && image!=='NULL' && displayImage){
-            return `<img src=<?=base_url()?>assets/images/quiz/${image}.jpeg width="${<?= $display_max_width[0]->value?>}" />`
+            return `<img src=<?=base_url()?>assets/images/quiz/${image}.jpeg width="${width}" />`
         } else{
             return "";
         }
@@ -378,7 +378,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                         <h4 class="card-text">${++q +". "+question.question}</h4>
                                     </div>
                                     <div class="col-md-<?= $bootstrap_question_col_values[0]->upper_range; ?>" style="text-align:center">
-                                        ${getImageBlock(question.question_image, displayImage)}
+                                        ${getImageBlock(question.question_image, question.question_image_width, displayImage)}
                                     </div>
                                 </div>
                                 <div class="row">
@@ -396,7 +396,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     </div>
                                     <?php } ?>
                                 </div>
-                                ${getExplantionBlock(question.explanation, question.explanation_image, displayImage)}
+                                ${getExplantionBlock(question.explanation, question.explanation_image, question.explanation_image_width, displayImage)}
          
                             </div>`);
                             
@@ -408,7 +408,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                         <span class="answer col-md-${displayImage && option.answer_image!=='NULL' ? <?= $bootstrap_question_col_values[0]->lower_range; ?> :'12'}" for=${question_id} data-val=${option.correct_option}> 
                                           ${String.fromCharCode(c.charCodeAt(0)+ i++)  +". "+option.answer}
                                         </span>
-                                            ${ option.answer_image ? `<span class="col-md-<?= $bootstrap_question_col_values[0]->upper_range; ?>" style="text-align:center"> ${getImageBlock(option.answer_image, displayImage)} </span>` : "" }
+                                            ${ option.answer_image ? `<span class="col-md-<?= $bootstrap_question_col_values[0]->upper_range; ?>" style="text-align:center"> ${getImageBlock(option.answer_image, option.answer_image_width, displayImage )} </span>` : "" }
                                      </li>`
                                  );
                             });
