@@ -15,6 +15,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         appearance: none;
         margin: 0; 
     }
+    input[type=number] {
+        font-size:0.90rem;
+    }
 </style>
 <div class="container">
         <?php if(isset($msg)){ ?>
@@ -138,11 +141,24 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <label for="explanation">Question Explanation</label>
             <textarea class="form-control" name="question_explanation" rows="2"></textarea>
         </div>
-        <label for="answerFields">Answers Options<span class="star" style="color:red"> *</span></label> 
-        <label for="answerFields"> (<span style="color:green">&#10004;</span> for the correct option )</label> 
+        <div class="row">
+            <div class="col-md-5">
+                <label for="answerFields">Answers Options<span class="star" style="color:red"> *</span></label> 
+                <label for="answerFields"> (<span style="color:green">&#10004;</span> for the correct option )</label> 
+            </div>
+            <div class="col-md-4">
+                <label for="selectImage">Select Appropriate Image</label>
+            </div>
+            <div class="col-md-2">
+                <label for="answerOptionImageWidth">Image Width</label>
+            </div>
+            <div class="col-md-1">
+
+            </div>
+        </div>
         <div class="answer_options_wrapper">
             <div class="row">
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-5">
                     <!-- <input type="text" class="form-control" name="answer_option[]" required/> -->
                     <textarea class="form-control" name="answer_option[]" rows="1" required></textarea>
                 </div>
@@ -159,12 +175,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     </select>
                 </div>
                 <div class="form-group col-md-1">
+                    <input class="form-control" type="number" name="answer_option_image_width[0]" placeholder="width" min=<?= $display_max_width[0]->lower_range;?> max=<?= $display_max_width[0]->upper_range; ?>/>
+                </div>
+                <div class="form-group col-md-1">
                     <input type="hidden" name="correct_option[]" value="0" />
                     <input type="checkbox" id="option_0" name="correct_option[0]" value="1" style="width: 25px;height: 25px;" />
                 </div>
             </div>
             <div class="row">
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-5">
                     <textarea class="form-control" name="answer_option[]" rows="1" required></textarea>
                 </div>
                 <div class="form-group col-md-4">
@@ -178,6 +197,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             }
                         ?>
                     </select>
+                </div>
+                <div class="form-group col-md-1">
+                    <input class="form-control" type="number" name="answer_option_image_width[1]" placeholder="width" min=<?= $display_max_width[0]->lower_range;?> max=<?= $display_max_width[0]->upper_range; ?>/>
                 </div>
                 <div class="form-group col-md-1">
                     <input type="hidden" name="correct_option[]" value="0" />
@@ -205,7 +227,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 
                 $(answer_options_wrapper).append(`
                     <div class="row">
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-5">
                             <textarea class="form-control" name="answer_option[]" rows="1" required></textarea>
                         </div>
                         <div class="form-group col-md-4">
@@ -221,8 +243,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             </select>
                         </div>
                         <div class="form-group col-md-1">
-                        <input type="hidden" name="correct_option[]" value="" />
-                        <input type="checkbox" id='option_${x}' name="correct_option[${x}]" value="1" style="width: 25px;height: 25px;">
+                            <input class="form-control" type="number" name="answer_option_image_width[${x}]" placeholder="width" min=<?= $display_max_width[0]->lower_range;?> max=<?= $display_max_width[0]->upper_range; ?>/>
+                        </div>
+                        <div class="form-group col-md-1">
+                            <input type="hidden" name="correct_option[]" value="" />
+                            <input type="checkbox" id='option_${x}' name="correct_option[${x}]" value="1" style="width: 25px;height: 25px;">
                         </div>
                         <div class="form-group col-md-1">
                             <button type="button" class="btn btn-danger remove_field"><i class="fa fa-trash" aria-hidden="true"></i></button>

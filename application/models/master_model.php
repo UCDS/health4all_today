@@ -236,6 +236,7 @@ class Master_model extends CI_Model {
         $answer_option=$this->input->post('answer_option'); //Get the answer options wrote by the user.
         $correct_option=$this->input->post('correct_option'); // Get the correct/incorrect value for answer options 
         $answer_option_image=$this->input->post('answer_option_image'); // Get the image names for answer options 
+        $answer_option_image_width=$this->input->post('answer_option_image_width'); // Get the image widths for answer options 
         // var_dump($answer_option);
         // var_dump($correct_option);
         $answer_option_data=array();
@@ -245,6 +246,7 @@ class Master_model extends CI_Model {
                 'question_id'=>$question_id,
                 'correct_option'=>$correct_option[$key],
                 'answer_image'=>$answer_option_image[$key],
+                'answer_image_width'=>$answer_option_image_width[$key],
                 // 'reference_note'=>$a->reference_note,
                 // 'created_by'=>$a->created_by, // will get from session data
                 // 'created_date_time'=>$this->input->post(''),
