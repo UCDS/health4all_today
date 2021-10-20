@@ -106,7 +106,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </div>
                 <div class="form-group col-md-1">
                     <label for="questionImageWidth">Width</label>
-                    <input class="form-control" type="number" name="question_image_width" id="question_image_width" min=<?= $display_max_width[0]->lower_range;?> max=<?= $display_max_width[0]->upper_range; ?>/>
+                    <input class="form-control" type="number" name="question_image_width" id="question_image_width" min=<?= $display_max_width[0]->lower_range;?> max=<?= $display_max_width[0]->upper_range; ?> />
                 </div>
                 <div class="form-group col-md-5">
                     <label for="explanationImage">Select Explanation Question Image <span class="star" style="color:red"> *</span></label>
@@ -175,7 +175,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     </select>
                 </div>
                 <div class="form-group col-md-1">
-                    <input class="form-control" type="number" name="answer_option_image_width[0]" placeholder="width" min=<?= $display_max_width[0]->lower_range;?> max=<?= $display_max_width[0]->upper_range; ?>/>
+                    <input class="form-control" type="number" name="answer_option_image_width[0]" placeholder="width" min=<?= $display_max_width[0]->lower_range;?> max=<?= $display_max_width[0]->upper_range; ?> />
                 </div>
                 <div class="form-group col-md-1">
                     <input type="hidden" name="correct_option[]" value="0" />
@@ -199,7 +199,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     </select>
                 </div>
                 <div class="form-group col-md-1">
-                    <input class="form-control" type="number" name="answer_option_image_width[1]" placeholder="width" min=<?= $display_max_width[0]->lower_range;?> max=<?= $display_max_width[0]->upper_range; ?>/>
+                    <input class="form-control" type="number" name="answer_option_image_width[1]" placeholder="width" min=<?= $display_max_width[0]->lower_range;?> max=<?= $display_max_width[0]->upper_range; ?> />
                 </div>
                 <div class="form-group col-md-1">
                     <input type="hidden" name="correct_option[]" value="0" />
@@ -243,7 +243,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             </select>
                         </div>
                         <div class="form-group col-md-1">
-                            <input class="form-control" type="number" name="answer_option_image_width[${x}]" placeholder="width" min=<?= $display_max_width[0]->lower_range;?> max=<?= $display_max_width[0]->upper_range; ?>/>
+                            <input class="form-control" type="number" name="answer_option_image_width[${x}]" placeholder="width" min=<?= $display_max_width[0]->lower_range;?> max=<?= $display_max_width[0]->upper_range; ?> />
                         </div>
                         <div class="form-group col-md-1">
                             <input type="hidden" name="correct_option[]" value="" />
