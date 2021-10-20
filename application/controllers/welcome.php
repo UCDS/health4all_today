@@ -67,6 +67,7 @@ class Welcome extends CI_Controller {
 			$this->load->view('templates/header' , $this->data);
 			$this->data['question_id'] = $question_id;
 			$this->data['banner_text'] = $this->master_model->get_banner_text();
+			$this->data['display_max_width'] = $this->master_model->get_defaults('display_max_width');
 			$this->data['languages'] = $this->master_model->get_languages();
 			$this->data['groups'] = $this->master_model->get_groups();
 			$this->data['sub_groups'] = $this->master_model->get_sub_groups();
