@@ -18,6 +18,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         appearance: none;
         margin: 0; 
     }
+    input[type=number] {
+        font-size:0.90rem;
+    }
 </style>
 <div class="container">
         <?php if(isset($msg)){ ?>
@@ -165,6 +168,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     $(function() {
         var answer_options_wrapper    = $(".answer_options_wrapper"); //Input fields answer_options_wrapper
         var answer_details = <?php echo $answer_details;?>;
+        console.log(answer_details);
         if(answer_details){
             console.log(answer_details)
             const ImagesList =  <?=json_encode($images_list); ?>;
@@ -172,7 +176,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 console.log(element);
                 $(answer_options_wrapper).append(`
                         <div class="row">
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-5">
                                 <textarea name="answer_option[${element.answer_option_id}]" class="form-control" ${[0,1].includes(index) ? "required" :''} rows='1' >${element.answer} </textarea>
                             </div>
                             <div class="form-group col-md-4">
@@ -180,6 +184,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     <option  selected name='NULL' value='NULL'>Select Image</option>
                                     ${ getPopulatedOptions(ImagesList, element.answer_image) }
                                 </select>
+                            </div>
+                            <div class="form-group col-md-1">
+                                <input class="form-control" type="number" name="answer_option_image_width[${element.answer_option_id}]" value=${element.answer_image_width} placeholder="width" min=<?= $display_max_width[0]->lower_range;?> max=<?= $display_max_width[0]->upper_range; ?> />
                             </div>
                             <div class="form-group col-md-1">
                             <input type="hidden" name="correct_option[${element.answer_option_id}]" value="0" />
@@ -208,7 +215,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             
             $(answer_options_wrapper).append(`
                 <div class="row">
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-5">
                         <textarea name="new_answer_option[]" class="form-control" rows="1"></textarea>
                     </div>
                     <div class="form-group col-md-4">
@@ -222,6 +229,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 }
                             ?>
                         </select>
+                    </div>
+                    <div class="form-group col-md-1">
+                        <input class="form-control" type="number" name="new_answer_option_image_width[]" placeholder="width" min=<?= $display_max_width[0]->lower_range;?> max=<?= $display_max_width[0]->upper_range; ?> />
                     </div>
                     <div class="form-group col-md-1">
                     <input type="hidden" name="new_correct_option[]" value="" />
