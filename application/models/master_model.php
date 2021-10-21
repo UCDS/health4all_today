@@ -246,7 +246,7 @@ class Master_model extends CI_Model {
                 'question_id'=>$question_id,
                 'correct_option'=>$correct_option[$key],
                 'answer_image'=>$answer_option_image[$key],
-                'answer_image_width'=>$answer_option_image_width[$key],
+                'answer_image_width'=>$answer_option_image_width[$key]
                 // 'reference_note'=>$a->reference_note,
                 // 'created_by'=>$a->created_by, // will get from session data
                 // 'created_date_time'=>$this->input->post(''),
