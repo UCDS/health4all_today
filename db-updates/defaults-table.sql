@@ -66,6 +66,7 @@ COMMIT;
 
 UPDATE `answer_option` SET `answer_image` = 'NULL' WHERE `answer_image` = '';
 UPDATE `question` SET `question_image`='NULL' WHERE `question_image`='';
+UPDATE `question` SET `explanation_image`='NULL' WHERE `explanation_image`='';
 
 
 ALTER TABLE `question` ADD `question_image_width` INT(3) NOT NULL DEFAULT '50' AFTER `question_image`;
