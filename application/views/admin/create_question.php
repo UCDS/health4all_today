@@ -92,9 +92,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <div class="question_images_wrapper">
             <div class="row">
                 <div class="form-group col-md-5">
-                    <label for="questionImage">Select Question Image <span class="star" style="color:red"> *</span></label>
-                    <select class="form-control" name="question_image" id="question_image" required onChange="showImagePreview('question_image', 'questionImagePreview')">
-                    <option  selected disabled>--Select--</option>
+                    <label for="questionImage">Select Question Image </label>
+                    <select class="form-control" name="question_image" id="question_image" onChange="showImagePreview('question_image', 'questionImagePreview')">
+                    <option  selected value="NULL">--Select--</option>
                     <?php
                         foreach($images_list as $r){
                             echo "<option value='".$r."'";
@@ -106,12 +106,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </div>
                 <div class="form-group col-md-1">
                     <label for="questionImageWidth">Width</label>
-                    <input class="form-control" type="number" name="question_image_width" id="question_image_width" min=<?= $display_max_width[0]->lower_range;?> max=<?= $display_max_width[0]->upper_range; ?> />
+                    <input class="form-control" type="number" name="question_image_width" id="question_image_width" value=<?= $display_max_width[0]->value; ?> min=<?= $display_max_width[0]->lower_range;?> max=<?= $display_max_width[0]->upper_range; ?> />
                 </div>
                 <div class="form-group col-md-5">
-                    <label for="explanationImage">Select Explanation Question Image <span class="star" style="color:red"> *</span></label>
-                    <select class="form-control" name="explanation_image" id="explanation_image" required onChange="showImagePreview('explanation_image', 'explanationImagePreview')">
-                    <option  selected disabled>--Select--</option>
+                    <label for="explanationImage">Select Explanation Question Image</label>
+                    <select class="form-control" name="explanation_image" id="explanation_image" onChange="showImagePreview('explanation_image', 'explanationImagePreview')">
+                    <option  selected value="NULL">--Select--</option>
                     <?php
                         foreach($images_list as $r){
                             echo "<option value='".$r."'";
@@ -123,7 +123,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </div>
                 <div class="form-group col-md-1">
                     <label for="explanationImageWidth">Width</label>
-                    <input class="form-control" type="number" name="explanation_image_width" id="explanation_image_width" min=<?= $display_max_width[0]->lower_range;?> max=<?= $display_max_width[0]->upper_range; ?> />
+                    <input class="form-control" type="number" name="explanation_image_width" id="explanation_image_width" value=<?= $display_max_width[0]->value; ?> min=<?= $display_max_width[0]->lower_range;?> max=<?= $display_max_width[0]->upper_range; ?> />
                 </div>
             </div>    
             <div class="row" style="text-align:center;margin-bottom:10px;">
@@ -164,7 +164,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </div>
                 <div class="form-group col-md-4">
                     <select class="form-control" name="answer_option_image[0]"  required>
-                        <option  selected disabled>Select Image</option>
+                        <option  selected value="NULL">Select Image</option>
                         <?php
                             foreach($images_list as $r){
                                 echo "<option value='".$r."'";
@@ -175,7 +175,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     </select>
                 </div>
                 <div class="form-group col-md-1">
-                    <input class="form-control" type="number" name="answer_option_image_width[0]" placeholder="width" min=<?= $display_max_width[0]->lower_range;?> max=<?= $display_max_width[0]->upper_range; ?> />
+                    <input class="form-control" type="number" name="answer_option_image_width[0]" placeholder="width" value=<?= $display_max_width[0]->value; ?> min=<?= $display_max_width[0]->lower_range;?> max=<?= $display_max_width[0]->upper_range; ?> />
                 </div>
                 <div class="form-group col-md-1">
                     <input type="hidden" name="correct_option[]" value="0" />
@@ -188,7 +188,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </div>
                 <div class="form-group col-md-4">
                     <select class="form-control" name="answer_option_image[1]"  required>
-                        <option  selected disabled>Select Image</option>
+                        <option  selected value="NULL">Select Image</option>
                         <?php
                             foreach($images_list as $r){
                                 echo "<option value='".$r."'";
@@ -199,7 +199,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     </select>
                 </div>
                 <div class="form-group col-md-1">
-                    <input class="form-control" type="number" name="answer_option_image_width[1]" placeholder="width" min=<?= $display_max_width[0]->lower_range;?> max=<?= $display_max_width[0]->upper_range; ?> />
+                    <input class="form-control" type="number" name="answer_option_image_width[1]" placeholder="width" value=<?= $display_max_width[0]->value; ?> min=<?= $display_max_width[0]->lower_range;?> max=<?= $display_max_width[0]->upper_range; ?> />
                 </div>
                 <div class="form-group col-md-1">
                     <input type="hidden" name="correct_option[]" value="0" />
@@ -232,7 +232,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         </div>
                         <div class="form-group col-md-4">
                             <select class="form-control" id='answer_option_${x}' name="answer_option_image[${x}]"  required>
-                                <option  selected disabled>Select Image</option>
+                                <option  selected value="NULL">Select Image</option>
                                 <?php
                                     foreach($images_list as $r){
                                         echo "<option value='".$r."'";
@@ -243,7 +243,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             </select>
                         </div>
                         <div class="form-group col-md-1">
-                            <input class="form-control" type="number" name="answer_option_image_width[${x}]" placeholder="width" min=<?= $display_max_width[0]->lower_range;?> max=<?= $display_max_width[0]->upper_range; ?> />
+                            <input class="form-control" type="number" name="answer_option_image_width[${x}]" placeholder="width" value=<?= $display_max_width[0]->value; ?> min=<?= $display_max_width[0]->lower_range;?> max=<?= $display_max_width[0]->upper_range; ?> />
                         </div>
                         <div class="form-group col-md-1">
                             <input type="hidden" name="correct_option[]" value="" />
