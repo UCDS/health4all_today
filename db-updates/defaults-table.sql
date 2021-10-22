@@ -63,3 +63,12 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+UPDATE `answer_option` SET `answer_image` = 'NULL' WHERE `answer_image` = '';
+UPDATE `question` SET `question_image`='NULL' WHERE `question_image`='';
+
+
+ALTER TABLE `question` ADD `question_image_width` INT(3) NOT NULL DEFAULT '50' AFTER `question_image`;
+ALTER TABLE `question` ADD `explanation_image_width` INT(3) NOT NULL DEFAULT '50' AFTER `explanation_image`;
+ALTER TABLE `answer_option` ADD `answer_image_width` INT(3) NOT NULL DEFAULT '50' AFTER `answer_image`;
+
