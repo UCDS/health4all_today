@@ -125,6 +125,7 @@ class Admin extends CI_Controller {
 			$this->load->library('form_validation');
 			$this->data['title']="Create Question";
 			$this->data['banner_text'] = $this->master_model->get_banner_text();
+			$this->data['display_max_width'] = $this->master_model->get_defaults('display_max_width');
 			$this->load->view('templates/header' , $this->data);
 			$this->data['languages'] = $this->master_model->get_languages();
 			$this->data['groups'] = $this->master_model->get_groups();
