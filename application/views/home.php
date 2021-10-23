@@ -128,10 +128,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 <option value="<?php echo $r->language_id;?>"    
                                 <?php if($this->input->post('language') == $r->language_id) echo " selected "; ?>
                                 ><?php echo $r->language;?></option>    
-                                <?php }  ?>
+                            <?php }  ?>
                         </select>
-                    </div>    
-            </div>
                     </div>    
             <?php } ?>
         </div>
