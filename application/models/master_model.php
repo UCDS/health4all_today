@@ -396,7 +396,7 @@ class Master_model extends CI_Model {
 			return false;
 		}
 		else {
-        return [true , $status_id];
+        return [true , $status_id ? "Un-Locked" : "Locked"];
         }
     }
 
