@@ -257,6 +257,21 @@ class Master_model extends CI_Model {
         // insert all the answer options into the answer table
         $this->db->insert_batch('answer_option' ,$answer_option_data);
        
+        $question_transliterate = $this->input->post('question_transliterate'); //Get question transliterates
+        $explanation_transliterate = $this->input->post('question_transliterate'); //Get explanation transliterates
+        $transliterate_language = $this->input->post('transliterate_language'); //Get tansliterating language
+        $question_transaliterate_data=array();
+        foreach ($question_transliterate as $key => $value) {
+            $question_transaliterate_data[] = array(
+                'question_id'=>$question_id,
+                'language_id'=>$transliterate_language[$key],
+                'question_transliterate'=>$question_transliterate[$key],
+                'explanation_transliterate'=>$explanation_transliterate[$key]
+            );
+        }
+        // insert all transliterate data into question_transaliterate table
+        $this->db->insert_batch('transliterate_question',$question_transaliterate_data);
+
         $this->db->trans_complete(); //Transaction Ends
 		if($this->db->trans_status()===TRUE) return true; else return false; //if transaction completed successfully return true, else false.
     }
