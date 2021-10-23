@@ -120,7 +120,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <input  type="checkbox" name="show_transliterate" id="show_transliterate" style="width:25px;height:25px;" <?php echo $user_display_transliterate[0]->value ? 'checked' :''  ?> onchange="toggleTranslateLanguage()"/>
                         <label for="showImages" style="padding-left:10px;">Show Transliterate</label>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3 form-group">
                         <select class="form-control"  name="language" id="transliterate_language" required>
                             <option value="0" selected >Transliterate Language</option>
                             <?php
@@ -136,7 +136,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <?php if($logged_in) {?>
             <div class="row ">
                 <div class="form-group admin-features col-md-3">
-                    <select class="form-control shadow-none " name="group" id="group_id" required >
+                    <select class="form-control shadow-none " name="questions_status_toggle" id="questions_status_toggle" required >
                         <option value="0" selected>All Questions</option>
                         <option value="1">Archived Questions</option>
                         <option value="2">Un Archived Questions</option>
