@@ -109,14 +109,32 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </select>
             </div>
         </div>
-        <?php if($display_images[0]->value) { ?>
-            <div class="row">
-                <div class="col-md-3" style="display:inline-flex; margin-top:10px;">
-                    <input  type="checkbox" name="show_images" id="show_images" style="width:25px;height:25px;" <?php echo $user_display_images[0]->value ? 'checked' :''  ?>>
-                    <label for="showImages" style="padding-left:10px;">Show Images</label>
-                </div>
+        <div class="row">
+            <?php if($display_images[0]->value) { ?>
+                    <div class="col-md-2" style="display:inline-flex; margin-top:10px;">
+                        <input  type="checkbox" name="show_images" id="show_images" style="width:25px;height:25px;" <?php echo $user_display_images[0]->value ? 'checked' :''  ?>>
+                        <label for="showImages" style="padding-left:10px;">Show Images</label>
+                    </div>
+            <?php }  if($display_transliterate[0]->value) { ?>
+                    <div class="col-md-3 form-group" style="display:inline-flex; margin-top:10px;">
+                        <input  type="checkbox" name="show_transliterate" id="show_transliterate" style="width:25px;height:25px;" <?php echo $user_display_transliterate[0]->value ? 'checked' :''  ?> onchange="toggleTranslateLanguage()"/>
+                        <label for="showImages" style="padding-left:10px;">Show Transliterate</label>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-control"  name="language" id="transliterate_language" required>
+                            <option value="0" selected >Transliterate Language</option>
+                            <?php
+                                foreach($languages as $r){ ?>
+                                <option value="<?php echo $r->language_id;?>"    
+                                <?php if($this->input->post('language') == $r->language_id) echo " selected "; ?>
+                                ><?php echo $r->language;?></option>    
+                                <?php }  ?>
+                        </select>
+                    </div>    
             </div>
-        <?php } ?>
+                    </div>    
+            <?php } ?>
+        </div>
         <?php if($logged_in) {?>
             <div class="row ">
                 <div class="form-group admin-features col-md-3">
@@ -268,6 +286,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         filter_sub_groups(); 
     });
 
+    // function to show and hide the tranlate_language dropdown 
+    function toggleTranslateLanguage() {
+        show_transliterate = $("#show_transliterate").is(':checked');
+        console.log(show_transliterate)
+        if(show_transliterate){
+            $("#transliterate_language").hide();
+        } else {
+            $("#transliterate_language").show();
+        }
+    }
+
     // function to filter sub_groups based on a selected group 
     function filter_sub_groups(){
         // fetching list of all subgroups
@@ -334,7 +363,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         }
     
     
-    function getImageBlock(image, width, displayImage){
+    
+        function getImageBlock(image, width, displayImage){
         if(image && image!=='NULL' && displayImage){
             return `<img src=<?=base_url()?>assets/images/quiz/${image}.jpeg width="${width}" />`
         } else{
