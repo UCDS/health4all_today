@@ -415,61 +415,100 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     });
                 }
             });
-        }
+    }
 
-        // API call to update a question and its details
-        function update_question(question_id){
-            window.location = `<?=base_url()?>welcome/update_question/${question_id}`
-        }
+    // API call to update a question and its details
+    function update_question(question_id){
+        window.location = `<?=base_url()?>welcome/update_question/${question_id}`
+    }
 
         //  API call to delete a question   
-        function delete_question(question_id){
-            $.ajax({
-                type: "DELETE",
-                accepts: {
-                    contentType: "application/json"
-                },
-                url: "<?= base_url() ?>welcome/delete_question/"+question_id,
-                dataType: "text",
-                success: function (response) {
-                    const res =  JSON.parse(response);
-                    load_quiz_data(1  , selected_group ,selected_sub_group , selected_question_level, show_images);
-                }
-            });
-        }
+    function delete_question(question_id){
+        swal({
+            title: "Are you sure?",
+            text: "You will not be able to recover this question!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonClass: "btn btn-outline-secondary",
+            cancelButtonText: "No, cancel plx!",
+            closeOnConfirm: false,
+            closeOnCancel: false
+            },
+            function(isConfirm) {
+            if (isConfirm) {
+                $.ajax({
+                    type: "DELETE",
+                    accepts: {
+                        contentType: "application/json"
+                    },
+                    url: "<?= base_url() ?>welcome/delete_question/"+question_id,
+                    dataType: "text",
+                    success: function (response) {
+                        const res =  JSON.parse(response);
+                        load_quiz_data(1  , selected_group ,selected_sub_group , selected_question_level, selected_language, show_images);
+                        get_pagination_data(selected_group ,selected_sub_group  , selected_question_level, selected_language, show_images);
+                        swal({
+                            title: "Success",
+                            text: "Question has been deleted.!",
+                            type: "success",
+                            timer: 2000
+                        });
+                    },
+                    error: function(){
 
-        // API call to Archive a question 
-        function toggle_question_status(question_id){
-            $.ajax({
-                type: "PUT",
-                accepts: {
-                    contentType: "application/json"
-                },
-                url: "<?= base_url() ?>welcome/toggle_question_status/"+question_id,
-                dataType: "text",
-                success: function (response) {
-                    const res =  JSON.parse(response);
-                    // if(res[0]){
-                    //     alert("Success");
-                    // }
-                    load_quiz_data(1  , selected_group ,selected_sub_group , selected_question_level, show_images);
-                }
-            });
+                    }
+                });
+            } else {
+                swal({
+                    title: "Cancelled",
+                    text: "Question is safe!",
+                    type: "error",
+                    timer: 2000
+                })
+            }
+            });  
+    }
 
-        }
-        
-        //Toggle  Between user and admin view
-        function toggleView(){
-            
-        }
-        $(function () {
-          $("#toggleView").on('click', function () {
-            $(".admin-features").toggle();  
-            $(this).text(function(i, text){
-                return text === "ADMIN VIEW" ? "USER VIEW" : "ADMIN VIEW";
-            });
-          });   
+    // API call to Archive a question 
+    function toggle_question_status(question_id){
+        $.ajax({
+            type: "PUT",
+            accepts: {
+                contentType: "application/json"
+            },
+            url: "<?= base_url() ?>welcome/toggle_question_status/"+question_id,
+            dataType: "text",
+            success: function (response) {
+                const res =  JSON.parse(response);
+                if(res[0]){
+                    swal({
+                        title: "Status Updated",
+                        text: `Question ${res[1]}`,
+                        type: "success",
+                        timer: 2000
+                    })
+                }
+                load_quiz_data(1  , selected_group , selected_sub_group  , selected_question_level, selected_language, show_images);
+                get_pagination_data(selected_group ,selected_sub_group  , selected_question_level, selected_language, show_images);
+            }
         });
+    }
+        
+    //Toggle  Between user and admin view
+    function toggleView(){
+        
+    }
+
+    $(function () {
+        $("#toggleView").on('click', function () {
+        $(".admin-features").toggle();  
+        $(this).text(function(i, text){
+            return text === "ADMIN VIEW" ? "USER VIEW" : "ADMIN VIEW";
+        });
+        });   
+    });
          
        
 </script>

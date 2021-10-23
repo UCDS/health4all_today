@@ -6,11 +6,13 @@
     <meta name="description" content="">
         <title>Health4All Today<?php  if($title){ echo " | ".$title;} ?></title>
     <link href="<?php echo base_url();?>assets/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">  
+    <link href="<?php echo base_url();?>assets/css/sweetalert.min.css" rel="stylesheet" integrity="" crossorigin="anonymous">  
     <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/css/font-awesome.min.css" >
     <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/css/youseelogo.css" media='screen,print'>
   
     <script src="<?php echo base_url();?>assets/js/jquery.min.js"></script>
     <script src="<?php echo base_url();?>assets/js/bootstrap.min.js"></script>
+    <script src="<?php echo base_url();?>assets/js/sweetalert.min.js"></script>
 
     <style>
        .navbar
