@@ -432,7 +432,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             confirmButtonClass: "btn-danger",
             confirmButtonText: "Yes, delete it!",
             cancelButtonClass: "btn btn-outline-secondary",
-            cancelButtonText: "No, cancel plx!",
+            cancelButtonText: "Cancel!",
             closeOnConfirm: false,
             closeOnCancel: false
             },
