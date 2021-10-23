@@ -95,9 +95,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <textarea class="form-control" name="question_explanation" rows="2"></textarea>
             </div>
             <div class="form-group col-md-1">
-                <label for="translitirate">Translitirate</label> <br>
-                <button type="button" class="btn btn-primary btn-block"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                <label for="transliterate">Add Transliterate</label> <br>
+                <button type="button" class="btn btn-primary btn-block" id="addTransliterate"><i class="fa fa-plus" aria-hidden="true"></i></button>
             </div>
+        </div>
+        <div class="transliterate_wrapper">
+
         </div>
         <div class="question_images_wrapper">
             <div class="row">
@@ -301,14 +304,56 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </div`);
                 count++;   
         });
-        //when user click on remove button in answer options
+        //when user click on remove button in additional groups and subgroups row
         $(groups_wrapper).on("click",".removeGroupAndSubGroup", function(e){ 
             e.preventDefault();
             $(this).parent().parent('div').remove();
             x--; 
         });
 
-});
+        //adding transliterate fields when user clicked on addTransliterate button
+        var transliterateRowsCount = 0;
+        var transliterate_wrapper = $(".transliterate_wrapper"); // Transliterate wrapper
+        var addTransliterate = $("#addTransliterate");
+        $(addTransliterate).click(function (e) { 
+            $(transliterate_wrapper).append(`
+            <div class="row form-group">
+                <div class="col-md-4">
+                <label for="QuestionTransliterate">Question Transliterate<span class="star" style="color:red"> *</span></label>
+                    <textarea class="form-control"  rows="2" name="question_transliterate[${transliterateRowsCount}]"></textarea>
+                </div>
+                <div class="col-md-4">
+                    <label for="ExplanationTransliterate">Explanation Transliterate<span class="star" style="color:red"> *</span></label>
+                    <textarea class="form-control" rows="2" name="explanation_transliterate[${transliterateRowsCount}]"></textarea>
+                </div>
+                <div class="col-md-2">
+                    <label for="languageId">Language<span class="star" style="color:red"> *</span></label>
+                    <select class="form-control"  name="transliterate_language[${transliterateRowsCount}]" id="language" required>
+                        <option value="" selected disabled>--Select--</option>
+                        <?php
+                            foreach($languages as $r){ ?>
+                            <option value="<?php echo $r->language_id;?>"    
+                            <?php if($this->input->post('language') == $r->language_id) echo " selected "; ?>
+                            ><?php echo $r->language;?></option>    
+                            <?php }  ?>
+                    </select>
+                </div>
+                <div class="col-md-1">
+                        <label for="">Remove</label>    
+                        <button class="btn btn-danger form-control removeTransliterate" ><i class="fa fa-trash" aria-hidden="true"></i></button>
+                    </div>
+                </div>
+            </div>
+            `);
+            transliterateRowsCount++;
+        });
+
+        $(transliterate_wrapper).on("click", ".removeTransliterate", function (e) {
+            e.preventDefault();
+            $(this).parent().parent('div').remove();
+            transliterateRowsCount--; 
+        });
+    });
     // function to filter sub_groups based on a selected group 
     function filter_sub_groups(group , id){
         // fetching list of all subgroups
