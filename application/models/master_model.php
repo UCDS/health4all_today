@@ -123,6 +123,20 @@ class Master_model extends CI_Model {
            }
     }
 
+    function get_transliterate_data_by_question_id($question_id){
+        $this->db->select('question_transliterate, explanation_transliterate')
+            ->from('transliterate_question')
+            ->order_by('question_transliterate_id','asc')
+            ->where('transliterate_question.question_id' , $question_id);
+        $query = $this->db->get();
+        $result = json_encode($query->result());
+        if($result){
+            return $result;       
+        }else{
+            return false;
+        }
+        var_dump($this->db->last_query());
+    }
     
     function get_answer_options() {
         $this->db->select('answer_option_id , answer , correct_option , question_id , answer_image')

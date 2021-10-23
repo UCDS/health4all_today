@@ -335,7 +335,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     
     
     function getImageBlock(image, width, displayImage){
-        console.log(image)
         if(image && image!=='NULL' && displayImage){
             return `<img src=<?=base_url()?>assets/images/quiz/${image}.jpeg width="${width}" />`
         } else{
@@ -367,7 +366,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     var q=(page-1)*10;
                     $.each(question_answers_list, function (indexInArray, valueOfElement) { 
                         
-                        const {question , answers } = valueOfElement;
+                        const {question , answers, transliterate} = valueOfElement;
                         const {question_id , status} = question; 
                         const displayImage = <?php echo $display_images[0]->value; ?> && show_images;
                          $(".card").append(
@@ -376,6 +375,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 <div class="row">
                                     <div class="col-md-${ displayImage && question.question_image!=='NULL' ? '<?= $bootstrap_question_col_values[0]->lower_range; ?>': '12'}">
                                         <h4 class="card-text">${++q +". "+question.question}</h4>
+                                            <div class="question-transliterate-${question_id}">
+                                            </div>
+                                        <br/>
                                     </div>
                                     <div class="col-md-<?= $bootstrap_question_col_values[0]->upper_range; ?>" style="text-align:center">
                                         ${getImageBlock(question.question_image, question.question_image_width, displayImage)}
@@ -411,6 +413,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                             ${ option.answer_image ? `<span class="col-md-<?= $bootstrap_question_col_values[0]->upper_range; ?>" style="text-align:center"> ${getImageBlock(option.answer_image, option.answer_image_width, displayImage )} </span>` : "" }
                                      </li>`
                                  );
+                            });
+                            $.each(transliterate, function (indexInArray, val) { 
+                                 $(".question-transliterate-"+question_id).append(`
+                                    <span>${val.question_transliterate}<span> <br/>
+                                 `);
                             });
                     });
                 }

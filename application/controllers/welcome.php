@@ -35,7 +35,11 @@ class Welcome extends CI_Controller {
 		$question_answers_list = array();
 		$questions =  $this->master_model->get_questions($per_page ,$start , $group , $sub_group , $question_level, $language);
 		foreach( json_decode($questions) as $q){
-			$question_answers_list[$q->question_id]  = (object)[ "question"=>$q, "answers"=> json_decode($this->master_model->get_answer_options_by_question_id($q->question_id))];
+			$question_answers_list[$q->question_id]  = (object)[ 
+				"question"=>$q, 
+				"answers"=> json_decode($this->master_model->get_answer_options_by_question_id($q->question_id)),
+				"transliterate"=> json_decode($this->master_model->get_transliterate_data_by_question_id($q->question_id))
+			];
 		}
 		print json_encode($question_answers_list);				
 						
