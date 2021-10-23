@@ -100,7 +100,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </div>
         </div>
         <div class="transliterate_wrapper">
-
         </div>
         <div class="question_images_wrapper">
             <div class="row">
