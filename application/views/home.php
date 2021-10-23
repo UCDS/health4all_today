@@ -176,7 +176,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     const EDIT_ICON = "<i class='fa fa-pencil' aria-hidden='true'></i>";
     
     
-    $(function() {                
+    $(function() {   
+        // onload call to show/hide transliterate language dropdown
+        toggleTranslateLanguage();
+
         // Start : Quiz validation logic
         $("#quiz").on("click" , ".answer" , function(e){
             e.preventDefault();
@@ -289,11 +292,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     // function to show and hide the tranlate_language dropdown 
     function toggleTranslateLanguage() {
         show_transliterate = $("#show_transliterate").is(':checked');
-        console.log(show_transliterate)
         if(show_transliterate){
-            $("#transliterate_language").hide();
-        } else {
             $("#transliterate_language").show();
+        } else {
+            $("#transliterate_language").hide();
         }
     }
 
