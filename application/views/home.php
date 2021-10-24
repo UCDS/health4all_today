@@ -111,7 +111,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         </div>
         <div class="row">
             <?php if($display_images[0]->value) { ?>
-                    <div class="col-md-2" style="display:inline-flex; margin-top:10px;">
+                    <div class="col-md-3" style="display:inline-flex; margin-top:10px;">
                         <input  type="checkbox" name="show_images" id="show_images" style="width:25px;height:25px;" <?php echo $user_display_images[0]->value ? 'checked' :''  ?>>
                         <label for="showImages" style="padding-left:10px;">Show Images</label>
                     </div>
