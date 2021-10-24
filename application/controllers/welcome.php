@@ -80,7 +80,7 @@ class Welcome extends CI_Controller {
 			$this->data['question_levels'] = $this->master_model->get_question_levels();
 			$this->data['question_details']=$this->master_model->get_question_by_id($question_id);
 			$this->data['answer_details']=$this->master_model->get_answer_options_by_question_id($question_id);
-			$this->data['tranliterate_details']=$this->master_model->get_transliterate_data_by_question_id($question_id);
+			$this->data['tranliterate_details']=$this->master_model->get_transliterate_data_by_question_id($question_id, null);
 			$this->data['grouping_details']=$this->master_model->get_group_info_by_question_id($question_id);
 			$images_list = directory_map("./assets/images/quiz",TRUE,FALSE);
 				foreach($images_list as &$image_name){
