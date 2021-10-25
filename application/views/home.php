@@ -46,10 +46,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     }
     
     .explanation{
-        /* display: block; */
         justify-content: center;
-        margin-left:25px;
-        margin-right:25px;
+        margin:inherit;
+        margin-left:12px;
         background: #add8e6;
         border: 2px solid #48b4e0;
         padding: 12px 20px;
