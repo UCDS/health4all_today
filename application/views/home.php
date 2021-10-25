@@ -22,19 +22,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         border: solid 1px;
     }
     .answer-option {
-    cursor: pointer;
-    margin-top: 3px;
-    padding: 12px 20px;
-    background: #f2f2f2;
-    color: #222;
-    border-radius: 4px;
-    text-align: left;
-    font-size: 17px;
-    background-image: -webkit-linear-gradient(top,#f9f9f9,#f2f2f2);
-    background-image: -moz-linear-gradient(top,#f9f9f9,#f2f2f2);
-    background-image: -ms-linear-gradient(top,#f9f9f9,#f2f2f2);
-    background-image: -o-linear-gradient(top,#f9f9f9,#f2f2f2);
-    border: 1px solid #f2f2f2;
+        cursor: pointer;
+        margin-top: 3px;
+        padding: 12px 20px;
+        background: #f2f2f2;
+        color: #222;
+        border-radius: 4px;
+        text-align: left;
+        font-size: 17px;
+        background-image: -webkit-linear-gradient(top,#f9f9f9,#f2f2f2);
+        background-image: -moz-linear-gradient(top,#f9f9f9,#f2f2f2);
+        background-image: -ms-linear-gradient(top,#f9f9f9,#f2f2f2);
+        background-image: -o-linear-gradient(top,#f9f9f9,#f2f2f2);
+        border: 1px solid #f2f2f2;
+        width:100%;
     }
 
     li>span.answer {
@@ -382,7 +383,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-11">
+                                    <div class="col-md-<?php echo $logged_in ? '11' : '12' ?>">
                                         <ul class="answers answers-${question_id}">
                                         </ul>
                                     </div>
