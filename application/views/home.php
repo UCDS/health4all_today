@@ -340,7 +340,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     
     
     function getImageBlock(image, width, displayImage){
-        console.log(image)
+        // console.log(image)
         if(image && image!=='NULL' && displayImage){
             return `<img src=<?=base_url()?>assets/images/quiz/${image}.jpeg width="${width}" style="max-width:-webkit-fill-available" />`
         } else{
