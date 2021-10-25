@@ -44,6 +44,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     padding: 12px 20px;
     color: #222;
     }
+
+    .question {
+        text-indent: -1.75rem;
+        padding-left: 14px;
+    }
     
     .explanation{
         justify-content: center;
@@ -375,7 +380,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 
                                 <div class="row">
                                     <div class="col-md-${ displayImage && question.question_image!=='NULL' ? '<?= $bootstrap_question_col_values[0]->lower_range; ?>': '12'}">
-                                        <h4 class="card-text">${++q +". "+question.question}</h4>
+                                        <h4 class="card-text question">${++q +". "+question.question}</h4>
                                     </div>
                                     <div class="col-md-<?= $bootstrap_question_col_values[0]->upper_range; ?>" style="text-align:center">
                                         ${getImageBlock(question.question_image, question.question_image_width, displayImage)}
