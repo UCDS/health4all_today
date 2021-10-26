@@ -261,7 +261,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             selected_transliterate_language = $("#transliterate_language").val();
             show_images = $("#show_images").is(':checked');
             load_quiz_data(1  , selected_group , selected_sub_group  , selected_question_level, selected_language, selected_transliterate_language, show_images);
-            get_pagination_data(selected_group ,selected_sub_group  , selected_question_level, selected_language, show_images);
+            get_pagination_data(selected_group ,selected_sub_group  , selected_question_level, selected_language, selected_transliterate_language, show_images);
             
         }); 
 
@@ -274,7 +274,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             selected_transliterate_language = $("#transliterate_language").val();
             show_images = $("#show_images").is(':checked');
             load_quiz_data(1  , selected_group , selected_sub_group ,selected_question_level, selected_language, selected_transliterate_language, show_images );
-            get_pagination_data(selected_group , selected_sub_group , selected_question_level, selected_language, show_images);
+            get_pagination_data(selected_group , selected_sub_group , selected_question_level, selected_language, selected_transliterate_language, show_images);
         }); 
 
         selected_group = $("#group_id").val();
@@ -286,7 +286,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         // console.log("selected_question_level" , selected_question_level);
         // on page load fetching quiz data , pages_count and filtering sub groups
         load_quiz_data(1, selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
-        get_pagination_data(selected_group, selected_sub_group, selected_question_level, selected_language, show_images);
+        get_pagination_data(selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
         filter_sub_groups(); 
     });
 
@@ -318,7 +318,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     }
 
     //api call to get pages count and to mount pagination on DOM 
-    function get_pagination_data(group , sub_group , question_level, language, show_images){
+    function get_pagination_data(group , sub_group , question_level, language, transliterate_language, show_images){
         $(".pagination").remove();
         $.ajax({
             type: "GET",
@@ -400,7 +400,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     $.each(question_answers_list, function (indexInArray, valueOfElement) { 
                         
                         const {question , answers, transliterate} = valueOfElement;
-                        console.log(transliterate);
+                        // console.log(transliterate);
                         const {question_id , status} = question; 
                         const displayImage = <?php echo $display_images[0]->value; ?> && show_images;
                          $(".card").append(
@@ -487,12 +487,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     url: "<?= base_url() ?>welcome/delete_question/"+question_id,
                     dataType: "text",
                     success: function (response) {
-                        const res =  JSON.parse(response);
-                        load_quiz_data(1  , selected_group ,selected_sub_group , selected_question_level, selected_language, show_images);
-                        get_pagination_data(selected_group ,selected_sub_group  , selected_question_level, selected_language, show_images);
+                        const res =  JSON.parse(response);        
+                        selected_group = $("#group_id").val();
+                        selected_sub_group = $("#sub_group_id").val();
+                        selected_question_level = $("#question_level_id").val();
+                        selected_language = $("#language").val();
+                        selected_transliterate_language = $("#transliterate_language").val();
+                        show_images = $("#show_images").is(':checked');
+                        load_quiz_data(1  , selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
+                        get_pagination_data(selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
                         swal({
                             title: "Success",
-                            text: "Question has been deleted.!",
+                            text: "Question has been deleted!",
                             type: "success",
                             timer: 2000
                         });
@@ -531,8 +537,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         timer: 2000
                     })
                 }
-                load_quiz_data(1  , selected_group , selected_sub_group  , selected_question_level, selected_language, show_images);
-                get_pagination_data(selected_group ,selected_sub_group  , selected_question_level, selected_language, show_images);
+                selected_group = $("#group_id").val();
+                selected_sub_group = $("#sub_group_id").val();
+                selected_question_level = $("#question_level_id").val();
+                selected_language = $("#language").val();
+                selected_transliterate_language = $("#transliterate_language").val();
+                show_images = $("#show_images").is(':checked');
+                load_quiz_data(1  , selected_group , selected_sub_group  , selected_question_level, selected_language, selected_transliterate_language, show_images);
+                get_pagination_data(selected_group ,selected_sub_group  , selected_question_level, selected_language, selected_transliterate_language, show_images);
             }
         });
     }
