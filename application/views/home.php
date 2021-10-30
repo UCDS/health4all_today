@@ -132,6 +132,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         </select>
                     </div>    
             <?php } ?>
+            <div class="col-md-3 form-group">
+                <button type="button" class='btn btn-primary btn-block' onclick='loadData()' >Submit</button>                        
+            </div>
         </div>
         <?php if($logged_in) {?>
             <div class="row ">
@@ -260,22 +263,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             selected_language = $("#language").val();
             selected_transliterate_language = $("#transliterate_language").val();
             show_images = $("#show_images").is(':checked');
-            load_quiz_data(1  , selected_group , selected_sub_group  , selected_question_level, selected_language, selected_transliterate_language, show_images);
-            get_pagination_data(selected_group ,selected_sub_group  , selected_question_level, selected_language, selected_transliterate_language, show_images);
-            
+            // load_quiz_data(1  , selected_group , selected_sub_group  , selected_question_level, selected_language, selected_transliterate_language, show_images);
+            // get_pagination_data(selected_group ,selected_sub_group  , selected_question_level, selected_language, selected_transliterate_language, show_images);
         }); 
 
         // on change of sub_group or question_level ,  fetching all quiz data
-        $("#sub_group_id , #question_level_id, #language, #show_images, #transliterate_language").change(function (e) { 
-            selected_group = $("#group_id").val();
-            selected_sub_group = $("#sub_group_id").val();
-            selected_question_level = $("#question_level_id").val();
-            selected_language = $("#language").val();
-            selected_transliterate_language = $("#transliterate_language").val();
-            show_images = $("#show_images").is(':checked');
-            load_quiz_data(1  , selected_group , selected_sub_group ,selected_question_level, selected_language, selected_transliterate_language, show_images );
-            get_pagination_data(selected_group , selected_sub_group , selected_question_level, selected_language, selected_transliterate_language, show_images);
-        }); 
+        // $("#sub_group_id , #question_level_id, #language, #show_images, #transliterate_language").change(function (e) { 
+        //     selected_group = $("#group_id").val();
+        //     selected_sub_group = $("#sub_group_id").val();
+        //     selected_question_level = $("#question_level_id").val();
+        //     selected_language = $("#language").val();
+        //     selected_transliterate_language = $("#transliterate_language").val();
+        //     show_images = $("#show_images").is(':checked');
+        //     load_quiz_data(1  , selected_group , selected_sub_group ,selected_question_level, selected_language, selected_transliterate_language, show_images );
+        //     get_pagination_data(selected_group , selected_sub_group , selected_question_level, selected_language, selected_transliterate_language, show_images);
+        // }); 
 
         selected_group = $("#group_id").val();
         selected_sub_group = $("#sub_group_id").val();
@@ -289,6 +291,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         get_pagination_data(selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
         filter_sub_groups(); 
     });
+
+    function loadData() {
+        selected_group = $("#group_id").val();
+        selected_sub_group = $("#sub_group_id").val();
+        selected_question_level = $("#question_level_id").val();
+        selected_language = $("#language").val();
+        selected_transliterate_language = $("#transliterate_language").val();
+        show_images = $("#show_images").is(':checked');
+        load_quiz_data(1, selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
+        get_pagination_data(selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
+    }
 
     // function to show and hide the tranlate_language dropdown 
     function toggleTranslateLanguage() {
@@ -367,9 +380,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 return "";
             }
 
-        }
-    
-    
+    }
     
     function getImageBlock(image, width, displayImage){
         // console.log(image)
