@@ -263,8 +263,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             selected_language = $("#language").val();
             selected_transliterate_language = $("#transliterate_language").val();
             show_images = $("#show_images").is(':checked');
-            load_quiz_data(1  , selected_group , selected_sub_group  , selected_question_level, selected_language, selected_transliterate_language, show_images);
-            get_pagination_data(selected_group ,selected_sub_group  , selected_question_level, selected_language, selected_transliterate_language, show_images);
+            // load_quiz_data(1  , selected_group , selected_sub_group  , selected_question_level, selected_language, selected_transliterate_language, show_images);
+            // get_pagination_data(selected_group ,selected_sub_group  , selected_question_level, selected_language, selected_transliterate_language, show_images);
         }); 
 
         // on change of sub_group or question_level ,  fetching all quiz data
