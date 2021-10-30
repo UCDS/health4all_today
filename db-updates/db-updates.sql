@@ -73,3 +73,46 @@ ALTER TABLE `question` ADD `question_image_width` INT(3) NOT NULL DEFAULT '50' A
 ALTER TABLE `question` ADD `explanation_image_width` INT(3) NOT NULL DEFAULT '50' AFTER `explanation_image`;
 ALTER TABLE `answer_option` ADD `answer_image_width` INT(3) NOT NULL DEFAULT '50' AFTER `answer_image`;
 
+
+
+--
+-- Table structure for table `transliterate_question`
+--
+
+DROP TABLE IF EXISTS `transliterate_question`;
+CREATE TABLE IF NOT EXISTS `transliterate_question` (
+  `question_transliterate_id` int(11) NOT NULL AUTO_INCREMENT,
+  `question_id` int(11) NOT NULL,
+  `language_id` int(11) NOT NULL,
+  `question_transliterate` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `explanation_transliterate` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`question_transliterate_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+DROP TABLE IF EXISTS `transliterate_answer`;
+CREATE TABLE IF NOT EXISTS `transliterate_answer` (
+  `transliterate_answer_id` int(11) NOT NULL AUTO_INCREMENT,
+  `answer_option_id` int(11) NOT NULL,
+  `language_id` int(11) NOT NULL,
+  `answer_option_transliterate` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`transliterate_answer_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+--
+-- Adding new rows to the defaults table
+--
+INSERT INTO `defaults` (`default_id`, `default_tilte`, `default_description`, `default_type`, `default_unit`, `lower_range`, `upper_range`, `value`) VALUES
+('display_transliterate', 'Property to display and hide transliterate in application at admin level', 'Set the value as 1 to display transliterate option and set 0 to hide transliterate option ', 'Numeric', '', '', '', '1'),
+('user_display_transliterate', 'Property holds the value of displaying transliterate for user', 'Set the value as 1 to check  transliterate option and set 0 to uncheck transliterate option', 'Numeric', '', '', '', '1');
+COMMIT;
