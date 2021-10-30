@@ -116,3 +116,10 @@ INSERT INTO `defaults` (`default_id`, `default_tilte`, `default_description`, `d
 ('display_transliterate', 'Property to display and hide transliterate in application at admin level', 'Set the value as 1 to display transliterate option and set 0 to hide transliterate option ', 'Numeric', '', '', '', '1'),
 ('user_display_transliterate', 'Property holds the value of displaying transliterate for user', 'Set the value as 1 to check  transliterate option and set 0 to uncheck transliterate option', 'Numeric', '', '', '', '1');
 COMMIT;
+
+
+--
+-- changing collation of language 
+--
+
+ALTER TABLE `language` CHANGE `language` `language` VARCHAR(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;
