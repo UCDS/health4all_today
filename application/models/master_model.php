@@ -123,10 +123,24 @@ class Master_model extends CI_Model {
            }
     }
 
-    function get_transliterate_data_by_question_id($question_id, $language_id){
+    function get_transliterate_data_by_question_and_language_id($question_id, $language_id){
         if(isset($language_id)){
             $this->db->where('transliterate_question.language_id' , $language_id);
         }
+        $this->db->select('question_transliterate_id, language_id, question_transliterate, explanation_transliterate')
+            ->from('transliterate_question')
+            ->order_by('question_transliterate_id','asc')
+            ->where('transliterate_question.question_id' , $question_id);
+        $query = $this->db->get();
+        $result = json_encode($query->row());
+        if($result){
+            return $result;       
+        }else{
+            return false;
+        }
+    }
+    
+    function get_transliterate_data_by_question_id($question_id){
         $this->db->select('question_transliterate_id, language_id, question_transliterate, explanation_transliterate')
             ->from('transliterate_question')
             ->order_by('question_transliterate_id','asc')
@@ -139,7 +153,6 @@ class Master_model extends CI_Model {
             return false;
         }
     }
-    
     function get_answer_options() {
         $this->db->select('answer_option_id , answer , correct_option , question_id , answer_image')
             ->from('answer_option')
