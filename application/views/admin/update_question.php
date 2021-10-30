@@ -35,10 +35,25 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       <div class="card-body">
       <!-- <?php echo form_open("admin/update_question",array('role'=>'form','class'=>'form-custom' , 'id'=>'update_question', "question_id"=>$question_id)); ?>  -->
       <form id="update_question" action="<?php echo base_url('welcome/update_question/').$question_id ?>" method="POST">
+        <div class="row">
+            <div class="col-md-5">
+                <label for="Question">Question<span class="star" style="color:red"> *</span></label>
+                <textarea  class="form-control" name="question" placeholder="Question"  rows="2"  required ><?php echo $question_details[0]->question ;?></textarea>
+            </div>
+            <div class="col-md-5">
+                <label for="explanation">Question Explanation</label>
+                <textarea class="form-control" name="question_explanation" rows="2"><?php echo $question_details[0]->explanation;?></textarea>
+            </div>
+            <div class="col-md-1">
+                <label for="transliterate">Add Transliterate</label> <br>
+                <button type="button" class="btn btn-primary btn-block" id="addTransliterate"><i class="fa fa-plus" aria-hidden="true"></i></button>
+            </div>
+        </div>
         <div class="form-group">
-            <label for="Question">Question<span class="star" style="color:red"> *</span></label>
-            <!-- <input type="text" class="form-control" name="question" placeholder="Question" value="<?php echo $question_details[0]->question ;?>"  required> -->
-            <textarea  class="form-control" name="question" placeholder="Question"  rows="1"  required ><?php echo $question_details[0]->question ;?></textarea>
+        </div>
+        <div class="form-group">
+        </div>
+        <div class="transliterate_wrapper">
         </div>
         <div class="row">
             <div class="form-group col-md-6">
@@ -113,9 +128,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <img id="explanationImagePreview" src="" width="250" height="250" >
                 </div>
             </div> 
-        <div class="form-group">
-            <label for="explanation">Question Explanation</label>
-            <textarea class="form-control" name="question_explanation" rows="4"><?php echo $question_details[0]->explanation;?></textarea>
         </div>
         <label for="answerFields">Answers Options<span class="star" style="color:red"> *</span></label> 
         <label for="answerFields"> (<span style="color:green">&#10004;</span> for the correct option )</label> 
@@ -150,8 +162,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         });
     }
 
-    function getPopulatedOptions(imagesList, selectedImage) {
-        console.log("selectedImage", selectedImage);
+    function getPopulatedImageOptions(imagesList, selectedImage) {
         let options = ""
         imagesList.forEach((imageName,index, arr) => {
             options = options+`<option value=${imageName} ${ selectedImage === imageName ? 'selected' :''} >${imageName}</option>`
@@ -159,8 +170,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         return options;
     }
 
+    function getPopulatedLanguageOptions(languagesList, selectedLanguage){
+        let options = ""
+        languagesList.forEach((option,index, arr) => {
+            options = options+`<option value=${option.language_id} ${ selectedLanguage === option.language_id ? 'selected' :''} >${option.language}</option>`
+        });
+        return options;
+    }
+
     function showImagePreview(imageSrc, previewImageId){
         var selectedImageName = $(`#${imageSrc}`).val();
+        if(selectedImageName == 'NULL') return;
         var imagePath = `<?= base_url() ?>assets/images/quiz/${selectedImageName}.jpeg`;
         $(`#${previewImageId}`).attr("src", imagePath);
     }
@@ -168,12 +188,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     $(function() {
         var answer_options_wrapper    = $(".answer_options_wrapper"); //Input fields answer_options_wrapper
         var answer_details = <?php echo $answer_details;?>;
-        console.log(answer_details);
+        // console.log(answer_details);
         if(answer_details){
-            console.log(answer_details)
+            // console.log(answer_details)
             const ImagesList =  <?=json_encode($images_list); ?>;
             answer_details.forEach((element, index) => {     
-                console.log(element);
+                // console.log(element);
                 $(answer_options_wrapper).append(`
                         <div class="row">
                             <div class="form-group col-md-5">
@@ -182,7 +202,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <div class="form-group col-md-4">
                                 <select class="form-control" id='answer_option_[${element.answer_option_id}]' name="answer_option_image[${element.answer_option_id}]"  required>
                                     <option  selected name='NULL' value='NULL'>Select Image</option>
-                                    ${ getPopulatedOptions(ImagesList, element.answer_image) }
+                                    ${ getPopulatedImageOptions(ImagesList, element.answer_image) }
                                 </select>
                             </div>
                             <div class="form-group col-md-1">
@@ -224,7 +244,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <?php
                                 foreach($images_list as $r){
                                     echo "<option value='".$r."'";
-                                    echo $r;
                                     echo ">".$r."</option>";
                                 }
                             ?>
@@ -251,6 +270,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             $(this).parent().parent('div').remove();
             x--; 
         });
+
 
         var count=2;
         var groups_wrapper = $(".groups_wrapper"); //Groups and subgroup wrapper 
@@ -288,6 +308,73 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             e.preventDefault();
             $(this).parent().parent('div').remove();
             x--; 
+        });
+
+        // fetching and populating transliterate data
+        var trasnliterate_wrapper = $(".transliterate_wrapper"); //Input fields answer_options_wrapper
+        var tranliterate_details = <?php echo $tranliterate_details;?>;
+        console.log(tranliterate_details);
+        const languages =  <?=json_encode($languages); ?>;
+        tranliterate_details.forEach((element, index) => {
+            $(trasnliterate_wrapper).append(`
+            <div class="row form-group">
+                <div class="col-md-4">
+                <label for="QuestionTransliterate">Question Transliterate<span class="star" style="color:red"> *</span></label>
+                    <textarea class="form-control"  rows="2" name="question_transliterate[${element.question_transliterate_id}]">${element.question_transliterate}</textarea>
+                </div>
+                <div class="col-md-4">
+                    <label for="ExplanationTransliterate">Explanation Transliterate<span class="star" style="color:red"> *</span></label>
+                    <textarea class="form-control" rows="2" name="explanation_transliterate[${element.question_transliterate_id}]">${element.explanation_transliterate}</textarea>
+                </div>
+                <div class="col-md-2">
+                    <label for="languageId">Language<span class="star" style="color:red"> *</span></label>
+                    <select class="form-control"  name="transliterate_language[${element.question_transliterate_id}]" id="language" required>
+                        <option value="" selected disabled>--Select--</option>
+                        ${getPopulatedLanguageOptions(languages, element.language_id)}
+                    </select>
+                </div>
+                <div class='form-group col-md-1'>
+                    <label>remove</label>
+                    <button type="button" class="btn btn-danger remove_field"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                </div>
+            `);
+        });
+
+        var addTransliterate = $("#addTransliterate");
+        $(addTransliterate).click(function (e) { 
+            e.preventDefault();
+            $(trasnliterate_wrapper).append(`
+            <div class="row form-group">
+                <div class="col-md-4">
+                <label for="QuestionTransliterate">Question Transliterate<span class="star" style="color:red"> *</span></label>
+                    <textarea class="form-control"  rows="2" name="new_question_transliterate[]"></textarea>
+                </div>
+                <div class="col-md-4">
+                    <label for="ExplanationTransliterate">Explanation Transliterate<span class="star" style="color:red"> *</span></label>
+                    <textarea class="form-control" rows="2" name="new_explanation_transliterate[]"></textarea>
+                </div>
+                <div class="col-md-2">
+                    <label for="languageId">Language<span class="star" style="color:red"> *</span></label>
+                    <select class="form-control"  name="new_transliterate_language[]" id="language" required>
+                        <option value="" selected disabled>--Select--</option>
+                            <?php
+                                foreach($languages as $r){
+                                    echo "<option value='".$r->language_id."'";
+                                    echo ">".$r->language."</option>";
+                                }
+                            ?>
+                    </select>
+                </div>
+                <div class='form-group col-md-1'>
+                    <label>remove</label>
+                    <button type="button" class="btn btn-danger remove_field"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                </div>
+            `);
+        });
+        //when user click on remove button in question transliterate row
+        $(trasnliterate_wrapper).on("click",".remove_field", function(e){ 
+            e.preventDefault();
+            $(this).parent().parent('div').remove();
         });
 
         // calling function to showPreview of question and explanation image

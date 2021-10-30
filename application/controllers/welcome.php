@@ -17,6 +17,8 @@ class Welcome extends CI_Controller {
 		$this->data['bootstrap_question_col_values'] = $this->master_model->get_defaults('bootstrap_question_col_values');
 		$this->data['display_images'] = $this->master_model->get_defaults('display_images');
 		$this->data['user_display_images'] = $this->master_model->get_defaults('user_display_images');
+		$this->data['display_transliterate'] = $this->master_model->get_defaults('display_transliterate');
+		$this->data['user_display_transliterate'] = $this->master_model->get_defaults('user_display_transliterate');
 		$this->load->view('templates/header' , $this->data);
 		$this->data['groups'] = $this->master_model->get_groups();
 		$this->data['sub_groups'] = $this->master_model->get_sub_groups();
@@ -28,14 +30,18 @@ class Welcome extends CI_Controller {
 		$this->load->view('templates/footer' ,$this->data);
 	}
 
-	public function quiz($page , $group , $sub_group, $question_level, $language){
+	public function quiz($page , $group , $sub_group, $question_level, $language, $transliterate_language){
 		// $this->data['title']="Quiz page";
 		$per_page = 10;
 		$start = ($page -1 ) * $per_page;
 		$question_answers_list = array();
 		$questions =  $this->master_model->get_questions($per_page ,$start , $group , $sub_group , $question_level, $language);
 		foreach( json_decode($questions) as $q){
-			$question_answers_list[$q->question_id]  = (object)[ "question"=>$q, "answers"=> json_decode($this->master_model->get_answer_options_by_question_id($q->question_id))];
+			$question_answers_list[$q->question_id]  = (object)[ 
+				"question"=>$q, 
+				"answers"=> json_decode($this->master_model->get_answer_options_by_question_id($q->question_id)),
+				"transliterate"=> json_decode($this->master_model->get_transliterate_data_by_question_and_language_id($q->question_id, $transliterate_language))
+			];
 		}
 		print json_encode($question_answers_list);				
 						
@@ -74,6 +80,7 @@ class Welcome extends CI_Controller {
 			$this->data['question_levels'] = $this->master_model->get_question_levels();
 			$this->data['question_details']=$this->master_model->get_question_by_id($question_id);
 			$this->data['answer_details']=$this->master_model->get_answer_options_by_question_id($question_id);
+			$this->data['tranliterate_details']=$this->master_model->get_transliterate_data_by_question_id($question_id);
 			$this->data['grouping_details']=$this->master_model->get_group_info_by_question_id($question_id);
 			$images_list = directory_map("./assets/images/quiz",TRUE,FALSE);
 				foreach($images_list as &$image_name){

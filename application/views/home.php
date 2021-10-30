@@ -109,18 +109,34 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </select>
             </div>
         </div>
-        <?php if($display_images[0]->value) { ?>
-            <div class="row">
-                <div class="col-md-3" style="display:inline-flex; margin-top:10px;">
-                    <input  type="checkbox" name="show_images" id="show_images" style="width:25px;height:25px;" <?php echo $user_display_images[0]->value ? 'checked' :''  ?>>
-                    <label for="showImages" style="padding-left:10px;">Show Images</label>
-                </div>
-            </div>
-        <?php } ?>
+        <div class="row">
+            <?php if($display_images[0]->value) { ?>
+                    <div class="col-md-3" style="display:inline-flex; margin-top:10px;">
+                        <input  type="checkbox" name="show_images" id="show_images" style="width:25px;height:25px;" <?php echo $user_display_images[0]->value ? 'checked' :''  ?>>
+                        <label for="showImages" style="padding-left:10px;">Show Images</label>
+                    </div>
+            <?php }  if($display_transliterate[0]->value) { ?>
+                    <div class="col-md-3 form-group" style="display:inline-flex; margin-top:10px;">
+                        <input  type="checkbox" name="show_transliterate" id="show_transliterate" style="width:25px;height:25px;" <?php echo $user_display_transliterate[0]->value ? 'checked' :''  ?> onchange="toggleTranslateLanguage()"/>
+                        <label for="showImages" style="padding-left:10px;">Show Transliterate</label>
+                    </div>
+                    <div class="col-md-3 form-group">
+                        <select class="form-control"  name="language" id="transliterate_language" required>
+                            <option value="0" selected >Transliterate Language</option>
+                            <?php
+                                foreach($languages as $r){ ?>
+                                <option value="<?php echo $r->language_id;?>"    
+                                <?php if($this->input->post('language') == $r->language_id) echo " selected "; ?>
+                                ><?php echo $r->language;?></option>    
+                            <?php }  ?>
+                        </select>
+                    </div>    
+            <?php } ?>
+        </div>
         <?php if($logged_in) {?>
             <div class="row ">
                 <div class="form-group admin-features col-md-3">
-                    <select class="form-control shadow-none " name="group" id="group_id" required >
+                    <select class="form-control shadow-none " name="questions_status_toggle" id="questions_status_toggle" required >
                         <option value="0" selected>All Questions</option>
                         <option value="1">Archived Questions</option>
                         <option value="2">Un Archived Questions</option>
@@ -158,7 +174,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     const EDIT_ICON = "<i class='fa fa-pencil' aria-hidden='true'></i>";
     
     
-    $(function() {                
+    $(function() {   
+        // onload call to show/hide transliterate language dropdown
+        toggleTranslateLanguage();
+
         // Start : Quiz validation logic
         $("#quiz").on("click" , ".answer" , function(e){
             e.preventDefault();
@@ -239,34 +258,47 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             selected_sub_group = $("#sub_group_id").val();
             selected_question_level = $("#question_level_id").val();
             selected_language = $("#language").val();
+            selected_transliterate_language = $("#transliterate_language").val();
             show_images = $("#show_images").is(':checked');
-            load_quiz_data(1  , selected_group , selected_sub_group  , selected_question_level, selected_language, show_images);
-            get_pagination_data(selected_group ,selected_sub_group  , selected_question_level, selected_language, show_images);
+            load_quiz_data(1  , selected_group , selected_sub_group  , selected_question_level, selected_language, selected_transliterate_language, show_images);
+            get_pagination_data(selected_group ,selected_sub_group  , selected_question_level, selected_language, selected_transliterate_language, show_images);
             
         }); 
 
         // on change of sub_group or question_level ,  fetching all quiz data
-        $("#sub_group_id , #question_level_id, #language, #show_images").change(function (e) { 
+        $("#sub_group_id , #question_level_id, #language, #show_images, #transliterate_language").change(function (e) { 
             selected_group = $("#group_id").val();
             selected_sub_group = $("#sub_group_id").val();
             selected_question_level = $("#question_level_id").val();
             selected_language = $("#language").val();
+            selected_transliterate_language = $("#transliterate_language").val();
             show_images = $("#show_images").is(':checked');
-            load_quiz_data(1  , selected_group , selected_sub_group ,selected_question_level, selected_language, show_images );
-            get_pagination_data(selected_group , selected_sub_group , selected_question_level, selected_language, show_images);
+            load_quiz_data(1  , selected_group , selected_sub_group ,selected_question_level, selected_language, selected_transliterate_language, show_images );
+            get_pagination_data(selected_group , selected_sub_group , selected_question_level, selected_language, selected_transliterate_language, show_images);
         }); 
 
         selected_group = $("#group_id").val();
         selected_sub_group = $("#sub_group_id").val();
         selected_question_level = $("#question_level_id").val();
         selected_language = $("#language").val();
+        selected_transliterate_language = $("#transliterate_language").val();
         show_images = $("#show_images").is(':checked');
         // console.log("selected_question_level" , selected_question_level);
         // on page load fetching quiz data , pages_count and filtering sub groups
-        load_quiz_data(1, selected_group, selected_sub_group, selected_question_level, selected_language, show_images);
-        get_pagination_data(selected_group, selected_sub_group, selected_question_level, selected_language, show_images);
+        load_quiz_data(1, selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
+        get_pagination_data(selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
         filter_sub_groups(); 
     });
+
+    // function to show and hide the tranlate_language dropdown 
+    function toggleTranslateLanguage() {
+        show_transliterate = $("#show_transliterate").is(':checked');
+        if(show_transliterate){
+            $("#transliterate_language").show();
+        } else {
+            $("#transliterate_language").hide();
+        }
+    }
 
     // function to filter sub_groups based on a selected group 
     function filter_sub_groups(){
@@ -286,7 +318,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     }
 
     //api call to get pages count and to mount pagination on DOM 
-    function get_pagination_data(group , sub_group , question_level, language, show_images){
+    function get_pagination_data(group , sub_group , question_level, language, transliterate_language, show_images){
         $(".pagination").remove();
         $.ajax({
             type: "GET",
@@ -306,7 +338,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                  );
                  while(i<=pages_count){
                      $(".pagination").append(`
-                     <li class="page-item ${setPageActive(i)} "><a class="page-link" onclick='load_quiz_data(${i} , ${group} , ${sub_group} , ${question_level}, ${language}, ${show_images})'>${i}</a></li>
+                     <li class="page-item ${setPageActive(i)} "><a class="page-link" onclick='load_quiz_data(${i} , ${group} , ${sub_group} , ${question_level}, ${language}, ${transliterate_language}, ${show_images})'>${i}</a></li>
                      `);
                     i++;
                  }
@@ -315,12 +347,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         });
     }
   
-    function getExplantionBlock(explantion, explanationImage, explanationImageWIdth, displayImage){
+    function getExplantionBlock(explantion, explanationImage, explanationImageWIdth, explanationTransliterate, displayImage){
             if(explantion!==""){
                 return `<div class="explanation row" hidden>
                                 <div class="col-md-${ displayImage && explanationImage!='NULL' ? <?= $bootstrap_question_col_values[0]->lower_range; ?> :'12'}"> 
                                     <h5> Explanation:</h5>
-                                    ${explantion}
+                                    <span> ${explantion} </span>
+                                    <br/><br/>
+                                    <span style='color:#5d16db'>
+                                    ${explanationTransliterate ? explanationTransliterate :''}
+                                    </span>
                                 </div>
                                 <div class="col-md-<?= $bootstrap_question_col_values[0]->upper_range; ?>" style="text-align:center">
                                     ${getImageBlock(explanationImage, explanationImageWIdth, displayImage)}
@@ -332,6 +368,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             }
 
         }
+    
     
     
     function getImageBlock(image, width, displayImage){
@@ -349,7 +386,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     }
 
     // api call to get quiz data and mount it on DOM
-    function load_quiz_data(page , group , sub_group , question_level, language_id, show_images){
+    function load_quiz_data(page , group , sub_group , question_level, language_id, transliterate_language,  show_images){
         // console.log(sub_group);
         $(".pagination li").removeClass("active");
         $(`.pagination li:nth-child(${page})`).addClass("active");
@@ -359,7 +396,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 accepts: {
                     contentType: "application/json"
                 },
-                url: "<?= base_url() ?>welcome/quiz/"+page+"/"+group+"/"+sub_group+"/"+question_level+"/"+language_id,
+                url: "<?= base_url() ?>welcome/quiz/"+page+"/"+group+"/"+sub_group+"/"+question_level+"/"+language_id+"/"+transliterate_language,
                 dataType: "text",
                 success: function (data) {
                     var question_answers_list =  JSON.parse(data);
@@ -367,7 +404,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     var q=(page-1)*10;
                     $.each(question_answers_list, function (indexInArray, valueOfElement) { 
                         
-                        const {question , answers } = valueOfElement;
+                        const {question , answers, transliterate} = valueOfElement;
+                        // console.log(transliterate);
+                        let questionTransliterate, explanationTransliterate;
+                        if(transliterate){
+                            questionTransliterate = transliterate.question_transliterate ;
+                            explanationTransliterate = transliterate.explanation_transliterate;
+                        }
                         const {question_id , status} = question; 
                         const displayImage = <?php echo $display_images[0]->value; ?> && show_images;
                          $(".card").append(
@@ -376,6 +419,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 <div class="row">
                                     <div class="col-md-${ displayImage && question.question_image!=='NULL' ? '<?= $bootstrap_question_col_values[0]->lower_range; ?>': '12'}">
                                         <h4 class="card-text">${++q +". "+question.question}</h4>
+                                            <div class="question-transliterate-${question_id}">
+                                            ${  questionTransliterate ? questionTransliterate : '' }
+                                            </div>
+                                        <br/>
                                     </div>
                                     <div class="col-md-<?= $bootstrap_question_col_values[0]->upper_range; ?>" style="text-align:center">
                                         ${getImageBlock(question.question_image, question.question_image_width, displayImage)}
@@ -396,7 +443,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     </div>
                                     <?php } ?>
                                 </div>
-                                ${getExplantionBlock(question.explanation, question.explanation_image, question.explanation_image_width, displayImage)}
+                                ${getExplantionBlock(question.explanation, question.explanation_image, question.explanation_image_width, explanationTransliterate, displayImage)}
          
                             </div>`);
                             
@@ -446,12 +493,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     url: "<?= base_url() ?>welcome/delete_question/"+question_id,
                     dataType: "text",
                     success: function (response) {
-                        const res =  JSON.parse(response);
-                        load_quiz_data(1  , selected_group ,selected_sub_group , selected_question_level, selected_language, show_images);
-                        get_pagination_data(selected_group ,selected_sub_group  , selected_question_level, selected_language, show_images);
+                        const res =  JSON.parse(response);        
+                        selected_group = $("#group_id").val();
+                        selected_sub_group = $("#sub_group_id").val();
+                        selected_question_level = $("#question_level_id").val();
+                        selected_language = $("#language").val();
+                        selected_transliterate_language = $("#transliterate_language").val();
+                        show_images = $("#show_images").is(':checked');
+                        load_quiz_data(1  , selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
+                        get_pagination_data(selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
                         swal({
                             title: "Success",
-                            text: "Question has been deleted.!",
+                            text: "Question has been deleted!",
                             type: "success",
                             timer: 2000
                         });
@@ -490,8 +543,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         timer: 2000
                     })
                 }
-                load_quiz_data(1  , selected_group , selected_sub_group  , selected_question_level, selected_language, show_images);
-                get_pagination_data(selected_group ,selected_sub_group  , selected_question_level, selected_language, show_images);
+                selected_group = $("#group_id").val();
+                selected_sub_group = $("#sub_group_id").val();
+                selected_question_level = $("#question_level_id").val();
+                selected_language = $("#language").val();
+                selected_transliterate_language = $("#transliterate_language").val();
+                show_images = $("#show_images").is(':checked');
+                load_quiz_data(1  , selected_group , selected_sub_group  , selected_question_level, selected_language, selected_transliterate_language, show_images);
+                get_pagination_data(selected_group ,selected_sub_group  , selected_question_level, selected_language, selected_transliterate_language, show_images);
             }
         });
     }
