@@ -22,19 +22,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         border: solid 1px;
     }
     .answer-option {
-    cursor: pointer;
-    margin-top: 3px;
-    padding: 12px 20px;
-    background: #f2f2f2;
-    color: #222;
-    border-radius: 4px;
-    text-align: left;
-    font-size: 17px;
-    background-image: -webkit-linear-gradient(top,#f9f9f9,#f2f2f2);
-    background-image: -moz-linear-gradient(top,#f9f9f9,#f2f2f2);
-    background-image: -ms-linear-gradient(top,#f9f9f9,#f2f2f2);
-    background-image: -o-linear-gradient(top,#f9f9f9,#f2f2f2);
-    border: 1px solid #f2f2f2;
+        cursor: pointer;
+        margin-top: 3px;
+        padding: 12px 20px;
+        background: #f2f2f2;
+        color: #222;
+        border-radius: 4px;
+        text-align: left;
+        font-size: 17px;
+        background-image: -webkit-linear-gradient(top,#f9f9f9,#f2f2f2);
+        background-image: -moz-linear-gradient(top,#f9f9f9,#f2f2f2);
+        background-image: -ms-linear-gradient(top,#f9f9f9,#f2f2f2);
+        background-image: -o-linear-gradient(top,#f9f9f9,#f2f2f2);
+        border: 1px solid #f2f2f2;
+        width:100%;
     }
 
     li>span.answer {
@@ -45,10 +46,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     }
     
     .explanation{
-        /* display: block; */
         justify-content: center;
-        margin-left:25px;
-        margin-right:25px;
+        margin:inherit;
+        margin-left:12px;
         background: #add8e6;
         border: 2px solid #48b4e0;
         padding: 12px 20px;
@@ -372,8 +372,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     
     
     function getImageBlock(image, width, displayImage){
+        // console.log(image)
         if(image && image!=='NULL' && displayImage){
-            return `<img src=<?=base_url()?>assets/images/quiz/${image}.jpeg width="${width}" />`
+            return `<img src=<?=base_url()?>assets/images/quiz/${image}.jpeg width="${width}" style="max-width:-webkit-fill-available" />`
         } else{
             return "";
         }
@@ -428,7 +429,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-11">
+                                    <div class="col-md-<?php echo $logged_in ? '11' : '12' ?>">
                                         <ul class="answers answers-${question_id}">
                                         </ul>
                                     </div>
