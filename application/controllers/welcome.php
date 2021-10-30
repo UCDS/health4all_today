@@ -40,7 +40,7 @@ class Welcome extends CI_Controller {
 			$question_answers_list[$q->question_id]  = (object)[ 
 				"question"=>$q, 
 				"answers"=> json_decode($this->master_model->get_answer_options_by_question_id($q->question_id)),
-				"transliterate"=> json_decode($this->master_model->get_transliterate_data_by_question_id($q->question_id, $transliterate_language))
+				"transliterate"=> json_decode($this->master_model->get_transliterate_data_by_question_and_language_id($q->question_id, $transliterate_language))
 			];
 		}
 		print json_encode($question_answers_list);				
@@ -80,7 +80,7 @@ class Welcome extends CI_Controller {
 			$this->data['question_levels'] = $this->master_model->get_question_levels();
 			$this->data['question_details']=$this->master_model->get_question_by_id($question_id);
 			$this->data['answer_details']=$this->master_model->get_answer_options_by_question_id($question_id);
-			$this->data['tranliterate_details']=$this->master_model->get_transliterate_data_by_question_id($question_id, null);
+			$this->data['tranliterate_details']=$this->master_model->get_transliterate_data_by_question_id($question_id);
 			$this->data['grouping_details']=$this->master_model->get_group_info_by_question_id($question_id);
 			$images_list = directory_map("./assets/images/quiz",TRUE,FALSE);
 				foreach($images_list as &$image_name){

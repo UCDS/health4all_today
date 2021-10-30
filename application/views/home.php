@@ -347,12 +347,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         });
     }
   
-    function getExplantionBlock(explantion, explanationImage, explanationImageWIdth, displayImage){
+    function getExplantionBlock(explantion, explanationImage, explanationImageWIdth, explanationTransliterate, displayImage){
             if(explantion!==""){
                 return `<div class="explanation row" hidden>
                                 <div class="col-md-${ displayImage && explanationImage!='NULL' ? <?= $bootstrap_question_col_values[0]->lower_range; ?> :'12'}"> 
                                     <h5> Explanation:</h5>
-                                    ${explantion}
+                                    <span> ${explantion} </span>
+                                    <br/><br/>
+                                    <span style='color:#5d16db'>
+                                    ${explanationTransliterate ? explanationTransliterate :''}
+                                    </span>
                                 </div>
                                 <div class="col-md-<?= $bootstrap_question_col_values[0]->upper_range; ?>" style="text-align:center">
                                     ${getImageBlock(explanationImage, explanationImageWIdth, displayImage)}
@@ -367,7 +371,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     
     
     
-        function getImageBlock(image, width, displayImage){
+    function getImageBlock(image, width, displayImage){
         if(image && image!=='NULL' && displayImage){
             return `<img src=<?=base_url()?>assets/images/quiz/${image}.jpeg width="${width}" />`
         } else{
@@ -401,6 +405,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         
                         const {question , answers, transliterate} = valueOfElement;
                         // console.log(transliterate);
+                        let questionTransliterate, explanationTransliterate;
+                        if(transliterate){
+                            questionTransliterate = transliterate.question_transliterate ;
+                            explanationTransliterate = transliterate.explanation_transliterate;
+                        }
                         const {question_id , status} = question; 
                         const displayImage = <?php echo $display_images[0]->value; ?> && show_images;
                          $(".card").append(
@@ -410,6 +419,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     <div class="col-md-${ displayImage && question.question_image!=='NULL' ? '<?= $bootstrap_question_col_values[0]->lower_range; ?>': '12'}">
                                         <h4 class="card-text">${++q +". "+question.question}</h4>
                                             <div class="question-transliterate-${question_id}">
+                                            ${  questionTransliterate ? questionTransliterate : '' }
                                             </div>
                                         <br/>
                                     </div>
@@ -432,7 +442,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     </div>
                                     <?php } ?>
                                 </div>
-                                ${getExplantionBlock(question.explanation, question.explanation_image, question.explanation_image_width, displayImage)}
+                                ${getExplantionBlock(question.explanation, question.explanation_image, question.explanation_image_width, explanationTransliterate, displayImage)}
          
                             </div>`);
                             
@@ -447,11 +457,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                             ${ option.answer_image ? `<span class="col-md-<?= $bootstrap_question_col_values[0]->upper_range; ?>" style="text-align:center"> ${getImageBlock(option.answer_image, option.answer_image_width, displayImage )} </span>` : "" }
                                      </li>`
                                  );
-                            });
-                            $.each(transliterate, function (indexInArray, val) { 
-                                 $(".question-transliterate-"+question_id).append(`
-                                    <span>${val.question_transliterate}<span> <br/>
-                                 `);
                             });
                     });
                 }
