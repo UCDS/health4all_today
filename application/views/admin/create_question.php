@@ -32,24 +32,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       <div class="card-body">
       <!-- <?php echo form_open("admin/create_question",array('role'=>'form','class'=>'form-custom' , 'id'=>'create_question')); ?>  -->
       <form id="create_question" action="<?= base_url('admin/create_question') ?>" method="POST">
-        <div class="form-group">
-            <label for="Question">Question<span class="star" style="color:red"> *</span></label>
-            <textarea name="question" class="form-control" id="question"  rows="1" required></textarea>
-        </div>
-        <div class="row">
-            <div class="form-group col-md-6">
-                <label for="levelOfQuestion">Select The Level of Question<span class="star" style="color:red"> *</span></label>
-                <select class="form-control" name="question_level" required>
-                    <option value="" selected disabled>--Select--</option>
-                    <?php
-                        foreach($question_levels as $r){ ?>
-                        <option value="<?php echo $r->level_id;?>"    
-                        <?php if($this->input->post('level') == $r->level_id) echo " selected "; ?>
-                        ><?php echo $r->level;?></option>    
-                        <?php }  ?>
-                </select>
-            </div>
-            <div class="form-group col-md-6">
+      <div class="row">
+            <div class="form-group col-md-5">
                 <label for="languageId">Select The Language<span class="star" style="color:red"> *</span></label>
                 <select class="form-control"  name="language" id="language" required>
                     <option value="" selected disabled>--Select--</option>
@@ -61,10 +45,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <?php }  ?>
                 </select>
             </div>
+            <div class="form-group col-md-5">
+                <label for="levelOfQuestion">Select The Level of Question<span class="star" style="color:red"> *</span></label>
+                <select class="form-control" name="question_level" required>
+                    <option value="" selected disabled>--Select--</option>
+                    <?php
+                        foreach($question_levels as $r){ ?>
+                        <option value="<?php echo $r->level_id;?>"    
+                        <?php if($this->input->post('level') == $r->level_id) echo " selected "; ?>
+                        ><?php echo $r->level;?></option>    
+                        <?php }  ?>
+                </select>
+            </div>
         </div>
         <div class="groups_wrapper">
             <div class="row">
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-5">
                     <label for="groupId">Select Group <span class="star" style="color:red"> *</span></label>
                     <select class="form-control" name="group[]" id="group_1" onChange="filter_sub_groups('group_1' , 'sub_group_1')" required>
                     <option  selected disabled>--Select--</option>
@@ -77,7 +73,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     ?>
                 </select>
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-5">
                     <label for="subGroupId">Select Sub Group</label>
                     <select class="form-control" name="sub_group[]" id="sub_group_1">
                         <option value="" selected >--Select--</option>
@@ -85,9 +81,25 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </div>
                 <div class="form-group col-md-1">
                 <label for="">Add</label>  
-                    <button type="button" class="btn btn-primary" id="addGroupAndSubGroup"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                    <button type="button" class="btn btn-primary btn-block" id="addGroupAndSubGroup"><i class="fa fa-plus" aria-hidden="true"></i></button>
                 </div>
             </div>    
+        </div>
+        <div class="row">
+            <div class="form-group col-md-5">
+                <label for="Question">Question<span class="star" style="color:red"> *</span></label>
+                <textarea name="question" class="form-control" id="question"  rows="2" required></textarea>
+            </div>
+            <div class="form-group col-md-5">
+                <label for="explanation">Explanation</label>
+                <textarea class="form-control" name="question_explanation" rows="2"></textarea>
+            </div>
+            <div class="form-group col-md-1">
+                <label for="transliterate">Add Transliterate</label> <br>
+                <button type="button" class="btn btn-primary btn-block" id="addTransliterate"><i class="fa fa-plus" aria-hidden="true"></i></button>
+            </div>
+        </div>
+        <div class="transliterate_wrapper">
         </div>
         <div class="question_images_wrapper">
             <div class="row">
@@ -136,10 +148,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <img id="explanationImagePreview" src="" width="250" height="250" >
                 </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label for="explanation">Question Explanation</label>
-            <textarea class="form-control" name="question_explanation" rows="2"></textarea>
         </div>
         <div class="row">
             <div class="col-md-5">
@@ -269,7 +277,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         var addGroupAndSubGroup = $("#addGroupAndSubGroup");
         $(addGroupAndSubGroup).click(function (e) { 
             $(groups_wrapper).append(`<div class="row">
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-5">
                     <label for="group">Select Group <span class="star" style="color:red"> *</span></label>
                     <select class="form-control" name="group[]" id="group_${count}" onChange="filter_sub_groups('group_${count}' , 'sub_group_${count}')" required>
                     <option value="" selected disabled>--Select--</option>
@@ -282,7 +290,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     ?>
                 </select>
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-5">
                     <label for="subGroup">Select Sub Group</label>
                     <select class="form-control" name="sub_group[]" id="sub_group_${count}">
                         <option value="0" selected >--Select--</option>
@@ -295,14 +303,56 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </div`);
                 count++;   
         });
-        //when user click on remove button in answer options
+        //when user click on remove button in additional groups and subgroups row
         $(groups_wrapper).on("click",".removeGroupAndSubGroup", function(e){ 
             e.preventDefault();
             $(this).parent().parent('div').remove();
             x--; 
         });
 
-});
+        //adding transliterate fields when user clicked on addTransliterate button
+        var transliterateRowsCount = 0;
+        var transliterate_wrapper = $(".transliterate_wrapper"); // Transliterate wrapper
+        var addTransliterate = $("#addTransliterate");
+        $(addTransliterate).click(function (e) { 
+            $(transliterate_wrapper).append(`
+            <div class="row form-group">
+                <div class="col-md-4">
+                <label for="QuestionTransliterate">Question Transliterate<span class="star" style="color:red"> *</span></label>
+                    <textarea class="form-control"  rows="2" name="question_transliterate[${transliterateRowsCount}]"></textarea>
+                </div>
+                <div class="col-md-4">
+                    <label for="ExplanationTransliterate">Explanation Transliterate<span class="star" style="color:red"> *</span></label>
+                    <textarea class="form-control" rows="2" name="explanation_transliterate[${transliterateRowsCount}]"></textarea>
+                </div>
+                <div class="col-md-2">
+                    <label for="languageId">Language<span class="star" style="color:red"> *</span></label>
+                    <select class="form-control"  name="transliterate_language[${transliterateRowsCount}]" id="language" required>
+                        <option value="" selected disabled>--Select--</option>
+                        <?php
+                            foreach($languages as $r){ ?>
+                            <option value="<?php echo $r->language_id;?>"    
+                            <?php if($this->input->post('language') == $r->language_id) echo " selected "; ?>
+                            ><?php echo $r->language;?></option>    
+                            <?php }  ?>
+                    </select>
+                </div>
+                <div class="col-md-1">
+                        <label for="">Remove</label>    
+                        <button class="btn btn-danger form-control removeTransliterate" ><i class="fa fa-trash" aria-hidden="true"></i></button>
+                    </div>
+                </div>
+            </div>
+            `);
+            transliterateRowsCount++;
+        });
+
+        $(transliterate_wrapper).on("click", ".removeTransliterate", function (e) {
+            e.preventDefault();
+            $(this).parent().parent('div').remove();
+            transliterateRowsCount--; 
+        });
+    });
     // function to filter sub_groups based on a selected group 
     function filter_sub_groups(group , id){
         // fetching list of all subgroups

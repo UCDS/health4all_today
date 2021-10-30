@@ -123,7 +123,36 @@ class Master_model extends CI_Model {
            }
     }
 
+    function get_transliterate_data_by_question_and_language_id($question_id, $language_id){
+        if(isset($language_id)){
+            $this->db->where('transliterate_question.language_id' , $language_id);
+        }
+        $this->db->select('question_transliterate_id, language_id, question_transliterate, explanation_transliterate')
+            ->from('transliterate_question')
+            ->order_by('question_transliterate_id','asc')
+            ->where('transliterate_question.question_id' , $question_id);
+        $query = $this->db->get();
+        $result = json_encode($query->row());
+        if($result){
+            return $result;       
+        }else{
+            return false;
+        }
+    }
     
+    function get_transliterate_data_by_question_id($question_id){
+        $this->db->select('question_transliterate_id, language_id, question_transliterate, explanation_transliterate')
+            ->from('transliterate_question')
+            ->order_by('question_transliterate_id','asc')
+            ->where('transliterate_question.question_id' , $question_id);
+        $query = $this->db->get();
+        $result = json_encode($query->result());
+        if($result){
+            return $result;       
+        }else{
+            return false;
+        }
+    }
     function get_answer_options() {
         $this->db->select('answer_option_id , answer , correct_option , question_id , answer_image')
             ->from('answer_option')
@@ -257,6 +286,21 @@ class Master_model extends CI_Model {
         // insert all the answer options into the answer table
         $this->db->insert_batch('answer_option' ,$answer_option_data);
        
+        $question_transliterate = $this->input->post('question_transliterate'); //Get question transliterates
+        $explanation_transliterate = $this->input->post('question_transliterate'); //Get explanation transliterates
+        $transliterate_language = $this->input->post('transliterate_language'); //Get tansliterating language
+        $question_transaliterate_data=array();
+        foreach ($question_transliterate as $key => $value) {
+            $question_transaliterate_data[] = array(
+                'question_id'=>$question_id,
+                'language_id'=>$transliterate_language[$key],
+                'question_transliterate'=>$question_transliterate[$key],
+                'explanation_transliterate'=>$explanation_transliterate[$key]
+            );
+        }
+        // insert all transliterate data into question_transaliterate table
+        $this->db->insert_batch('transliterate_question',$question_transaliterate_data);
+
         $this->db->trans_complete(); //Transaction Ends
 		if($this->db->trans_status()===TRUE) return true; else return false; //if transaction completed successfully return true, else false.
     }
@@ -319,8 +363,7 @@ class Master_model extends CI_Model {
         $this->db->where_not_in('answer_option_id', $not_to_be_deleted_answer_option_ids);
         $delete_question_answer_options = $this->db->delete('answer_option');
 
-
-        $new_answer_option=$this->input->post('new_answer_option'); //Get the new answer options wrote by the user.
+        $new_answer_option=$this->input->post('new_answer_option'); //Get the new answer options added by the user.
         $new_correct_option=$this->input->post('new_correct_option'); // Get the new correct/incorrect value for answer options 
         $new_answer_option_image=$this->input->post('new_answer_option_image'); // Get the new correct/incorrect value for answer options 
         $new_answer_option_image_width=$this->input->post('new_answer_option_image_width'); // Get the new answer image width value for answer options 
@@ -344,6 +387,53 @@ class Master_model extends CI_Model {
             // insert all the answer options into the answer table
             $this->db->insert_batch('answer_option' ,$new_answer_option_data);
         }
+       
+        $question_transliterate = $this->input->post('question_transliterate'); //Get question transliterates
+        $explanation_transliterate = $this->input->post('explanation_transliterate'); //Get explanation transliterates
+        $transliterate_language = $this->input->post('transliterate_language'); //Get tansliterating language
+        $question_transaliterate_data=array();
+        if(isset($question_transliterate)){
+            foreach ($question_transliterate as $key => $value) {
+                $question_transaliterate_data[] = array(
+                    'question_transliterate_id'=>$key,
+                    'question_id'=>$question_id,
+                    'language_id'=>$transliterate_language[$key],
+                    'question_transliterate'=>$question_transliterate[$key],
+                    'explanation_transliterate'=>$explanation_transliterate[$key]
+                );
+            }
+            $this->db->update_batch('transliterate_question',$question_transaliterate_data, 'question_transliterate_id');
+        }
+
+        //delete all other question tranliterate data whose key is not present in the $question_transliterate and has given question_id
+        if(isset($question_transliterate)){
+            $not_to_be_deleted_question_transliterate_ids = array_keys($question_transliterate);
+            $this->db->where('question_id',$question_id);
+            $this->db->where_not_in('question_transliterate_id', $not_to_be_deleted_question_transliterate_ids);
+            $deleted_question_transliterates = $this->db->delete('transliterate_question');
+        } else {
+            $this->db->where('question_id',$question_id);
+            $this->db->delete('transliterate_question');
+        }
+ 
+        $new_question_transliterate = $this->input->post('new_question_transliterate'); // new question translietare added by user
+        $new_explanation_transliterate = $this->input->post('new_explanation_transliterate'); // new explanatoion translietare added by user
+        $new_transliterate_language = $this->input->post('new_transliterate_language'); // new translietare language
+
+        $new_question_transaliterate_data=array();
+        if(isset($new_question_transliterate)){
+            foreach ($new_question_transliterate as $key => $value) {
+                $new_question_transaliterate_data[]= array(
+                    'question_id'=>$question_id,
+                    'language_id'=>$new_transliterate_language[$key],
+                    'question_transliterate'=>$new_question_transliterate[$key],
+                    'explanation_transliterate'=>$new_explanation_transliterate[$key]
+                );
+            }
+            // insert all the question transliterate data into the transliterate_question table
+            $this->db->insert_batch('transliterate_question' ,$new_question_transaliterate_data);
+        }
+
        
         $this->db->trans_complete(); //Transaction Ends
 		if($this->db->trans_status()===TRUE) return true; else return false; //if transaction completed successfully return true, else false.
