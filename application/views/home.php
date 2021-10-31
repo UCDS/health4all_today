@@ -63,7 +63,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     $defaut_group = '';
     foreach($groups as $r){
         if($r->default_group == 1) {
-            $defaut_group = $r->group_name;
+            $defaut_group = $r;
         }
     }
 ?>
@@ -77,7 +77,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   <div class="container">
         <div class="row">
             <div class="form-group col-md-3">
-                <select id="group_id" name="grroup" style="width:250px;display: inline-grid;"  placeholder="       --Select Group--                     " data-previous-value=<?php echo $defaut_group; ?>>
+                <select id="group_id" name="grroup" style="width:250px;display: inline-grid;"  placeholder="       --Select Group--                     ">
                     <option value="">        --Enter Group--                       </option>					
                     </select>
             </div>
@@ -181,6 +181,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     }
     
     $(function() {   
+        $('#group_id').attr("data-previous-value", <?php echo $defaut_group->group_id; ?>);
         initGroupSelectize();
         // onload call to show/hide transliterate language dropdown
         toggleTranslateLanguage();
@@ -309,7 +310,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
     function initGroupSelectize(){
         var groups = JSON.parse(escapeSpecialChars('<?php echo json_encode($groups); ?>'));
-        // groups = groups.map(ele => ele.group_name);
+        console.log(groups);
         var selectize = $('#group_id').selectize({
             valueField: 'group_id',
 	        labelField: 'group_name',
