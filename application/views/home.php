@@ -59,6 +59,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 </style>
 
 <?php  $logged_in=$this->session->userdata('logged_in'); ?>
+<?php
+    $defaut_group = '';
+    foreach($groups as $r){
+        if($r->default_group == 1) {
+            $defaut_group = $r->group_name;
+        }
+    }
+?>
 <!-- Begin page content -->
 <main role="main" class="flex-shrink-0">
   <div class="container">
@@ -69,17 +77,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   <div class="container">
         <div class="row">
             <div class="form-group col-md-3">
-                <select class="form-control shadow-none " name="group" id="group_id" required >
-                    <option value="" selected disabled>Group</option>
-                    <?php
-                        foreach($groups as $r){
-                            echo "<option  value='".$r->group_id."'";
-                            if($this->input->post('group_name') && $this->input->post('group_name') == $r->group_id) echo " selected ";
-                            if($r->default_group == 1) echo "selected";
-                            echo ">".$r->group_name."</option>";
-                        }
-                    ?>
-                </select>
+                <select id="group_id" name="grroup" style="width:250px;display: inline-grid;"  placeholder="       --Select Group--                     " data-previous-value=<?php echo $defaut_group; ?>>
+                    <option value="">        --Enter Group--                       </option>					
+                    </select>
             </div>
             <div class="form-group col-md-3">
                 <select class="form-control" name="sub_group" id="sub_group_id">
@@ -175,9 +175,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     const LOCK_ICON = "<i class='fa fa-lock' aria-hidden='true'></i>";
     const UNLOCK_ICON = "<i class='fa fa-unlock-alt' aria-hidden='true'></i>";
     const EDIT_ICON = "<i class='fa fa-pencil' aria-hidden='true'></i>";
-    
+ 
+    function escapeSpecialChars(str) {
+        return str.replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\t/g, "\\t");
+    }
     
     $(function() {   
+        initGroupSelectize();
         // onload call to show/hide transliterate language dropdown
         toggleTranslateLanguage();
 
@@ -301,6 +305,34 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         show_images = $("#show_images").is(':checked');
         load_quiz_data(1, selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
         get_pagination_data(selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
+    }
+
+    function initGroupSelectize(){
+        var groups = JSON.parse(escapeSpecialChars('<?php echo json_encode($groups); ?>'));
+        // groups = groups.map(ele => ele.group_name);
+        var selectize = $('#group_id').selectize({
+            valueField: 'group_id',
+	        labelField: 'group_name',
+            searchField: ['group_name'],
+            options: groups,
+            create: false,
+            render: {
+                option: function(item, escape) {
+                    return `<div>
+                                <span class="title">
+                                    <span class="">${escape(item.group_name)}</span>
+                                </span>
+                            </div>`;
+                }
+    	    },
+            load: function(query, callback) {
+                if (!query.length) return callback();
+            },
+
+        });
+        if($('#group_id').attr("data-previous-value")){
+		    selectize[0].selectize.setValue($('#group_id').attr("data-previous-value"));
+	    }
     }
 
     // function to show and hide the tranlate_language dropdown 
