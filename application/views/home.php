@@ -37,6 +37,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         border: 1px solid #f2f2f2;
         width:100%;
     }
+    .option-name, .item {
+        font-size:1rem;
+    }
 
     li>span.answer {
     display: block;
@@ -77,7 +80,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   <div class="container">
         <div class="row">
             <div class="form-group col-md-3">
-                <select id="group_id" name="group" style="width:250px;display: inline-grid;"  placeholder="       --Select Group--                     ">		
+                <select id="group_id" name="group" style=""  placeholder="       --Select Group--                     ">		
                 </select>
             </div>
             <div class="form-group col-md-3">
@@ -320,7 +323,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 option: function(item, escape) {
                     return `<div>
                                 <span class="title">
-                                    <span class="">${escape(item.group_name)}</span>
+                                    <span class="option-name">${escape(item.group_name)}</span>
                                 </span>
                             </div>`;
                 }
