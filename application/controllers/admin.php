@@ -15,6 +15,7 @@ class Admin extends CI_Controller {
 	{
 		$this->data['title']="Home";
 		$this->data['banner_text'] = $this->master_model->get_banner_text();
+		$this->data['yousee_website'] = $this->master_model->get_defaults('yousee_website');
 		if($this->session->userdata('logged_in')){
 			$this->data['title']="Home";
 			$this->data['userdata']=$this->session->userdata('logged_in');
