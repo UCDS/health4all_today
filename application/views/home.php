@@ -301,6 +301,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     });
 
     function loadData() {
+        if(!$("#group_id").val()) {
+            swal({
+                    title: "Please select group",
+                    // text: "Question is safe!",
+                    type: "info",
+                    // timer: 2000
+            });
+            return;
+        }
         selected_group = $("#group_id").val();
         selected_sub_group = $("#sub_group_id").val();
         selected_question_level = $("#question_level_id").val();
