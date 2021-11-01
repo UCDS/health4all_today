@@ -97,15 +97,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <div class="row">
                 <div class="form-group col-md-5">
                     <label for="questionImage">Select Question Image </label>
-                    <select class="form-control" name="question_image" id="question_image" onChange="showImagePreview('question_image', 'questionImagePreview')">
+                    <select name="question_image" id="question_image" onChange="showImagePreview('question_image', 'questionImagePreview')">
                     <option  selected value="NULL">--Select--</option>
-                    <?php
-                        foreach($images_list as $r){
-                            echo "<option value='".$r."'";
-                            if($this->input->post('question_image') && $this->input->post('question_image') == $r) echo " selected ";
-                            echo ">".$r."</option>";
-                        }
-                    ?>
                     </select>
                 </div>
                 <div class="form-group col-md-1">
@@ -114,15 +107,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </div>
                 <div class="form-group col-md-5">
                     <label for="explanationImage">Select Explanation Question Image</label>
-                    <select class="form-control" name="explanation_image" id="explanation_image" onChange="showImagePreview('explanation_image', 'explanationImagePreview')">
+                    <select name="explanation_image" id="explanation_image" onChange="showImagePreview('explanation_image', 'explanationImagePreview')">
                     <option  selected value="NULL">--Select--</option>
-                    <?php
-                        foreach($images_list as $r){
-                            echo "<option value='".$r."'";
-                            if($this->input->post('explanation_image') && $this->input->post('explanation_image') == $r) echo " selected ";
-                            echo ">".$r."</option>";
-                        }
-                    ?>
                     </select>
                 </div>
                 <div class="form-group col-md-1">
@@ -220,9 +206,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     function escapeSpecialChars(str) {
         return str.replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\t/g, "\\t");
     }
+
     $(function() {
-        // onload initializing the search filter for group
+        // onload initializing the search filter for groups, images
         initGroupSelectize('group_1');
+        initImageSelectize('question_image');
+        initImageSelectize('explanation_image');
 
         var answer_options_wrapper    = $(".answer_options_wrapper"); //Input fields answer_options_wrapper
         var add_button = $("#add_fields"); //Add button class or ID
@@ -346,6 +335,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             transliterateRowsCount--; 
         });
     });
+
     // function to filter sub_groups based on a selected group 
     function filter_sub_groups(group , id){
         // fetching list of all subgroups
@@ -384,6 +374,31 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     return `<div>
                                 <span class="title">
                                     <span class="option-name">${escape(item.group_name)}</span>
+                                </span>
+                            </div>`;
+                }
+    	    },
+            load: function(query, callback) {
+                if (!query.length) return callback();
+            },
+
+        });
+    }
+
+    function initImageSelectize(id) {
+        let imagesList = JSON.parse(escapeSpecialChars('<?php echo json_encode($images_list); ?>'));
+        imagesList = imagesList.map(function(x) { return { image: x }; })
+        var selectize = $(`#${id}`).selectize({
+            valueField: 'image',
+	        labelField: 'image',
+            searchField: 'image',
+            options: imagesList,
+            create: false,
+            render: {
+                option: function(item, escape) {
+                    return `<div>
+                                <span class="title">
+                                    <span class="option-name">${escape(item.image)}</span>
                                 </span>
                             </div>`;
                 }
