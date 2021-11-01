@@ -62,15 +62,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <div class="row">
                 <div class="form-group col-md-5">
                     <label for="groupId">Select Group <span class="star" style="color:red"> *</span></label>
-                    <select class="form-control" name="group[]" id="group_1" onChange="filter_sub_groups('group_1' , 'sub_group_1')" required>
-                    <option  selected disabled>--Select--</option>
-                    <?php
-                        foreach($groups as $r){
-                            echo "<option value='".$r->group_id."'";
-                            if($this->input->post('group_name') && $this->input->post('group_name') == $r->group_id) echo " selected ";
-                            echo ">".$r->group_name."</option>";
-                        }
-                    ?>
+                    <select name="group[]" id="group_1" onChange="filter_sub_groups('group_1' , 'sub_group_1')" placeholder='--Select--' required>
                 </select>
                 </div>
                 <div class="form-group col-md-5">
@@ -224,7 +216,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 </div>
 
 <script>
+
+    function escapeSpecialChars(str) {
+        return str.replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\t/g, "\\t");
+    }
     $(function() {
+        // onload initializing the search filter for group
+        initGroupSelectize('group_1');
 
         var answer_options_wrapper    = $(".answer_options_wrapper"); //Input fields answer_options_wrapper
         var add_button = $("#add_fields"); //Add button class or ID
@@ -276,32 +274,27 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         var groups_wrapper = $(".groups_wrapper"); //Groups and subgroup wrapper 
         var addGroupAndSubGroup = $("#addGroupAndSubGroup");
         $(addGroupAndSubGroup).click(function (e) { 
-            $(groups_wrapper).append(`<div class="row">
+            $(groups_wrapper).append(`
+                <div class="row">
                     <div class="form-group col-md-5">
-                    <label for="group">Select Group <span class="star" style="color:red"> *</span></label>
-                    <select class="form-control" name="group[]" id="group_${count}" onChange="filter_sub_groups('group_${count}' , 'sub_group_${count}')" required>
-                    <option value="" selected disabled>--Select--</option>
-                    <?php
-                        foreach($groups as $r){
-                            echo "<option value='".$r->group_id."'";
-                            if($this->input->post('group_name') && $this->input->post('group_name') == $r->group_id) echo " selected ";
-                            echo ">".$r->group_name."</option>";
-                        }
-                    ?>
-                </select>
-                </div>
-                <div class="form-group col-md-5">
-                    <label for="subGroup">Select Sub Group</label>
-                    <select class="form-control" name="sub_group[]" id="sub_group_${count}">
-                        <option value="0" selected >--Select--</option>
-                    </select>
-                </div>
-                <div class="form-group col-md-1">
-                <label for="">Remove</label>  
-                    <button class="btn btn-danger removeGroupAndSubGroup" ><i class="fa fa-trash" aria-hidden="true"></i></button>
-                </div>
+                        <label for="group">Select Group <span class="star" style="color:red"> *</span></label>
+                        <select  name="group[]" id="group_${count}" onChange="filter_sub_groups('group_${count}' , 'sub_group_${count}')" placeholder='--Select Group ${count}--' required>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-5">
+                        <label for="subGroup">Select Sub Group</label>
+                        <select class="form-control" name="sub_group[]" id="sub_group_${count}">
+                            <option value="0" selected >--Select--</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-1">
+                        <label for="">Remove</label>  
+                        <button class="btn btn-danger removeGroupAndSubGroup" ><i class="fa fa-trash" aria-hidden="true"></i></button>
+                    </div>
                 </div`);
-                count++;   
+
+            initGroupSelectize('group_'+count); 
+            count++;  
         });
         //when user click on remove button in additional groups and subgroups row
         $(groups_wrapper).on("click",".removeGroupAndSubGroup", function(e){ 
@@ -375,6 +368,31 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         var selectedImageName = $(`#${imageSrc}`).val();
         var imagePath = `<?= base_url() ?>assets/images/quiz/${selectedImageName}.jpeg`;
         $(`#${previewImageId}`).attr("src", imagePath);
+    }
+
+    function initGroupSelectize(id){
+        var groups = JSON.parse(escapeSpecialChars('<?php echo json_encode($groups); ?>'));
+        var selectize = $(`#${id}`).selectize({
+            valueField: 'group_id',
+	        labelField: 'group_name',
+            sortField: 'group_name',
+            searchField: ['group_name'],
+            options: groups,
+            create: false,
+            render: {
+                option: function(item, escape) {
+                    return `<div>
+                                <span class="title">
+                                    <span class="option-name">${escape(item.group_name)}</span>
+                                </span>
+                            </div>`;
+                }
+    	    },
+            load: function(query, callback) {
+                if (!query.length) return callback();
+            },
+
+        });
     }
 
 </script>

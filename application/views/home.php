@@ -183,6 +183,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     }
     
     $(function() {   
+        // onload setting the default group value and initializing the search filter for group
         $('#group_id').attr("data-previous-value", <?php echo $defaut_group->group_id; ?>);
         initGroupSelectize();
         // onload call to show/hide transliterate language dropdown
