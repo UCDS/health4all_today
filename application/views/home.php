@@ -77,9 +77,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   <div class="container">
         <div class="row">
             <div class="form-group col-md-3">
-                <select id="group_id" name="grroup" style="width:250px;display: inline-grid;"  placeholder="       --Select Group--                     ">
-                    <option value="">        --Enter Group--                       </option>					
-                    </select>
+                <select id="group_id" name="group" style="width:250px;display: inline-grid;"  placeholder="       --Select Group--                     ">		
+                </select>
             </div>
             <div class="form-group col-md-3">
                 <select class="form-control" name="sub_group" id="sub_group_id">
@@ -314,6 +313,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         var selectize = $('#group_id').selectize({
             valueField: 'group_id',
 	        labelField: 'group_name',
+            sortField: 'group_name',
             searchField: ['group_name'],
             options: groups,
             create: false,

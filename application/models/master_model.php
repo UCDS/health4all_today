@@ -168,7 +168,9 @@ class Master_model extends CI_Model {
     }
 
     function get_groups() { 
-        $this->db->select('*')->from('groups');
+        $this->db->select('*')
+                ->from('groups')
+                ->order_by('group_name', 'asc');
         $query = $this->db->get();
         $result =  $query->result();
         if($result){
