@@ -86,7 +86,8 @@ class Welcome extends CI_Controller {
 				foreach($images_list as &$image_name){
 					$image_name = pathinfo($image_name)['filename'];
 				}
-			$this->data['images_list']= sort($images_list);
+			sort($images_list);
+			$this->data['images_list']= $images_list;
 			$this->load->library('form_validation');
 			$this->form_validation->set_rules('question','question','required');
 			if ($this->form_validation->run() === FALSE) {

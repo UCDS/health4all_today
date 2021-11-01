@@ -309,7 +309,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
     function initGroupSelectize(){
         var groups = JSON.parse(escapeSpecialChars('<?php echo json_encode($groups); ?>'));
-        console.log(groups);
         var selectize = $('#group_id').selectize({
             valueField: 'group_id',
 	        labelField: 'group_name',

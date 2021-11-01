@@ -313,7 +313,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         // fetching and populating transliterate data
         var trasnliterate_wrapper = $(".transliterate_wrapper"); //Input fields answer_options_wrapper
         var tranliterate_details = <?php echo $tranliterate_details;?>;
-        console.log(tranliterate_details);
+        // console.log(tranliterate_details);
         const languages =  <?=json_encode($languages); ?>;
         tranliterate_details.forEach((element, index) => {
             $(trasnliterate_wrapper).append(`
