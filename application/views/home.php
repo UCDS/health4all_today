@@ -480,9 +480,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                             </div>
                                         <br/>
                                     </div>
-                                    <div class="col-md-<?= $bootstrap_question_col_values[0]->upper_range; ?>" style="text-align:center">
-                                        ${getImageBlock(question.question_image, question.question_image_width, displayImage)}
-                                    </div>
+                                    ${question.question_image && 
+                                        `<div class="col-md-<?= $bootstrap_question_col_values[0]->upper_range; ?>" style="text-align:center">
+                                            ${getImageBlock(question.question_image, question.question_image_width, displayImage)}
+                                        </div>`
+                                    }
                                 </div>
                                 <div class="row">
                                     <div class="col-md-<?php echo $logged_in ? '11' : '12' ?>">
