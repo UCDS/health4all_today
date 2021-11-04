@@ -130,3 +130,12 @@ ALTER TABLE `language` CHANGE `language` `language` VARCHAR(20) CHARACTER SET ut
 --
 
 INSERT INTO `defaults` (`default_id`, `default_tilte`, `default_description`, `default_type`, `default_unit`, `lower_range`, `upper_range`, `value`) VALUES ('yousee_website', 'Yousee website URL', NULL, '', NULL, NULL, NULL, 'https://yousee.one/');
+
+
+
+--
+-- Overriding default value of images to empty string
+--
+UPDATE `question` SET `question_image` = '' WHERE `question`.`question_image` = 'NULL';
+UPDATE `question` SET `explanation_image` = '' WHERE `question`.`explanation_image` = 'NULL';
+UPDATE `answer_option` SET `answer_image` = '' WHERE `answer_option`.`answer_image` = 'NULL';
