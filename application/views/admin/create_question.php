@@ -62,8 +62,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <div class="row">
                 <div class="form-group col-md-5">
                     <label for="groupId">Select Group <span class="star" style="color:red"> *</span></label>
-                    <select name="group[]" id="group_1" onChange="filter_sub_groups('group_1' , 'sub_group_1')" placeholder='--Select--' required>
-                </select>
+                    <select class="form-control" name="group[]" id="group_1" onChange="filter_sub_groups('group_1' , 'sub_group_1')" placeholder='--Select--' required>
+                        <option value="" selected disabled>--Select--</option>
+                        <?php
+                            foreach($groups as $r){
+                                echo "<option value='".$r->group_id."'";
+                                if($this->input->post('group_name') && $this->input->post('group_name') == $r->group_id) echo " selected ";
+                                echo ">".$r->group_name."</option>";
+                            }
+                        ?>
+                    </select>
                 </div>
                 <div class="form-group col-md-5">
                     <label for="subGroupId">Select Sub Group</label>
@@ -149,15 +157,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <textarea class="form-control" name="answer_option[]" rows="1" required></textarea>
                 </div>
                 <div class="form-group col-md-4">
-                    <select class="form-control" name="answer_option_image[0]"  required>
-                        <option  selected value="NULL">Select Image</option>
-                        <?php
-                            foreach($images_list as $r){
-                                echo "<option value='".$r."'";
-                                if($this->input->post('explanation_image') && $this->input->post('explanation_image') == $r) echo " selected ";
-                                echo ">".$r."</option>";
-                            }
-                        ?>
+                    <select  name="answer_option_image[0]" id="answer_option_image_0">
                     </select>
                 </div>
                 <div class="form-group col-md-1">
@@ -173,15 +173,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <textarea class="form-control" name="answer_option[]" rows="1" required></textarea>
                 </div>
                 <div class="form-group col-md-4">
-                    <select class="form-control" name="answer_option_image[1]"  required>
-                        <option  selected value="NULL">Select Image</option>
-                        <?php
-                            foreach($images_list as $r){
-                                echo "<option value='".$r."'";
-                                if($this->input->post('explanation_image') && $this->input->post('explanation_image') == $r) echo " selected ";
-                                echo ">".$r."</option>";
-                            }
-                        ?>
+                    <select  name="answer_option_image[1]"  id="answer_option_image_1">
                     </select>
                 </div>
                 <div class="form-group col-md-1">
@@ -196,7 +188,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </div>
             </div>
         </div>
-            <button type="submit" class="btn btn-md btn-primary btn-block" onClick="$(#create_question).reset()">Submit</button>
+            <button type="submit" class="btn btn-md btn-primary btn-block">Submit</button>
         </form>
       </div>    
 </div>
@@ -209,9 +201,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
     $(function() {
         // onload initializing the search filter for groups, images
-        initGroupSelectize('group_1');
+        // initGroupSelectize('group_1');
         initImageSelectize('question_image');
         initImageSelectize('explanation_image');
+        initImageSelectize('answer_option_image_0');
+        initImageSelectize('answer_option_image_1');
 
         var answer_options_wrapper    = $(".answer_options_wrapper"); //Input fields answer_options_wrapper
         var add_button = $("#add_fields"); //Add button class or ID
@@ -226,7 +220,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <textarea class="form-control" name="answer_option[]" rows="1" required></textarea>
                         </div>
                         <div class="form-group col-md-4">
-                            <select class="form-control" id='answer_option_${x}' name="answer_option_image[${x}]"  required>
+                            <select class="form-control" id='answer_option_${x}' name="answer_option_image[${x}]">
                                 <option  selected value="NULL">Select Image</option>
                                 <?php
                                     foreach($images_list as $r){
@@ -267,7 +261,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <div class="row">
                     <div class="form-group col-md-5">
                         <label for="group">Select Group <span class="star" style="color:red"> *</span></label>
-                        <select  name="group[]" id="group_${count}" onChange="filter_sub_groups('group_${count}' , 'sub_group_${count}')" placeholder='--Select Group ${count}--' required>
+                        <select class='form-control' name="group[]" id="group_${count}" onChange="filter_sub_groups('group_${count}' , 'sub_group_${count}')" placeholder='--Select Group ${count}--' required>
+                        <option value="" selected disabled>--Select--</option>
+                            <?php
+                                foreach($groups as $r){
+                                    echo "<option value='".$r->group_id."'";
+                                    if($this->input->post('group_name') && $this->input->post('group_name') == $r->group_id) echo " selected ";
+                                    echo ">".$r->group_name."</option>";
+                                }
+                            ?>
                         </select>
                     </div>
                     <div class="form-group col-md-5">
@@ -282,7 +284,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     </div>
                 </div`);
 
-            initGroupSelectize('group_'+count); 
+            // initGroupSelectize('group_'+count); 
             count++;  
         });
         //when user click on remove button in additional groups and subgroups row
@@ -383,6 +385,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             },
 
         });
+        // $(`#${id}`).next().attr('required');
     }
 
     function initImageSelectize(id) {
