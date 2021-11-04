@@ -403,7 +403,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             },
 
         });
-        selectize[0].selectize.setValue("NULL");
     }
     
     function validateForm() {
