@@ -34,7 +34,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         </div>
       <div class="card-body">
       <!-- <?php echo form_open("admin/update_question",array('role'=>'form','class'=>'form-custom' , 'id'=>'update_question', "question_id"=>$question_id)); ?>  -->
-      <form id="update_question" action="<?php echo base_url('welcome/update_question/').$question_id ?>" method="POST">
+      <form id="update_question" action="<?php echo base_url('welcome/update_question/').$question_id ?>" method="POST" onsubmit="return validateForm()">
         <div class="row">
             <div class="col-md-5">
                 <label for="Question">Question<span class="star" style="color:red"> *</span></label>
@@ -185,6 +185,24 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         $(`#${previewImageId}`).attr("src", imagePath);
     }
 
+    function validateForm() {
+        let hasAtleastOneCorrectOption = false;
+        $("input[name*='correct_option']").each(function (index, element) {
+            if($(this).is(':checked')){
+                hasAtleastOneCorrectOption = true;
+                return false;
+            }
+        });
+        if(!hasAtleastOneCorrectOption){
+            swal({
+                title: "Error",
+                text: "Please select atleast one correct option",
+                type: "error"
+            });
+        }
+        return hasAtleastOneCorrectOption ? true : false;
+    }
+
     $(function() {
         var answer_options_wrapper    = $(".answer_options_wrapper"); //Input fields answer_options_wrapper
         var answer_details = <?php echo $answer_details;?>;
@@ -313,7 +331,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         // fetching and populating transliterate data
         var trasnliterate_wrapper = $(".transliterate_wrapper"); //Input fields answer_options_wrapper
         var tranliterate_details = <?php echo $tranliterate_details;?>;
-        console.log(tranliterate_details);
+        // console.log(tranliterate_details);
         const languages =  <?=json_encode($languages); ?>;
         tranliterate_details.forEach((element, index) => {
             $(trasnliterate_wrapper).append(`
