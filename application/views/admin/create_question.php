@@ -411,6 +411,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             },
 
         });
+    }
+    
     function validateForm() {
         let hasAtleastOneCorrectOption = false;
         $("input[name*='correct_option']").each(function (index, element) {
