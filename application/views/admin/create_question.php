@@ -220,15 +220,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <textarea class="form-control" name="answer_option[]" rows="1" required></textarea>
                         </div>
                         <div class="form-group col-md-4">
-                            <select class="form-control" id='answer_option_${x}' name="answer_option_image[${x}]">
-                                <option  selected value="NULL">Select Image</option>
-                                <?php
-                                    foreach($images_list as $r){
-                                        echo "<option value='".$r."'";
-                                        if($this->input->post('explanation_image') && $this->input->post('explanation_image') == $r) echo " selected ";
-                                        echo ">".$r."</option>";
-                                    }
-                                ?>
+                            <select id='answer_option_image_${x}' name="answer_option_image[${x}]">
                             </select>
                         </div>
                         <div class="form-group col-md-1">
@@ -243,6 +235,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         </div>
                     </div>
                 `);
+                initImageSelectize(`answer_option_image_${x}`);
                 x++ //input field increment
             });
         
@@ -385,7 +378,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             },
 
         });
-        // $(`#${id}`).next().attr('required');
     }
 
     function initImageSelectize(id) {
@@ -411,6 +403,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             },
 
         });
+        selectize[0].selectize.setValue("NULL");
     }
     
     function validateForm() {
