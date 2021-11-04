@@ -124,7 +124,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <input class="form-control" type="number" name="explanation_image_width" id="explanation_image_width" value=<?= $display_max_width[0]->value; ?> min=<?= $display_max_width[0]->lower_range;?> max=<?= $display_max_width[0]->upper_range; ?> />
                 </div>
             </div>    
-            <div class="row" style="text-align:center;margin-bottom:10px;">
+            <div class="row" style="text-align:center;margin-bottom:30px;">
                 <div class="col-md-6">
                     <label for="questionImagePreview">Question Image preview </label> <br>
                     <img id="questionImagePreview" src="" width="250" height="250">
@@ -202,6 +202,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     $(function() {
         // onload initializing the search filter for groups, images
         // initGroupSelectize('group_1');
+        $('#questionImagePreview, #explanationImagePreview').hide();
         initImageSelectize('question_image');
         initImageSelectize('explanation_image');
         initImageSelectize('answer_option_image_0');
@@ -350,9 +351,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     }
 
     function showImagePreview(imageSrc, previewImageId){
-        var selectedImageName = $(`#${imageSrc}`).val();
-        var imagePath = `<?= base_url() ?>assets/images/quiz/${selectedImageName}.jpeg`;
-        $(`#${previewImageId}`).attr("src", imagePath);
+        let selectedImageName = $(`#${imageSrc}`).val();
+        if(!selectedImageName) {
+            $(`#${previewImageId}`).hide();
+        } else {
+            let imagePath = `<?= base_url() ?>assets/images/quiz/${selectedImageName}.jpeg`;
+            $(`#${previewImageId}`).attr("src", imagePath).show();
+        }
     }
 
     function initGroupSelectize(id){
