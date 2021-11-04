@@ -86,7 +86,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <div class="form-group col-md-5">
                     <label for="questionImage">Select Question Image <span class="star" style="color:red"> *</span></label>
                     <select class="form-control" name="question_image" id="question_image" required onChange="showImagePreview('question_image', 'questionImagePreview')">
-                    <option  selected value='NULL'>--Select--</option>
+                    <option  selected value="">--Select--</option>
                     <?php
                         foreach($images_list as $r){
                             echo "<option value='".$r."'";
@@ -103,7 +103,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <div class="form-group col-md-5">
                     <label for="explanationImage">Select Explanation Question Image <span class="star" style="color:red"> *</span></label>
                     <select class="form-control" name="explanation_image" id="explanation_image" required onChange="showImagePreview('explanation_image', 'explanationImagePreview')">
-                    <option  selected value='NULL'>--Select--</option>
+                    <option  selected value="">--Select--</option>
                     <?php
                         foreach($images_list as $r){
                             echo "<option value='".$r."'";
@@ -180,7 +180,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
     function showImagePreview(imageSrc, previewImageId){
         var selectedImageName = $(`#${imageSrc}`).val();
-        if(selectedImageName == 'NULL') return;
+        if(!selectedImageName) return;
         var imagePath = `<?= base_url() ?>assets/images/quiz/${selectedImageName}.jpeg`;
         $(`#${previewImageId}`).attr("src", imagePath);
     }
@@ -219,7 +219,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             </div>
                             <div class="form-group col-md-4">
                                 <select class="form-control" id='answer_option_[${element.answer_option_id}]' name="answer_option_image[${element.answer_option_id}]"  required>
-                                    <option  selected name='NULL' value='NULL'>Select Image</option>
+                                    <option  selected  value="">Select Image</option>
                                     ${ getPopulatedImageOptions(ImagesList, element.answer_image) }
                                 </select>
                             </div>
@@ -258,7 +258,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     </div>
                     <div class="form-group col-md-4">
                         <select class="form-control" name="new_answer_option_image[]"  required>
-                            <option selected name='NULL' value='NULL'>Select Image</option>
+                            <option selected value="">Select Image</option>
                             <?php
                                 foreach($images_list as $r){
                                     echo "<option value='".$r."'";
