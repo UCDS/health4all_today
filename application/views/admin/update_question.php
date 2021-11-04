@@ -242,9 +242,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 <textarea name="answer_option[${element.answer_option_id}]" class="form-control" ${[0,1].includes(index) ? "required" :''} rows='1' >${element.answer} </textarea>
                             </div>
                             <div class="form-group col-md-4">
-                                <select class="form-control" id='answer_option_[${element.answer_option_id}]' name="answer_option_image[${element.answer_option_id}]"  required>
-                                    <option  selected  value="">Select Image</option>
-                                    ${ getPopulatedImageOptions(ImagesList, element.answer_image) }
+                                <select id='answer_option_image_${element.answer_option_id}' name="answer_option_image[${element.answer_option_id}]">
                                 </select>
                             </div>
                             <div class="form-group col-md-1">
@@ -262,6 +260,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             }  
                         </div>
                     `);
+                    initImageSelectize(`answer_option_image_${element.answer_option_id}`, element.answer_image);
                 }
             ); 
         }
@@ -281,18 +280,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <textarea name="new_answer_option[]" class="form-control" rows="1"></textarea>
                     </div>
                     <div class="form-group col-md-4">
-                        <select class="form-control" name="new_answer_option_image[]"  required>
-                            <option selected value="">Select Image</option>
-                            <?php
-                                foreach($images_list as $r){
-                                    echo "<option value='".$r."'";
-                                    echo ">".$r."</option>";
-                                }
-                            ?>
+                        <select  id="new_answer_option_image_${x}" name="new_answer_option_image[]" >
                         </select>
                     </div>
                     <div class="form-group col-md-1">
-                        <input class="form-control" type="number" name="new_answer_option_image_width[]" placeholder="width" min=<?= $display_max_width[0]->lower_range;?> max=<?= $display_max_width[0]->upper_range; ?> />
+                        <input class="form-control" type="number" name="new_answer_option_image_width[]" placeholder="width" value=<?= $display_max_width[0]->value; ?> min=<?= $display_max_width[0]->lower_range;?> max=<?= $display_max_width[0]->upper_range; ?> />
                     </div>
                     <div class="form-group col-md-1">
                     <input type="hidden" name="new_correct_option[]" value="" />
@@ -303,6 +295,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     </div>
                 </div>
             `);
+            initImageSelectize(`new_answer_option_image_${x}`)
             x++ //input field increment
         });
         
