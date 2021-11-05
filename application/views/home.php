@@ -37,6 +37,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         border: 1px solid #f2f2f2;
         width:100%;
     }
+    .option-name, .item {
+        font-size:1rem;
+    }
 
     li>span.answer {
     display: block;
@@ -59,6 +62,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 </style>
 
 <?php  $logged_in=$this->session->userdata('logged_in'); ?>
+<?php
+    $defaut_group = '';
+    foreach($groups as $r){
+        if($r->default_group == 1) {
+            $defaut_group = $r;
+        }
+    }
+?>
 <!-- Begin page content -->
 <main role="main" class="flex-shrink-0">
   <div class="container">
@@ -69,16 +80,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   <div class="container">
         <div class="row">
             <div class="form-group col-md-3">
-                <select class="form-control shadow-none " name="group" id="group_id" required >
-                    <option value="" selected disabled>Group</option>
-                    <?php
-                        foreach($groups as $r){
-                            echo "<option  value='".$r->group_id."'";
-                            if($this->input->post('group_name') && $this->input->post('group_name') == $r->group_id) echo " selected ";
-                            if($r->default_group == 1) echo "selected";
-                            echo ">".$r->group_name."</option>";
-                        }
-                    ?>
+                <select id="group_id" name="group" style=""  placeholder="       --Select Group--                     ">		
                 </select>
             </div>
             <div class="form-group col-md-3">
@@ -175,9 +177,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     const LOCK_ICON = "<i class='fa fa-lock' aria-hidden='true'></i>";
     const UNLOCK_ICON = "<i class='fa fa-unlock-alt' aria-hidden='true'></i>";
     const EDIT_ICON = "<i class='fa fa-pencil' aria-hidden='true'></i>";
-    
+ 
+    function escapeSpecialChars(str) {
+        return str.replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\t/g, "\\t");
+    }
     
     $(function() {   
+        // onload setting the default group value and initializing the search filter for group
+        $('#group_id').attr("data-previous-value", <?php echo $defaut_group->group_id; ?>);
+        initGroupSelectize();
         // onload call to show/hide transliterate language dropdown
         toggleTranslateLanguage();
 
@@ -293,6 +301,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     });
 
     function loadData() {
+        if(!$("#group_id").val()) {
+            swal({
+                    title: "Please select group",
+                    // text: "Question is safe!",
+                    type: "info",
+                    // timer: 2000
+            });
+            return;
+        }
         selected_group = $("#group_id").val();
         selected_sub_group = $("#sub_group_id").val();
         selected_question_level = $("#question_level_id").val();
@@ -301,6 +318,34 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         show_images = $("#show_images").is(':checked');
         load_quiz_data(1, selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
         get_pagination_data(selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
+    }
+
+    function initGroupSelectize(){
+        var groups = JSON.parse(escapeSpecialChars('<?php echo json_encode($groups); ?>'));
+        var selectize = $('#group_id').selectize({
+            valueField: 'group_id',
+	        labelField: 'group_name',
+            sortField: 'group_name',
+            searchField: ['group_name'],
+            options: groups,
+            create: false,
+            render: {
+                option: function(item, escape) {
+                    return `<div>
+                                <span class="title">
+                                    <span class="option-name">${escape(item.group_name)}</span>
+                                </span>
+                            </div>`;
+                }
+    	    },
+            load: function(query, callback) {
+                if (!query.length) return callback();
+            },
+
+        });
+        if($('#group_id').attr("data-previous-value")){
+		    selectize[0].selectize.setValue($('#group_id').attr("data-previous-value"));
+	    }
     }
 
     // function to show and hide the tranlate_language dropdown 
@@ -363,7 +408,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     function getExplantionBlock(explantion, explanationImage, explanationImageWIdth, explanationTransliterate, displayImage){
             if(explantion!==""){
                 return `<div class="explanation row" hidden>
-                                <div class="col-md-${ displayImage && explanationImage!='NULL' ? <?= $bootstrap_question_col_values[0]->lower_range; ?> :'12'}"> 
+                                <div class="col-md-${ displayImage && explanationImage ? <?= $bootstrap_question_col_values[0]->lower_range; ?> :'12'}"> 
                                     <h5> Explanation:</h5>
                                     <span> ${explantion} </span>
                                     <br/><br/>
@@ -384,7 +429,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     
     function getImageBlock(image, width, displayImage){
         // console.log(image)
-        if(image && image!=='NULL' && displayImage){
+        if(image && displayImage){
             return `<img src=<?=base_url()?>assets/images/quiz/${image}.jpeg width="${width}" style="max-width:-webkit-fill-available" />`
         } else{
             return "";
@@ -428,16 +473,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             `<div class="card-body" style="align-items:center;">
                                 
                                 <div class="row">
-                                    <div class="col-md-${ displayImage && question.question_image!=='NULL' ? '<?= $bootstrap_question_col_values[0]->lower_range; ?>': '12'}">
+                                    <div class="col-md-${ displayImage && question.question_image ? '<?= $bootstrap_question_col_values[0]->lower_range; ?>': '12'}">
                                         <h4 class="card-text">${++q +". "+question.question}</h4>
                                             <div class="question-transliterate-${question_id}">
                                             ${  questionTransliterate ? questionTransliterate : '' }
                                             </div>
                                         <br/>
                                     </div>
-                                    <div class="col-md-<?= $bootstrap_question_col_values[0]->upper_range; ?>" style="text-align:center">
-                                        ${getImageBlock(question.question_image, question.question_image_width, displayImage)}
-                                    </div>
+                                    ${question.question_image && 
+                                        `<div class="col-md-<?= $bootstrap_question_col_values[0]->upper_range; ?>" style="text-align:center">
+                                            ${getImageBlock(question.question_image, question.question_image_width, displayImage)}
+                                        </div>`
+                                    }
                                 </div>
                                 <div class="row">
                                     <div class="col-md-<?php echo $logged_in ? '11' : '12' ?>">
@@ -463,7 +510,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             $.each(answers, function (indexInArray, option) { 
                                  $(".answers-"+question_id).append(
                                      `<li class="row answer-option">
-                                        <span class="answer col-md-${displayImage && option.answer_image!=='NULL' ? <?= $bootstrap_question_col_values[0]->lower_range; ?> :'12'}" for=${question_id} data-val=${option.correct_option}> 
+                                        <span class="answer col-md-${displayImage && option.answer_image ? <?= $bootstrap_question_col_values[0]->lower_range; ?> :'12'}" for=${question_id} data-val=${option.correct_option}> 
                                           ${String.fromCharCode(c.charCodeAt(0)+ i++)  +". "+option.answer}
                                         </span>
                                             ${ option.answer_image ? `<span class="col-md-<?= $bootstrap_question_col_values[0]->upper_range; ?>" style="text-align:center"> ${getImageBlock(option.answer_image, option.answer_image_width, displayImage )} </span>` : "" }

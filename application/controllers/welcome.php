@@ -6,12 +6,13 @@ class Welcome extends CI_Controller {
 	function __construct() {
         parent::__construct();
 		$this->load->model('master_model');
+		$this->data['banner_text'] = $this->master_model->get_banner_text();
+		$this->data['yousee_website'] = $this->master_model->get_defaults('yousee_website');
     }
 
 	public function index()
 	{
 		$this->data['title']="";
-		$this->data['banner_text'] = $this->master_model->get_banner_text();
 		$this->data['display_max_height'] = $this->master_model->get_defaults('display_max_height');
 		$this->data['display_max_width'] = $this->master_model->get_defaults('display_max_width');
 		$this->data['bootstrap_question_col_values'] = $this->master_model->get_defaults('bootstrap_question_col_values');
@@ -72,7 +73,6 @@ class Welcome extends CI_Controller {
 			$this->data['title']="Update Question";
 			$this->load->view('templates/header' , $this->data);
 			$this->data['question_id'] = $question_id;
-			$this->data['banner_text'] = $this->master_model->get_banner_text();
 			$this->data['display_max_width'] = $this->master_model->get_defaults('display_max_width');
 			$this->data['languages'] = $this->master_model->get_languages();
 			$this->data['groups'] = $this->master_model->get_groups();
@@ -86,6 +86,7 @@ class Welcome extends CI_Controller {
 				foreach($images_list as &$image_name){
 					$image_name = pathinfo($image_name)['filename'];
 				}
+			sort($images_list);
 			$this->data['images_list']= $images_list;
 			$this->load->library('form_validation');
 			$this->form_validation->set_rules('question','question','required');

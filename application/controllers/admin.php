@@ -9,12 +9,13 @@ class Admin extends CI_Controller {
 			$userdata = $this->session->userdata('logged_in');
 			$user_id = $userdata['user_id'];
 		}
+		$this->data['banner_text'] = $this->master_model->get_banner_text();
+		$this->data['yousee_website'] = $this->master_model->get_defaults('yousee_website');
     }
 
 	public function index()
 	{
 		$this->data['title']="Home";
-		$this->data['banner_text'] = $this->master_model->get_banner_text();
 		if($this->session->userdata('logged_in')){
 			$this->data['title']="Home";
 			$this->data['userdata']=$this->session->userdata('logged_in');
@@ -30,7 +31,6 @@ class Admin extends CI_Controller {
 	public function login()
 	{
 		$this->load->helper('form');
-		$this->data['banner_text'] = $this->master_model->get_banner_text();
 		if($this->session->userdata('logged_in')){
 			$this->data['title']="Home";
 			$this->load->view('templates/header' , $this->data);
@@ -88,7 +88,6 @@ class Admin extends CI_Controller {
 
 	public function create_user()
 	{
-		$this->data['banner_text'] = $this->master_model->get_banner_text();
 		if($this->session->userdata('logged_in')){
 			$this->load->helper('form');
 			$this->data['title']="Create User";
@@ -124,7 +123,6 @@ class Admin extends CI_Controller {
 			$this->load->helper('directory');
 			$this->load->library('form_validation');
 			$this->data['title']="Create Question";
-			$this->data['banner_text'] = $this->master_model->get_banner_text();
 			$this->data['display_max_width'] = $this->master_model->get_defaults('display_max_width');
 			$this->load->view('templates/header' , $this->data);
 			$this->data['languages'] = $this->master_model->get_languages();
@@ -136,7 +134,8 @@ class Admin extends CI_Controller {
 				foreach($images_list as &$image_name){
 					$image_name = pathinfo($image_name)['filename'];
 				}
-				$this->data['images_list']= $images_list;
+			sort($images_list);
+			$this->data['images_list']= $images_list;
 			$this->form_validation->set_rules('question','question','required');
 			if ($this->form_validation->run() === FALSE) {
 				$this->load->view('admin/create_question',$this->data);
@@ -160,7 +159,6 @@ class Admin extends CI_Controller {
 			$this->load->helper('form');
 			$this->load->library('form_validation');
 			$this->data['title']="Change password";
-			$this->data['banner_text'] = $this->master_model->get_banner_text();
 			$this->data['userdata']=$this->session->userdata('logged_in');
 			$user_id=$this->data['userdata']['user_id'];
 			$this->load->view('templates/header',$this->data);
@@ -190,7 +188,6 @@ class Admin extends CI_Controller {
 			$this->load->helper('form');
 			$this->load->library('form_validation');
 			$this->data['title']="Create Group";
-			$this->data['banner_text'] = $this->master_model->get_banner_text();
 			$this->load->library('form_validation');
 			$this->load->view('templates/header',$this->data);
 			$this->form_validation->set_rules('group','group','required');
@@ -216,7 +213,6 @@ class Admin extends CI_Controller {
 			$this->load->helper('form');
 			$this->load->library('form_validation');
 			$this->data['title']="Create Sub Group";
-			$this->data['banner_text'] = $this->master_model->get_banner_text();
 			$this->load->library('form_validation');
 			$this->load->view('templates/header',$this->data);
 			$this->data['groups'] = $this->master_model->get_groups();
@@ -243,7 +239,6 @@ class Admin extends CI_Controller {
 			$this->load->helper('form');
 			$this->load->library('form_validation');
 			$this->data['title']="Create Language";
-			$this->data['banner_text'] = $this->master_model->get_banner_text();
 			$this->load->library('form_validation');
 			$this->load->view('templates/header',$this->data);
 			$this->form_validation->set_rules('language','language','required');
@@ -269,7 +264,6 @@ class Admin extends CI_Controller {
 			$this->load->helper('form');
 			$this->load->library('form_validation');
 			$this->data['title']="Create Level";
-			$this->data['banner_text'] = $this->master_model->get_banner_text();
 			$this->load->library('form_validation');
 			$this->load->view('templates/header',$this->data);
 			$this->form_validation->set_rules('level','level','required');
@@ -296,7 +290,6 @@ class Admin extends CI_Controller {
 				$this->load->helper('form');
 				$this->load->library('form_validation');
 				$this->data['title']="Upload image";
-				$this->data['banner_text'] = $this->master_model->get_banner_text();
 				$this->load->view('templates/header',$this->data);
 				$this->form_validation->set_rules('image','image','required');
 				if ($this->form_validation->run() === FALSE){

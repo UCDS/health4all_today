@@ -85,15 +85,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <div class="row">
                 <div class="form-group col-md-5">
                     <label for="questionImage">Select Question Image <span class="star" style="color:red"> *</span></label>
-                    <select class="form-control" name="question_image" id="question_image" required onChange="showImagePreview('question_image', 'questionImagePreview')">
-                    <option  selected value='NULL'>--Select--</option>
-                    <?php
-                        foreach($images_list as $r){
-                            echo "<option value='".$r."'";
-                            if($this->input->post('question_image') == $r || $question_details[0]->question_image ==$r) echo " selected ";
-                            echo ">".$r."</option>";
-                        }
-                    ?>
+                    <select name="question_image" id="question_image" onChange="showImagePreview('question_image', 'questionImagePreview')">
                     </select>
                 </div>
                 <div class="form-group col-md-1">
@@ -102,15 +94,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </div>
                 <div class="form-group col-md-5">
                     <label for="explanationImage">Select Explanation Question Image <span class="star" style="color:red"> *</span></label>
-                    <select class="form-control" name="explanation_image" id="explanation_image" required onChange="showImagePreview('explanation_image', 'explanationImagePreview')">
-                    <option  selected value='NULL'>--Select--</option>
-                    <?php
-                        foreach($images_list as $r){
-                            echo "<option value='".$r."'";
-                            if($this->input->post('explanation_image') == $r || $question_details[0]->explanation_image ==$r ) echo " selected ";
-                            echo ">".$r."</option>";
-                        }
-                    ?>
+                    <select name="explanation_image" id="explanation_image" onChange="showImagePreview('explanation_image', 'explanationImagePreview')">
                     </select>
                 </div>
                 <div class="form-group col-md-1">
@@ -118,7 +102,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <input class="form-control" type="number" name="explanation_image_width" id="explanation_image_width" value=<?= $question_details[0]->explanation_image_width; ?> min=<?= $display_max_width[0]->lower_range;?> max=<?= $display_max_width[0]->upper_range; ?> />
                 </div>
             </div>
-            <div class="row" style="text-align:center;margin-bottom:10px;">
+            <div class="row" style="text-align:center;margin-bottom:30px;">
                 <div class="col-md-6">
                     <label for="questionImagePreview">Question Image preview </label> <br>
                     <img id="questionImagePreview" src="" width="250" height="250">
@@ -144,6 +128,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 </div>
 
 <script>
+
+    function escapeSpecialChars(str) {
+        return str.replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\t/g, "\\t");
+    }
+
      // function to filter sub_groups based on a selected group 
      function filter_sub_groups(group , id, selected_sub_group=''){
         // fetching list of all subgroups
@@ -179,10 +168,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     }
 
     function showImagePreview(imageSrc, previewImageId){
-        var selectedImageName = $(`#${imageSrc}`).val();
-        if(selectedImageName == 'NULL') return;
-        var imagePath = `<?= base_url() ?>assets/images/quiz/${selectedImageName}.jpeg`;
-        $(`#${previewImageId}`).attr("src", imagePath);
+        let selectedImageName = $(`#${imageSrc}`).val();
+        if(!selectedImageName){    
+            $(`#${previewImageId}`).hide();
+        }  else {
+            let imagePath = `<?= base_url() ?>assets/images/quiz/${selectedImageName}.jpeg`;
+            $(`#${previewImageId}`).attr("src", imagePath).show();
+        }
     }
 
     function validateForm() {
@@ -203,7 +195,39 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         return hasAtleastOneCorrectOption ? true : false;
     }
 
+    function initImageSelectize(id, value) {
+        let imagesList = JSON.parse(escapeSpecialChars('<?php echo json_encode($images_list); ?>'));
+        imagesList = imagesList.map(function(x) { return { image: x }; })
+        var selectize = $(`#${id}`).selectize({
+            valueField: 'image',
+	        labelField: 'image',
+            searchField: 'image',
+            options: imagesList,
+            create: false,
+            render: {
+                option: function(item, escape) {
+                    return `<div>
+                                <span class="title">
+                                    <span class="option-name">${escape(item.image)}</span>
+                                </span>
+                            </div>`;
+                }
+    	    },
+            load: function(query, callback) {
+                if (!query.length) return callback();
+            },
+        });
+        if(value){
+		    selectize[0].selectize.setValue(value);
+	    }
+    }
+
     $(function() {
+
+        /* on page load, initializing image search filters */
+        initImageSelectize('question_image', '<?php echo $question_details[0]->question_image; ?>');
+        initImageSelectize('explanation_image', '<?php echo $question_details[0]->explanation_image; ?>');
+
         var answer_options_wrapper    = $(".answer_options_wrapper"); //Input fields answer_options_wrapper
         var answer_details = <?php echo $answer_details;?>;
         // console.log(answer_details);
@@ -218,9 +242,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 <textarea name="answer_option[${element.answer_option_id}]" class="form-control" ${[0,1].includes(index) ? "required" :''} rows='1' >${element.answer} </textarea>
                             </div>
                             <div class="form-group col-md-4">
-                                <select class="form-control" id='answer_option_[${element.answer_option_id}]' name="answer_option_image[${element.answer_option_id}]"  required>
-                                    <option  selected name='NULL' value='NULL'>Select Image</option>
-                                    ${ getPopulatedImageOptions(ImagesList, element.answer_image) }
+                                <select id='answer_option_image_${element.answer_option_id}' name="answer_option_image[${element.answer_option_id}]">
                                 </select>
                             </div>
                             <div class="form-group col-md-1">
@@ -238,6 +260,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             }  
                         </div>
                     `);
+                    initImageSelectize(`answer_option_image_${element.answer_option_id}`, element.answer_image);
                 }
             ); 
         }
@@ -257,18 +280,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <textarea name="new_answer_option[]" class="form-control" rows="1"></textarea>
                     </div>
                     <div class="form-group col-md-4">
-                        <select class="form-control" name="new_answer_option_image[]"  required>
-                            <option selected name='NULL' value='NULL'>Select Image</option>
-                            <?php
-                                foreach($images_list as $r){
-                                    echo "<option value='".$r."'";
-                                    echo ">".$r."</option>";
-                                }
-                            ?>
+                        <select  id="new_answer_option_image_${x}" name="new_answer_option_image[]" >
                         </select>
                     </div>
                     <div class="form-group col-md-1">
-                        <input class="form-control" type="number" name="new_answer_option_image_width[]" placeholder="width" min=<?= $display_max_width[0]->lower_range;?> max=<?= $display_max_width[0]->upper_range; ?> />
+                        <input class="form-control" type="number" name="new_answer_option_image_width[]" placeholder="width" value=<?= $display_max_width[0]->value; ?> min=<?= $display_max_width[0]->lower_range;?> max=<?= $display_max_width[0]->upper_range; ?> />
                     </div>
                     <div class="form-group col-md-1">
                     <input type="hidden" name="new_correct_option[]" value="" />
@@ -279,6 +295,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     </div>
                 </div>
             `);
+            initImageSelectize(`new_answer_option_image_${x}`)
             x++ //input field increment
         });
         
@@ -403,6 +420,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         $("#alert-success").fadeTo(2000, 500).slideUp(500, function(){
             $("#alert-success").slideUp(500);
         });
-});
+    });
    
 </script>

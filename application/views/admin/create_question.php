@@ -105,15 +105,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <div class="row">
                 <div class="form-group col-md-5">
                     <label for="questionImage">Select Question Image </label>
-                    <select class="form-control" name="question_image" id="question_image" onChange="showImagePreview('question_image', 'questionImagePreview')">
+                    <select name="question_image" id="question_image" onChange="showImagePreview('question_image', 'questionImagePreview')">
                     <option  selected value="NULL">--Select--</option>
-                    <?php
-                        foreach($images_list as $r){
-                            echo "<option value='".$r."'";
-                            if($this->input->post('question_image') && $this->input->post('question_image') == $r) echo " selected ";
-                            echo ">".$r."</option>";
-                        }
-                    ?>
                     </select>
                 </div>
                 <div class="form-group col-md-1">
@@ -122,15 +115,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </div>
                 <div class="form-group col-md-5">
                     <label for="explanationImage">Select Explanation Question Image</label>
-                    <select class="form-control" name="explanation_image" id="explanation_image" onChange="showImagePreview('explanation_image', 'explanationImagePreview')">
+                    <select name="explanation_image" id="explanation_image" onChange="showImagePreview('explanation_image', 'explanationImagePreview')">
                     <option  selected value="NULL">--Select--</option>
-                    <?php
-                        foreach($images_list as $r){
-                            echo "<option value='".$r."'";
-                            if($this->input->post('explanation_image') && $this->input->post('explanation_image') == $r) echo " selected ";
-                            echo ">".$r."</option>";
-                        }
-                    ?>
                     </select>
                 </div>
                 <div class="form-group col-md-1">
@@ -138,7 +124,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <input class="form-control" type="number" name="explanation_image_width" id="explanation_image_width" value=<?= $display_max_width[0]->value; ?> min=<?= $display_max_width[0]->lower_range;?> max=<?= $display_max_width[0]->upper_range; ?> />
                 </div>
             </div>    
-            <div class="row" style="text-align:center;margin-bottom:10px;">
+            <div class="row" style="text-align:center;margin-bottom:30px;">
                 <div class="col-md-6">
                     <label for="questionImagePreview">Question Image preview </label> <br>
                     <img id="questionImagePreview" src="" width="250" height="250">
@@ -171,15 +157,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <textarea class="form-control" name="answer_option[]" rows="1" required></textarea>
                 </div>
                 <div class="form-group col-md-4">
-                    <select class="form-control" name="answer_option_image[0]"  required>
-                        <option  selected value="NULL">Select Image</option>
-                        <?php
-                            foreach($images_list as $r){
-                                echo "<option value='".$r."'";
-                                if($this->input->post('explanation_image') && $this->input->post('explanation_image') == $r) echo " selected ";
-                                echo ">".$r."</option>";
-                            }
-                        ?>
+                    <select  name="answer_option_image[0]" id="answer_option_image_0">
                     </select>
                 </div>
                 <div class="form-group col-md-1">
@@ -195,15 +173,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <textarea class="form-control" name="answer_option[]" rows="1" required></textarea>
                 </div>
                 <div class="form-group col-md-4">
-                    <select class="form-control" name="answer_option_image[1]"  required>
-                        <option  selected value="NULL">Select Image</option>
-                        <?php
-                            foreach($images_list as $r){
-                                echo "<option value='".$r."'";
-                                if($this->input->post('explanation_image') && $this->input->post('explanation_image') == $r) echo " selected ";
-                                echo ">".$r."</option>";
-                            }
-                        ?>
+                    <select  name="answer_option_image[1]"  id="answer_option_image_1">
                     </select>
                 </div>
                 <div class="form-group col-md-1">
@@ -218,13 +188,25 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </div>
             </div>
         </div>
-            <button type="submit" class="btn btn-md btn-primary btn-block" onClick="$(#create_question).reset()">Submit</button>
+            <button type="submit" class="btn btn-md btn-primary btn-block">Submit</button>
         </form>
       </div>    
 </div>
 
 <script>
+
+    function escapeSpecialChars(str) {
+        return str.replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\t/g, "\\t");
+    }
+
     $(function() {
+        // onload initializing the search filter for groups, images
+        // initGroupSelectize('group_1');
+        $('#questionImagePreview, #explanationImagePreview').hide();
+        initImageSelectize('question_image');
+        initImageSelectize('explanation_image');
+        initImageSelectize('answer_option_image_0');
+        initImageSelectize('answer_option_image_1');
 
         var answer_options_wrapper    = $(".answer_options_wrapper"); //Input fields answer_options_wrapper
         var add_button = $("#add_fields"); //Add button class or ID
@@ -239,15 +221,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <textarea class="form-control" name="answer_option[]" rows="1" required></textarea>
                         </div>
                         <div class="form-group col-md-4">
-                            <select class="form-control" id='answer_option_${x}' name="answer_option_image[${x}]"  required>
-                                <option  selected value="NULL">Select Image</option>
-                                <?php
-                                    foreach($images_list as $r){
-                                        echo "<option value='".$r."'";
-                                        if($this->input->post('explanation_image') && $this->input->post('explanation_image') == $r) echo " selected ";
-                                        echo ">".$r."</option>";
-                                    }
-                                ?>
+                            <select id='answer_option_image_${x}' name="answer_option_image[${x}]">
                             </select>
                         </div>
                         <div class="form-group col-md-1">
@@ -262,6 +236,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         </div>
                     </div>
                 `);
+                initImageSelectize(`answer_option_image_${x}`);
                 x++ //input field increment
             });
         
@@ -276,32 +251,35 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         var groups_wrapper = $(".groups_wrapper"); //Groups and subgroup wrapper 
         var addGroupAndSubGroup = $("#addGroupAndSubGroup");
         $(addGroupAndSubGroup).click(function (e) { 
-            $(groups_wrapper).append(`<div class="row">
+            $(groups_wrapper).append(`
+                <div class="row">
                     <div class="form-group col-md-5">
-                    <label for="group">Select Group <span class="star" style="color:red"> *</span></label>
-                    <select class="form-control" name="group[]" id="group_${count}" onChange="filter_sub_groups('group_${count}' , 'sub_group_${count}')" required>
-                    <option value="" selected disabled>--Select--</option>
-                    <?php
-                        foreach($groups as $r){
-                            echo "<option value='".$r->group_id."'";
-                            if($this->input->post('group_name') && $this->input->post('group_name') == $r->group_id) echo " selected ";
-                            echo ">".$r->group_name."</option>";
-                        }
-                    ?>
-                </select>
-                </div>
-                <div class="form-group col-md-5">
-                    <label for="subGroup">Select Sub Group</label>
-                    <select class="form-control" name="sub_group[]" id="sub_group_${count}">
-                        <option value="0" selected >--Select--</option>
-                    </select>
-                </div>
-                <div class="form-group col-md-1">
-                <label for="">Remove</label>  
-                    <button class="btn btn-danger removeGroupAndSubGroup" ><i class="fa fa-trash" aria-hidden="true"></i></button>
-                </div>
+                        <label for="group">Select Group <span class="star" style="color:red"> *</span></label>
+                        <select class='form-control' name="group[]" id="group_${count}" onChange="filter_sub_groups('group_${count}' , 'sub_group_${count}')" placeholder='--Select Group ${count}--' required>
+                        <option value="" selected disabled>--Select--</option>
+                            <?php
+                                foreach($groups as $r){
+                                    echo "<option value='".$r->group_id."'";
+                                    if($this->input->post('group_name') && $this->input->post('group_name') == $r->group_id) echo " selected ";
+                                    echo ">".$r->group_name."</option>";
+                                }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-5">
+                        <label for="subGroup">Select Sub Group</label>
+                        <select class="form-control" name="sub_group[]" id="sub_group_${count}">
+                            <option value="0" selected >--Select--</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-1">
+                        <label for="">Remove</label>  
+                        <button class="btn btn-danger removeGroupAndSubGroup" ><i class="fa fa-trash" aria-hidden="true"></i></button>
+                    </div>
                 </div`);
-                count++;   
+
+            // initGroupSelectize('group_'+count); 
+            count++;  
         });
         //when user click on remove button in additional groups and subgroups row
         $(groups_wrapper).on("click",".removeGroupAndSubGroup", function(e){ 
@@ -353,6 +331,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             transliterateRowsCount--; 
         });
     });
+
     // function to filter sub_groups based on a selected group 
     function filter_sub_groups(group , id){
         // fetching list of all subgroups
@@ -372,11 +351,65 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     }
 
     function showImagePreview(imageSrc, previewImageId){
-        var selectedImageName = $(`#${imageSrc}`).val();
-        var imagePath = `<?= base_url() ?>assets/images/quiz/${selectedImageName}.jpeg`;
-        $(`#${previewImageId}`).attr("src", imagePath);
+        let selectedImageName = $(`#${imageSrc}`).val();
+        if(!selectedImageName) {
+            $(`#${previewImageId}`).hide();
+        } else {
+            let imagePath = `<?= base_url() ?>assets/images/quiz/${selectedImageName}.jpeg`;
+            $(`#${previewImageId}`).attr("src", imagePath).show();
+        }
     }
 
+    function initGroupSelectize(id){
+        var groups = JSON.parse(escapeSpecialChars('<?php echo json_encode($groups); ?>'));
+        var selectize = $(`#${id}`).selectize({
+            valueField: 'group_id',
+	        labelField: 'group_name',
+            sortField: 'group_name',
+            searchField: ['group_name'],
+            options: groups,
+            create: false,
+            render: {
+                option: function(item, escape) {
+                    return `<div>
+                                <span class="title">
+                                    <span class="option-name">${escape(item.group_name)}</span>
+                                </span>
+                            </div>`;
+                }
+    	    },
+            load: function(query, callback) {
+                if (!query.length) return callback();
+            },
+
+        });
+    }
+
+    function initImageSelectize(id) {
+        let imagesList = JSON.parse(escapeSpecialChars('<?php echo json_encode($images_list); ?>'));
+        imagesList = imagesList.map(function(x) { return { image: x }; })
+        var selectize = $(`#${id}`).selectize({
+            valueField: 'image',
+	        labelField: 'image',
+            searchField: 'image',
+            options: imagesList,
+            create: false,
+            render: {
+                option: function(item, escape) {
+                    return `<div>
+                                <span class="title">
+                                    <span class="option-name">${escape(item.image)}</span>
+                                </span>
+                            </div>`;
+                }
+    	    },
+            load: function(query, callback) {
+                if (!query.length) return callback();
+            },
+
+        });
+    }
+    
     function validateForm() {
         let hasAtleastOneCorrectOption = false;
         $("input[name*='correct_option']").each(function (index, element) {
