@@ -458,6 +458,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     var question_answers_list =  JSON.parse(data);
                     // console.log(question_answers_list)
                     var q=(page-1)*10;
+                    const show_transliterate = $("#show_transliterate").is(':checked');
                     $.each(question_answers_list, function (indexInArray, valueOfElement) { 
                         
                         const {question , answers, transliterate} = valueOfElement;
@@ -475,9 +476,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 <div class="row">
                                     <div class="col-md-${ displayImage && question.question_image ? '<?= $bootstrap_question_col_values[0]->lower_range; ?>': '12'}">
                                         <h4 class="card-text">${++q +". "+question.question}</h4>
-                                            <div class="question-transliterate-${question_id}">
-                                            ${  questionTransliterate ? questionTransliterate : '' }
-                                            </div>
+                                            ${show_transliterate ? `
+                                                <div class="question-transliterate-${question_id}">
+                                                ${  questionTransliterate ? questionTransliterate : '' }
+                                                </div>
+                                            ` : ''}
                                         <br/>
                                     </div>
                                     ${question.question_image && 
