@@ -62,15 +62,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <div class="row">
                 <div class="form-group col-md-5">
                     <label for="groupId">Select Group <span class="star" style="color:red"> *</span></label>
-                    <select class="form-control" name="group[]" id="group_1" onChange="filter_sub_groups('group_1' , 'sub_group_1')" required>
-                    <option value="" selected disabled>--Select--</option>
-                    <?php
-                        foreach($groups as $r){
-                            echo "<option value='".$r->group_id."'";
-                            if($this->input->post('group_name') && $this->input->post('group_name') == $r->group_id) echo " selected ";
-                            echo ">".$r->group_name."</option>";
-                        }
-                    ?>
+                    <select name="group[]" id="group_1" onChange="filter_sub_groups('group_1' , 'sub_group_1')" placeholder='-- Select Group --'>
                 </select>
                 </div>
                 <div class="form-group col-md-5">
@@ -201,7 +193,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
     $(function() {
         // onload initializing the search filter for groups, images
-        // initGroupSelectize('group_1');
+        initGroupSelectize('group_1');
         $('#questionImagePreview, #explanationImagePreview').hide();
         initImageSelectize('question_image');
         initImageSelectize('explanation_image');
@@ -255,15 +247,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <div class="row">
                     <div class="form-group col-md-5">
                         <label for="group">Select Group <span class="star" style="color:red"> *</span></label>
-                        <select class='form-control' name="group[]" id="group_${count}" onChange="filter_sub_groups('group_${count}' , 'sub_group_${count}')" placeholder='--Select Group ${count}--' required>
-                        <option value="" selected disabled>--Select--</option>
-                            <?php
-                                foreach($groups as $r){
-                                    echo "<option value='".$r->group_id."'";
-                                    if($this->input->post('group_name') && $this->input->post('group_name') == $r->group_id) echo " selected ";
-                                    echo ">".$r->group_name."</option>";
-                                }
-                            ?>
+                        <select name="group[]" id="group_${count}" onChange="filter_sub_groups('group_${count}' , 'sub_group_${count}')" placeholder='--Select Group ${count}--'>
                         </select>
                     </div>
                     <div class="form-group col-md-5">
@@ -278,7 +262,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     </div>
                 </div`);
 
-            // initGroupSelectize('group_'+count); 
+            initGroupSelectize('group_'+count); 
             count++;  
         });
         //when user click on remove button in additional groups and subgroups row
@@ -411,6 +395,35 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     }
     
     function validateForm() {
+        if(!validateGroupSelection()){
+            return false;
+        }
+        if(!validateMinOneCorrectOption()){
+            return false;
+        }
+        return true;
+    }
+
+    function validateGroupSelection() {
+        let hasSelectedGroups = true;
+        $("[id^='group_']").each(function (index, element) {
+            console.log( !$(this).val());
+            if( !$(this).val()){ 
+                hasSelectedGroups = false;
+            }
+        });
+        
+        if(!hasSelectedGroups) {
+            swal({
+                title: "Error",
+                text: "Please select  group",
+                type: "error"
+            });
+        }
+        return hasSelectedGroups  ? true : false;
+    }
+
+    function validateMinOneCorrectOption() {
         let hasAtleastOneCorrectOption = false;
         $("input[name*='correct_option']").each(function (index, element) {
             if($(this).is(':checked')){
@@ -418,6 +431,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 return false;
             }
         });
+        
         if(!hasAtleastOneCorrectOption){
             swal({
                 title: "Error",
