@@ -17,6 +17,7 @@ class Welcome extends CI_Controller {
 		$this->data['display_max_width'] = $this->master_model->get_defaults('display_max_width');
 		$this->data['bootstrap_question_col_values'] = $this->master_model->get_defaults('bootstrap_question_col_values');
 		$this->data['display_images'] = $this->master_model->get_defaults('display_images');
+		$this->data['default_quiz_language'] = $this->master_model->get_defaults('default_quiz_language');
 		$this->data['user_display_images'] = $this->master_model->get_defaults('user_display_images');
 		$this->data['display_transliterate'] = $this->master_model->get_defaults('display_transliterate');
 		$this->data['user_display_transliterate'] = $this->master_model->get_defaults('user_display_transliterate');
