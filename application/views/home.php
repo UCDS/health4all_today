@@ -105,7 +105,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <?php
                         foreach($languages as $r){ ?>
                         <option value="<?php echo $r->language_id;?>"    
-                        <?php if($this->input->post('language') == $r->language_id) echo " selected "; ?>
+                        <?php if($this->input->post('language') == $r->language_id || $default_quiz_language[0]->value == $r->language_id) echo " selected "; ?>
                         ><?php echo $r->language;?></option>    
                         <?php }  ?>
                 </select>
