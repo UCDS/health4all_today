@@ -77,4 +77,13 @@ class User_model extends CI_Model {
 		return $query->result();
 	}
 
+    // get all languages user associated with
+    function user_languages($user_id) {
+        $this->db->select('language_id')
+            ->where('user_id', $user_id)
+            ->from('user_language_link');
+		$query=$this->db->get();
+		
+		return $query->result();
+    }
 }
