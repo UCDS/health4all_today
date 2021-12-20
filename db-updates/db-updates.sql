@@ -139,3 +139,10 @@ INSERT INTO `defaults` (`default_id`, `default_tilte`, `default_description`, `d
 UPDATE `question` SET `question_image` = '' WHERE `question`.`question_image` = 'NULL';
 UPDATE `question` SET `explanation_image` = '' WHERE `question`.`explanation_image` = 'NULL';
 UPDATE `answer_option` SET `answer_image` = '' WHERE `answer_option`.`answer_image` = 'NULL';
+
+
+--
+-- Adding default value of quiz language to the defaults table
+--
+
+INSERT INTO `defaults` (`default_id`, `default_tilte`, `default_description`, `default_type`, `default_unit`, `lower_range`, `upper_range`, `value`) VALUES ('default_quiz_language', 'Default language value for the quiz page', 'This value indicates the language id, which has to be selected as default language in the quiz page', '', NULL, NULL, NULL, '1');
