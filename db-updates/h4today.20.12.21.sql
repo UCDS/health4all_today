@@ -58,3 +58,66 @@ ADD `updated_datetime` TIMESTAMP NULL DEFAULT NULL AFTER `updated_by`;
 --- Adding active_status column to the user table
 ---
 ALTER TABLE `user` ADD `active_status` TINYINT(1) NULL DEFAULT NULL COMMENT '1- Active user, 0-InActive user . ' AFTER `password`;
+
+---
+--- Altered cloumn names of answer_option table
+---
+ALTER TABLE `answer_option` 
+    CHANGE `created_by` `created_by` INT(11) NULL DEFAULT NULL, 
+    CHANGE `last_modified_by` `updated_by` INT(11) NULL DEFAULT NULL, 
+    CHANGE `created_date_time` `created_datetime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+    CHANGE `last_modified_date_time` `updated_datetime` TIMESTAMP NULL DEFAULT NULL;
+
+---
+--- Adding columns to the defaults table
+---
+ALTER TABLE `defaults` 
+    ADD `created_by` INT(11) NULL DEFAULT NULL AFTER `value`, 
+    ADD `created_datetime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created_by`, 
+    ADD `updated_by` INT(11) NULL DEFAULT NULL AFTER `created_datetime`, 
+    ADD `updated_datetime` TIMESTAMP NULL DEFAULT NULL AFTER `updated_by`;
+
+---
+--- Altered column names of quetion table
+---
+ALTER TABLE `question` 
+    CHANGE `created_by` `created_by` INT(11) NULL DEFAULT NULL, 
+    CHANGE `last_modified_by` `updated_by` INT(11) NULL DEFAULT NULL, 
+    CHANGE `created_date_time` `created_datetime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+    CHANGE `last_modified_date_time` `updated_datetime` TIMESTAMP NULL DEFAULT NULL;
+
+---
+--- Adding columns to question_grouping table 
+---
+ALTER TABLE `question_grouping` 
+    ADD `created_by` INT(11) NULL DEFAULT NULL AFTER `sub_group_id`, 
+    ADD `created_datetime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created_by`, 
+    ADD `updated_by` INT(11) NULL DEFAULT NULL AFTER `created_datetime`, 
+    ADD `updated_datetime` TIMESTAMP NULL DEFAULT NULL AFTER `updated_by`;
+
+---
+---  Adding columns to  transliterate_question table
+---
+ALTER TABLE `transliterate_question` 
+    ADD `created_by` INT(11) NULL DEFAULT NULL AFTER `explanation_transliterate`, 
+    ADD `created_datetime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created_by`, 
+    ADD `updated_by` INT(11) NULL DEFAULT NULL AFTER `created_datetime`, 
+    ADD `updated_datetime` TIMESTAMP NULL DEFAULT NULL AFTER `updated_by`;
+
+---
+--- Adding columns to transliterate_answer table
+---
+ALTER TABLE `transliterate_answer`
+    ADD `created_by` INT(11) NULL DEFAULT NULL AFTER `answer_option_transliterate`, 
+    ADD `created_datetime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created_by`, 
+    ADD `updated_by` INT(11) NULL DEFAULT NULL AFTER `created_datetime`, 
+    ADD `updated_datetime` TIMESTAMP NULL DEFAULT NULL AFTER `updated_by`;
+
+---
+--- Adding columns to user_function_link table
+---
+ALTER TABLE `user_function_link`
+    ADD `created_by` INT(11) NULL DEFAULT NULL AFTER `active`, 
+    ADD `created_datetime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created_by`, 
+    ADD `updated_by` INT(11) NULL DEFAULT NULL AFTER `created_datetime`, 
+    ADD `updated_datetime` TIMESTAMP NULL DEFAULT NULL AFTER `updated_by`;
