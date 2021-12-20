@@ -132,3 +132,16 @@ INSERT INTO `user_function` (`user_function_id`, `user_function`, `user_function
 (4, 'group', 'Group', 'User function for group'),
 (5, 'sub_group', 'Sub Group', 'User function for sub group'),
 (6, 'question_status', 'Question status', 'User function for question status');
+
+---
+--- Adding user function for user functionalities
+---
+
+INSERT INTO `user_function` (`user_function_id`, `user_function`, `user_function_display`, `description`) 
+VALUES (NULL, 'user', 'User', 'User function for user fucntionalities');
+
+---
+--- Adding user function for image functionalities
+---
+INSERT INTO `user_function` (`user_function_id`, `user_function`, `user_function_display`, `description`) 
+VALUES (NULL, 'image', 'Image', 'User function to handle access to image functionality');
