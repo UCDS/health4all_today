@@ -1,17 +1,17 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Welcome extends CI_Controller {
+class Home extends CI_Controller {
 
 	function __construct() {
         parent::__construct();
 		$this->load->model('master_model');
+		$this->load->model('user_model');
 		$this->data['banner_text'] = $this->master_model->get_banner_text();
 		$this->data['yousee_website'] = $this->master_model->get_defaults('yousee_website');
     }
 
-	public function index()
-	{
+	public function index(){
 		$this->data['title']="";
 		$this->data['display_max_height'] = $this->master_model->get_defaults('display_max_height');
 		$this->data['display_max_width'] = $this->master_model->get_defaults('display_max_width');

@@ -5,6 +5,7 @@ class Admin extends CI_Controller {
     function __construct() {
         parent::__construct();
 		$this->load->model('master_model');
+		$this->load->model('user_model');
 		if($this->session->userdata('logged_in')){
 			$userdata = $this->session->userdata('logged_in');
 			$user_id = $userdata['user_id'];
@@ -13,8 +14,7 @@ class Admin extends CI_Controller {
 		$this->data['yousee_website'] = $this->master_model->get_defaults('yousee_website');
     }
 
-	public function index()
-	{
+	public function index(){
 		$this->data['title']="Home";
 		if($this->session->userdata('logged_in')){
 			$this->data['title']="Home";
@@ -28,11 +28,10 @@ class Admin extends CI_Controller {
 		$this->load->view('templates/footer',$this->data);
 	}
 
-	public function login()
-	{
+	public function login(){
 		$this->load->helper('form');
 		if($this->session->userdata('logged_in')){
-			$this->data['title']="Home";
+			$this->data['title']="Login";
 			$this->load->view('templates/header' , $this->data);
 			$this->load->view('admin/admin_functions' , $this->data);
 		}
@@ -63,7 +62,7 @@ class Admin extends CI_Controller {
 		$this->load->model('master_model');
 		//Field validation succeeded.  Validate against database
 		$username = $this->input->post('username');
-		$result = $this->master_model->login($username, $password);
+		$result = $this->user_model->login($username, $password);
 		if($result) {
 			$sess_array = array(
 				'user_id' => $result->user_id,
@@ -86,8 +85,7 @@ class Admin extends CI_Controller {
 	 }
 
 
-	public function create_user()
-	{
+	public function create_user(){
 		if($this->session->userdata('logged_in')){
 			$this->load->helper('form');
 			$this->data['title']="Create User";
@@ -99,7 +97,7 @@ class Admin extends CI_Controller {
 			if ($this->form_validation->run() === FALSE){
 				$this->load->view('admin/create_user' , $this->data);
 			} else {
-				if($this->master_model->create_user()){
+				if($this->user_model->create_user()){
 					$this->data['msg']="User created successfully";
 					$this->load->view('admin/create_user',$this->data);
 				} else {
@@ -168,7 +166,7 @@ class Admin extends CI_Controller {
 				$this->load->view('admin/change_password',$this->data);
 			}
 			else {
-				if($this->master_model->change_password($user_id)){
+				if($this->user_model->change_password($user_id)){
 					$this->data['msg']="Password has been changed successfully";
 				}
 				else{
