@@ -9,6 +9,8 @@ class Admin extends CI_Controller {
 		if($this->session->userdata('logged_in')){
 			$userdata = $this->session->userdata('logged_in');
 			$user_id = $userdata['user_id'];
+			$this->data['functions']=$this->user_model->user_function($user_id);
+			$this->data['user_languages']=$this->user_model->user_languages($user_id);
 		}
 		$this->data['banner_text'] = $this->master_model->get_banner_text();
 		$this->data['yousee_website'] = $this->master_model->get_defaults('yousee_website');
@@ -17,8 +19,31 @@ class Admin extends CI_Controller {
 	public function index(){
 		$this->data['title']="Home";
 		if($this->session->userdata('logged_in')){
+			$add_user_access = 0;
+			$add_question_access = 0;
+			$add_group_access=0;
+			$add_sub_group_access=0;
+			$add_image_access=0;
+			$add_level_access=0;
+			$add_language_access=0;
+			foreach($this->data['functions'] as $f){
+				if($f->user_function=="user" && $f->add) 	$add_user_access=1;  	
+				if($f->user_function=="question" && $f->add) 	$add_question_access=1;  	
+				if($f->user_function=="group" && $f->add)	$add_group_access=1;  	
+				if($f->user_function=="sub_group" && $f->add)	$add_sub_group_access=1;  	
+				if($f->user_function=="image" && $f->add)	$add_image_access=1;  	
+				if($f->user_function=="language" && $f->add)	$add_language_access=1;  	
+				if($f->user_function=="level" && $f->add)	$add_level_access=1;  	
+			}
 			$this->data['title']="Home";
 			$this->data['userdata']=$this->session->userdata('logged_in');
+			$this->data['add_user_access']=$add_user_access;
+			$this->data['add_question_access']=$add_question_access;
+			$this->data['add_group_access']=$add_group_access;
+			$this->data['add_sub_group_access']=$add_sub_group_access;
+			$this->data['add_image_access']=$add_image_access;
+			$this->data['add_language_access']=$add_language_access;
+			$this->data['add_level_access']=$add_level_access;
 			$this->load->view('templates/header' , $this->data);
 			$this->load->view('admin/admin_functions' , $this->data);
 		} else {
@@ -78,44 +103,51 @@ class Admin extends CI_Controller {
 		}
 	}
 
-	function logout()
-	 {
+	function logout(){
 	   $this->session->sess_destroy();
-	   redirect('welcome', 'refresh');
-	 }
+	   redirect('home', 'refresh');
+	}
 
 
 	public function create_user(){
 		if($this->session->userdata('logged_in')){
-			$this->load->helper('form');
-			$this->data['title']="Create User";
-			$this->load->view('templates/header' , $this->data);
-			$this->data['languages'] = $this->master_model->get_languages();
-			$this->load->library('form_validation');
-			$this->form_validation->set_rules('username', 'Username', 'trim|required|xss_clean');
-			$this->form_validation->set_rules('password', 'Password', 'trim|required|xss_clean');
-			if ($this->form_validation->run() === FALSE){
-				$this->load->view('admin/create_user' , $this->data);
-			} else {
-				if($this->user_model->create_user()){
-					$this->data['msg']="User created successfully";
-					$this->load->view('admin/create_user',$this->data);
-				} else {
-					$this->data['msg']="Error creating user. Please retry.";
-					$this->load->view('admin/create_user',$this->data);
-				}
+			$add_user_access = 0;
+			foreach($this->data['functions'] as $f){
+				if($f->user_function=="user"){ 
+					if($f->add)
+						$add_user_access=1;  	
+				}	
 			}
-			$this->load->view('templates/footer', $this->data);
-
+			if($add_user_access){
+				$this->load->helper('form');
+				$this->data['title']="Create User";
+				$this->load->view('templates/header' , $this->data);
+				$this->data['languages'] = $this->master_model->get_languages();
+				$this->load->library('form_validation');
+				$this->form_validation->set_rules('username', 'Username', 'trim|required|xss_clean');
+				$this->form_validation->set_rules('password', 'Password', 'trim|required|xss_clean');
+				if ($this->form_validation->run() === FALSE){
+					$this->load->view('admin/create_user' , $this->data);
+				} else {
+					if($this->user_model->create_user()){
+						$this->data['msg']="User created successfully";
+						$this->load->view('admin/create_user',$this->data);
+					} else {
+						$this->data['msg']="Error creating user. Please retry.";
+						$this->load->view('admin/create_user',$this->data);
+					}
+				}
+				$this->load->view('templates/footer', $this->data);
+			} else {
+				show_404();
+			}
 		} else{
 			show_404();
 		}
 
 	}
 
-	public function create_question()
-	{
-
+	public function create_question(){
 		if($this->session->userdata('logged_in')){
 			$this->load->helper('form');
 			$this->load->helper('directory');
@@ -232,6 +264,7 @@ class Admin extends CI_Controller {
 			show_404();
 		}
 	}
+
 	public function create_language(){
 		if($this->session->userdata('logged_in') &&  $this->session->userdata('logged_in')['admin']==1){
 			$this->load->helper('form');
