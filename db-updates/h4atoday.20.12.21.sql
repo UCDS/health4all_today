@@ -121,3 +121,14 @@ ALTER TABLE `user_function_link`
     ADD `created_datetime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created_by`, 
     ADD `updated_by` INT(11) NULL DEFAULT NULL AFTER `created_datetime`, 
     ADD `updated_datetime` TIMESTAMP NULL DEFAULT NULL AFTER `updated_by`;
+
+---
+--- Adding user function values
+---
+INSERT INTO `user_function` (`user_function_id`, `user_function`, `user_function_display`, `description`) VALUES
+(1, 'question', 'Question', 'User function for question'),
+(2, 'answer', 'Answer', 'User function for answer'),
+(3, 'transliteration', 'Transliteration', 'User function for transliteration'),
+(4, 'group', 'Group', 'User function for group'),
+(5, 'sub_group', 'Sub Group', 'User function for sub group'),
+(6, 'question_status', 'Question status', 'User function for question status');
