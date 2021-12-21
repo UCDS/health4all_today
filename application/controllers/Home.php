@@ -123,6 +123,10 @@ class Home extends CI_Controller {
 					$this->load->view('admin/update_question',$this->data);
 				} else {
 					if($this->master_model->update_question($question_id)){
+						$this->data['question_details']=$this->master_model->get_question_by_id($question_id);
+						$this->data['answer_details']=$this->master_model->get_answer_options_by_question_id($question_id);
+						$this->data['tranliterate_details']=$this->master_model->get_transliterate_data_by_question_id($question_id);
+						$this->data['grouping_details']=$this->master_model->get_group_info_by_question_id($question_id);
 						$this->data['msg']="Question updated successfully";
 						$this->load->view('admin/update_question',$this->data);
 					} else {

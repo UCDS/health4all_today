@@ -34,7 +34,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         </div>
       <div class="card-body">
       <!-- <?php echo form_open("admin/update_question",array('role'=>'form','class'=>'form-custom' , 'id'=>'update_question', "question_id"=>$question_id)); ?>  -->
-      <form id="update_question" action="<?php echo base_url('welcome/update_question/').$question_id ?>" method="POST" onsubmit="return validateForm()">
+      <form id="update_question" action="<?php echo base_url('home/update_question/').$question_id ?>" method="POST" onsubmit="return validateForm()">
         <div class="row">
             <div class="col-md-5">
                 <label for="Question">Question<span class="star" style="color:red"> *</span></label>
