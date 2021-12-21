@@ -7,12 +7,36 @@ class Home extends CI_Controller {
         parent::__construct();
 		$this->load->model('master_model');
 		$this->load->model('user_model');
+		if($this->session->userdata('logged_in')){
+			$userdata = $this->session->userdata('logged_in');
+			$user_id = $userdata['user_id'];
+			$this->data['functions']=$this->user_model->user_function($user_id);
+			$this->data['user_languages']=$this->user_model->user_languages($user_id);
+		}
 		$this->data['banner_text'] = $this->master_model->get_banner_text();
 		$this->data['yousee_website'] = $this->master_model->get_defaults('yousee_website');
     }
 
 	public function index(){
-		$this->data['title']="";
+		$this->data['title']="Quiz";
+		$this->data['edit_question_access']=0;
+		$this->data['remove_question_access']=0;
+		$this->data['edit_question_status_access']=0;
+		if($this->session->userdata('logged_in')){
+			foreach($this->data['functions'] as $f){
+				if($f->user_function=="question"){
+					if($f->edit)
+						$this->data['edit_question_access']=1;
+					if($f->remove)
+						$this->data['remove_question_access']=1;
+				}
+				if($f->user_function=="question_status"){
+					if($f->edit)
+						$this->data['edit_question_status_access']=1;
+				}
+			}
+		}
+		$this->load->view('templates/header' , $this->data);
 		$this->data['display_max_height'] = $this->master_model->get_defaults('display_max_height');
 		$this->data['display_max_width'] = $this->master_model->get_defaults('display_max_width');
 		$this->data['bootstrap_question_col_values'] = $this->master_model->get_defaults('bootstrap_question_col_values');
@@ -21,7 +45,6 @@ class Home extends CI_Controller {
 		$this->data['user_display_images'] = $this->master_model->get_defaults('user_display_images');
 		$this->data['display_transliterate'] = $this->master_model->get_defaults('display_transliterate');
 		$this->data['user_display_transliterate'] = $this->master_model->get_defaults('user_display_transliterate');
-		$this->load->view('templates/header' , $this->data);
 		$this->data['groups'] = $this->master_model->get_groups();
 		$this->data['sub_groups'] = $this->master_model->get_sub_groups();
 		$this->data['question_levels'] = $this->master_model->get_question_levels();
@@ -69,40 +92,48 @@ class Home extends CI_Controller {
 	
 	public function update_question($question_id){
 		if($this->session->userdata('logged_in')){
-			$this->load->helper('form');
-			$this->load->helper('directory');
-			$this->data['title']="Update Question";
-			$this->load->view('templates/header' , $this->data);
-			$this->data['question_id'] = $question_id;
-			$this->data['display_max_width'] = $this->master_model->get_defaults('display_max_width');
-			$this->data['languages'] = $this->master_model->get_languages();
-			$this->data['groups'] = $this->master_model->get_groups();
-			$this->data['sub_groups'] = $this->master_model->get_sub_groups();
-			$this->data['question_levels'] = $this->master_model->get_question_levels();
-			$this->data['question_details']=$this->master_model->get_question_by_id($question_id);
-			$this->data['answer_details']=$this->master_model->get_answer_options_by_question_id($question_id);
-			$this->data['tranliterate_details']=$this->master_model->get_transliterate_data_by_question_id($question_id);
-			$this->data['grouping_details']=$this->master_model->get_group_info_by_question_id($question_id);
-			$images_list = directory_map("./assets/images/quiz",TRUE,FALSE);
-				foreach($images_list as &$image_name){
-					$image_name = pathinfo($image_name)['filename'];
-				}
-			sort($images_list);
-			$this->data['images_list']= $images_list;
-			$this->load->library('form_validation');
-			$this->form_validation->set_rules('question','question','required');
-			if ($this->form_validation->run() === FALSE) {
-				$this->load->view('admin/update_question',$this->data);
-			} else {
-				if($this->master_model->update_question($question_id)){
-					$this->data['msg']="Question updated successfully";
+			$edit_question_access = 0;
+			foreach($this->data['functions'] as $f){
+				if($f->user_function=="question" && $f->edit) 	$edit_question_access=1;  	
+			}
+			if($edit_question_access) {
+				$this->load->helper('form');
+				$this->load->helper('directory');
+				$this->data['title']="Update Question";
+				$this->load->view('templates/header' , $this->data);
+				$this->data['question_id'] = $question_id;
+				$this->data['display_max_width'] = $this->master_model->get_defaults('display_max_width');
+				$this->data['languages'] = $this->master_model->get_languages();
+				$this->data['groups'] = $this->master_model->get_groups();
+				$this->data['sub_groups'] = $this->master_model->get_sub_groups();
+				$this->data['question_levels'] = $this->master_model->get_question_levels();
+				$this->data['question_details']=$this->master_model->get_question_by_id($question_id);
+				$this->data['answer_details']=$this->master_model->get_answer_options_by_question_id($question_id);
+				$this->data['tranliterate_details']=$this->master_model->get_transliterate_data_by_question_id($question_id);
+				$this->data['grouping_details']=$this->master_model->get_group_info_by_question_id($question_id);
+				$images_list = directory_map("./assets/images/quiz",TRUE,FALSE);
+					foreach($images_list as &$image_name){
+						$image_name = pathinfo($image_name)['filename'];
+					}
+				sort($images_list);
+				$this->data['images_list']= $images_list;
+				$this->load->library('form_validation');
+				$this->form_validation->set_rules('question','question','required');
+				if ($this->form_validation->run() === FALSE) {
 					$this->load->view('admin/update_question',$this->data);
 				} else {
-					$this->data['msg']="Error creating question. Please retry.";
-					$this->load->view('admin/update_question',$this->data);
+					if($this->master_model->update_question($question_id)){
+						$this->data['msg']="Question updated successfully";
+						$this->load->view('admin/update_question',$this->data);
+					} else {
+						$this->data['msg']="Error creating question. Please retry.";
+						$this->load->view('admin/update_question',$this->data);
+					}
 				}
+				$this->load->view('templates/footer' , $this->data);
+			} else {
+				show_404();
 			}
-			$this->load->view('templates/footer' , $this->data);
 		} else{
 			show_404();
 		}

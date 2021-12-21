@@ -383,7 +383,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             accepts: {
                 contentType: "application/json"
             },
-            url: "<?= base_url() ?>welcome/get_pagination_data/"+group+"/"+sub_group+"/"+question_level+"/"+language,
+            url: "<?= base_url() ?>home/get_pagination_data/"+group+"/"+sub_group+"/"+question_level+"/"+language,
             dataType: "text",
             success: function (response) {
              var data = JSON.parse(response);
@@ -452,7 +452,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 accepts: {
                     contentType: "application/json"
                 },
-                url: "<?= base_url() ?>welcome/quiz/"+page+"/"+group+"/"+sub_group+"/"+question_level+"/"+language_id+"/"+transliterate_language,
+                url: "<?= base_url() ?>home/quiz/"+page+"/"+group+"/"+sub_group+"/"+question_level+"/"+language_id+"/"+transliterate_language,
                 dataType: "text",
                 success: function (data) {
                     var question_answers_list =  JSON.parse(data);
@@ -496,11 +496,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     </div>
                                     <?php if($logged_in) { ?>
                                     <div class="col-md-1 admin-features">
-                                        <button class="btn btn-light round-button" onclick="update_question(${question_id})">${EDIT_ICON}</button> 
-                                        <br/><br/>
-                                        <button class="btn btn-light round-button"  onClick="toggle_question_status(${question_id})" >${ +status ? UNLOCK_ICON : LOCK_ICON }</button> 
-                                        <br/><br/>
-                                        <button class="btn btn-danger round-button"  onclick="delete_question(${question_id})"><i class="fa fa-trash" aria-hidden="true"></i> </button>
+                                        <?php if($edit_question_access) { ?>
+                                            <button class="btn btn-light round-button" onclick="update_question(${question_id})">${EDIT_ICON}</button> 
+                                        <?php } if($edit_question_status_access) { ?>
+                                            <br/><br/>
+                                            <button class="btn btn-light round-button"  onClick="toggle_question_status(${question_id})" >${ +status ? UNLOCK_ICON : LOCK_ICON }</button> 
+                                        <?php } if($remove_question_access) { ?>
+                                            <br/><br/>
+                                            <button class="btn btn-danger round-button"  onclick="delete_question(${question_id})"><i class="fa fa-trash" aria-hidden="true"></i> </button>
+                                        <?php } ?>
                                     </div>
                                     <?php } ?>
                                 </div>
@@ -527,7 +531,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
     // API call to update a question and its details
     function update_question(question_id){
-        window.location = `<?=base_url()?>welcome/update_question/${question_id}`
+        window.location = `<?=base_url()?>home/update_question/${question_id}`
     }
 
         //  API call to delete a question   
@@ -551,7 +555,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     accepts: {
                         contentType: "application/json"
                     },
-                    url: "<?= base_url() ?>welcome/delete_question/"+question_id,
+                    url: "<?= base_url() ?>home/delete_question/"+question_id,
                     dataType: "text",
                     success: function (response) {
                         const res =  JSON.parse(response);        
@@ -592,7 +596,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             accepts: {
                 contentType: "application/json"
             },
-            url: "<?= base_url() ?>welcome/toggle_question_status/"+question_id,
+            url: "<?= base_url() ?>home/toggle_question_status/"+question_id,
             dataType: "text",
             success: function (response) {
                 const res =  JSON.parse(response);
