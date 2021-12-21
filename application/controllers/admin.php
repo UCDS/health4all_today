@@ -171,9 +171,11 @@ class Admin extends CI_Controller {
 				$this->load->view('admin/create_question',$this->data);
 			} else {
 				if($this->master_model->create_question()){
+					$this->data['status']=200;
 					$this->data['msg']="Question created successfully";
 					$this->load->view('admin/create_question',$this->data);
 				} else {
+					$this->data['status']=500;
 					$this->data['msg']="Error creating question. Please retry.";
 					$this->load->view('admin/create_question',$this->data);
 				}

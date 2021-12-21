@@ -127,9 +127,11 @@ class Home extends CI_Controller {
 						$this->data['answer_details']=$this->master_model->get_answer_options_by_question_id($question_id);
 						$this->data['tranliterate_details']=$this->master_model->get_transliterate_data_by_question_id($question_id);
 						$this->data['grouping_details']=$this->master_model->get_group_info_by_question_id($question_id);
+						$this->data['status']=200;
 						$this->data['msg']="Question updated successfully";
 						$this->load->view('admin/update_question',$this->data);
 					} else {
+						$this->data['status']=500;
 						$this->data['msg']="Error creating question. Please retry.";
 						$this->load->view('admin/update_question',$this->data);
 					}
