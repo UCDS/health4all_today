@@ -1,7 +1,18 @@
 <?php
 class Master_model extends CI_Model {
+
+    private $user_language_ids =[];
+    private $user_id ='';
+    private $logged_in = NULL;
     function __construct() {
         parent::__construct();
+        $this->load->model('user_model');
+        $this->logged_in = $this->session->userdata('logged_in');
+        $this->user_id = $this->logged_in['user_id'];
+        $user_languages=$this->user_model->user_languages($this->user_id);
+        foreach ($user_languages as $key => $value) {
+            array_push($this->user_language_ids, $value->language_id);
+        }
     }
     
     function get_banner_text(){
@@ -27,6 +38,9 @@ class Master_model extends CI_Model {
     }
 
     function get_pagination_data($per_page ,$group , $sub_group , $question_level, $language){
+        if($this->logged_in) {
+            $this->db->where_in('question.language_id', $this->user_language_ids);
+        }
         if($sub_group != 0){
 			$this->db->where('question_grouping.sub_group_id' , $sub_group);
 		}
@@ -51,9 +65,9 @@ class Master_model extends CI_Model {
 
     
     function get_questions($limit , $start  , $group , $sub_group , $question_level, $language) { 
-        
-        $logged_in=$this->session->userdata('logged_in'); 
-        
+        if($this->logged_in) {
+            $this->db->where_in('question.language_id', $this->user_language_ids);
+        }
         if($sub_group != 0){
 			$this->db->where('question_grouping.sub_group_id' , $sub_group);
 		}
@@ -63,7 +77,7 @@ class Master_model extends CI_Model {
         if($language != 0){
 			$this->db->where('question.language_id' , $language);
         }
-        if(!$logged_in){
+        if(!$this->logged_in){
             $this->db->where('question.status_id' , 1);
         }
 
@@ -153,6 +167,7 @@ class Master_model extends CI_Model {
             return false;
         }
     }
+
     function get_answer_options() {
         $this->db->select('answer_option_id , answer , correct_option , question_id , answer_image')
             ->from('answer_option')
@@ -236,10 +251,7 @@ class Master_model extends CI_Model {
             'level_id'=>$this->input->post('question_level'),
             'language_id'=>$this->input->post('language'),
             'default_question_id'=>$this->input->post('language'),
-            // 'created_by'=>$this->input->post(''), //get from session data
-            // 'created_date_time'=>$this->input->post(''),
-            // 'last_modified_by'=>$this->input->post(''),
-            // 'last_modified_date_time'=>$this->input->post(''),
+            'created_by'=>$this->user_id
         );
         // var_dump($data);
         $this->db->trans_start(); //Transaction begins
@@ -277,9 +289,9 @@ class Master_model extends CI_Model {
                 'question_id'=>$question_id,
                 'correct_option'=>$correct_option[$key],
                 'answer_image'=>$answer_option_image[$key],
-                'answer_image_width'=>$answer_option_image_width[$key]
+                'answer_image_width'=>$answer_option_image_width[$key],
+                'created_by'=>$this->user_id
                 // 'reference_note'=>$a->reference_note,
-                // 'created_by'=>$a->created_by, // will get from session data
                 // 'created_date_time'=>$this->input->post(''),
                 // 'last_modified_by'=>$this->input->post(''),
                 // 'last_modified_date_time'=>$this->input->post(''),
@@ -298,7 +310,8 @@ class Master_model extends CI_Model {
                     'question_id'=>$question_id,
                     'language_id'=>$transliterate_language[$key],
                     'question_transliterate'=>$question_transliterate[$key],
-                    'explanation_transliterate'=>$explanation_transliterate[$key]
+                    'explanation_transliterate'=>$explanation_transliterate[$key],
+                    'created_by'=>$this->user_id
                 );
             }
             // insert all transliterate data into question_transaliterate table
@@ -321,10 +334,8 @@ class Master_model extends CI_Model {
             'level_id'=>$this->input->post('question_level'),
             'language_id'=>$this->input->post('language'),
             'default_question_id'=>$this->input->post('language'),
-            // 'created_by'=>$this->input->post(''), //get from session data
-            // 'created_date_time'=>$this->input->post(''),
-            // 'last_modified_by'=>$this->input->post(''),
-            'last_modified_date_time'=>date("Y-m-d H:i:s")
+            'updated_by'=>$this->user_id,
+            'updated_datetime'=>date("Y-m-d H:i:s")
         );
         // var_dump($data);  
 
@@ -351,13 +362,9 @@ class Master_model extends CI_Model {
                 'question_id'=>$question_id,
                 'correct_option'=>$correct_option[$key],
                 'answer_image'=>$answer_option_image[$key],
-                'answer_image_width'=>$answer_option_image_width[$key]
-                // 'answer_image'=>$a->answer_image,
-                // 'reference_note'=>$a->reference_note,
-                // 'created_by'=>$a->created_by, // will get from session data
-                // 'created_date_time'=>$this->input->post(''),
-                // 'last_modified_by'=>$this->input->post(''),
-                // 'last_modified_date_time'=>$this->input->post(''),
+                'answer_image_width'=>$answer_option_image_width[$key],
+                'updated_by'=> $this->user_id,
+                'updated_datetime'=>date("Y-m-d H:i:s")
             );
         }
         $this->db->update_batch('answer_option',$answer_option_data, 'answer_option_id');
@@ -381,11 +388,7 @@ class Master_model extends CI_Model {
                     'correct_option'=>$new_correct_option[$key],
                     'answer_image'=>$new_answer_option_image[$key],
                     'answer_image_width'=>$new_answer_option_image_width[$key],
-                    // 'reference_note'=>$a->reference_note,
-                    // 'created_by'=>$a->created_by, // will get from session data
-                    // 'created_date_time'=>$this->input->post(''),
-                    // 'last_modified_by'=>$this->input->post(''),
-                    // 'last_modified_date_time'=>$this->input->post(''),
+                    'created_by'=> $this->user_id
                 );
             }
             // insert all the answer options into the answer table
@@ -403,7 +406,9 @@ class Master_model extends CI_Model {
                     'question_id'=>$question_id,
                     'language_id'=>$transliterate_language[$key],
                     'question_transliterate'=>$question_transliterate[$key],
-                    'explanation_transliterate'=>$explanation_transliterate[$key]
+                    'explanation_transliterate'=>$explanation_transliterate[$key],
+                    'updated_by'=> $this->user_id,
+                    'updated_datetime'=>date("Y-m-d H:i:s")
                 );
             }
             $this->db->update_batch('transliterate_question',$question_transaliterate_data, 'question_transliterate_id');
@@ -431,7 +436,8 @@ class Master_model extends CI_Model {
                     'question_id'=>$question_id,
                     'language_id'=>$new_transliterate_language[$key],
                     'question_transliterate'=>$new_question_transliterate[$key],
-                    'explanation_transliterate'=>$new_explanation_transliterate[$key]
+                    'explanation_transliterate'=>$new_explanation_transliterate[$key],
+                    'created_by'=>$this->user_id
                 );
             }
             // insert all the question transliterate data into the transliterate_question table
@@ -493,7 +499,6 @@ class Master_model extends CI_Model {
         return [true , $status_id ? "Un-Locked" : "Locked"];
         }
     }
-
 
     function insert_language() {
         $language = $this->input->post('language');
@@ -568,67 +573,7 @@ class Master_model extends CI_Model {
         if($this->db->trans_status()===TRUE) return true; else return false; //if transaction completed successfully return true, else false.
     }
 
-    function login($username, $password){
-        $this->db->select('user.*');
-        $this->db->from('user');
-        $this->db->where('username', $username);
-        $this->db->where('password', MD5($password));
-        $query = $this->db->get();
-        if($query)
-        {
-          return $query->row();
-        }
-        else
-        {
-          return false;
-        }
-     }
-
-     function create_user(){
-        $data = array(
-            'first_name'=>$this->input->post('first_name'),
-            'last_name'=>$this->input->post('last_name'),
-            'email'=>$this->input->post('email'),
-            'phone'=>$this->input->post('phone'),
-            'gender'=>$this->input->post('gender'),
-            'note'=>$this->input->post('note'),
-            'username'=>$this->input->post('username'),
-            'password'=>md5($this->input->post('password')),
-        );
-        $this->db->trans_start(); //Transaction begins
-        $this->db->insert('user',$data); //Insert the $data array into 'user' table 
-        $user_id=$this->db->insert_id(); //Get the User ID from the inserted record
-
-
-         // creating tuple for user access table
-         $user_access_data =  array(
-            'user_id'=>$user_id,
-            'language_id'=>$this->input->post('language'),
-            // 'expiry_date'=>$this->input->post('expiry_date')
-        );
-        $this->db->insert('user_access',$user_access_data); 
-        $this->db->trans_complete(); //Transaction Ends
-		if($this->db->trans_status()===TRUE) return true; else return false; //if transaction completed successfully return true, else false.
-     }
-
-     function change_password($user_id) {
-         //select the old password from the database
-        $this->db->select('password')->from('user')->where('user_id',$user_id);
-		$query=$this->db->get();
-        $password=$query->row();
-        $form_password=$this->input->post('old_password'); //get the old password from the form
-        if($password->password==md5($form_password)){ //match both the old passwords
-			$this->db->where('user_id',$user_id); //search for the user in db
-			if($this->db->update('user',array('password'=>md5($this->input->post('password'))))){ 
-				//if the user table has been updated successfully, return true else false.
-				return true;
-				}
-			else return false;
-		}
-		else return false; //if the old password entered doesn't match the database password, return false.
-     }
-
-     function upload_image(){
+    function upload_image(){
         if($this->input->post('image')){
             $image_name = strtoupper($this->input->post('image_name'));
 			$image = $this->input->post('image_val');
@@ -640,5 +585,4 @@ class Master_model extends CI_Model {
 		}
         return true;
     }
-
 }

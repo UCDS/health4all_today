@@ -38,7 +38,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <select class="form-control"  name="language" id="language" required>
                     <option value="" selected disabled>--Select--</option>
                     <?php
-                        foreach($languages as $r){ ?>
+                        foreach($user_languages as $r){ ?>
                         <option value="<?php echo $r->language_id;?>"    
                         <?php if($this->input->post('language') == $r->language_id) echo " selected "; ?>
                         ><?php echo $r->language;?></option>    
@@ -186,6 +186,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 </div>
 
 <script>
+
+    <?php if(isset($status)) { ?>
+        const status = <?php echo $status; ?>;
+        const msg= '<?php echo $msg; ?>';
+    <?php } ?>
+    
+    if(status==200){
+        swal({
+            title: "Success",
+            text: msg,
+            type: "success",
+            timer: 2000
+        });
+    }
+
 
     function escapeSpecialChars(str) {
         return str.replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\t/g, "\\t");
