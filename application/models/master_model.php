@@ -251,10 +251,7 @@ class Master_model extends CI_Model {
             'level_id'=>$this->input->post('question_level'),
             'language_id'=>$this->input->post('language'),
             'default_question_id'=>$this->input->post('language'),
-            // 'created_by'=>$this->input->post(''), //get from session data
-            // 'created_date_time'=>$this->input->post(''),
-            // 'last_modified_by'=>$this->input->post(''),
-            // 'last_modified_date_time'=>$this->input->post(''),
+            'created_by'=>$this->user_id
         );
         // var_dump($data);
         $this->db->trans_start(); //Transaction begins
@@ -292,9 +289,9 @@ class Master_model extends CI_Model {
                 'question_id'=>$question_id,
                 'correct_option'=>$correct_option[$key],
                 'answer_image'=>$answer_option_image[$key],
-                'answer_image_width'=>$answer_option_image_width[$key]
+                'answer_image_width'=>$answer_option_image_width[$key],
+                'created_by'=>$this->user_id
                 // 'reference_note'=>$a->reference_note,
-                // 'created_by'=>$a->created_by, // will get from session data
                 // 'created_date_time'=>$this->input->post(''),
                 // 'last_modified_by'=>$this->input->post(''),
                 // 'last_modified_date_time'=>$this->input->post(''),
@@ -313,7 +310,8 @@ class Master_model extends CI_Model {
                     'question_id'=>$question_id,
                     'language_id'=>$transliterate_language[$key],
                     'question_transliterate'=>$question_transliterate[$key],
-                    'explanation_transliterate'=>$explanation_transliterate[$key]
+                    'explanation_transliterate'=>$explanation_transliterate[$key],
+                    'created_by'=>$this->user_id
                 );
             }
             // insert all transliterate data into question_transaliterate table
@@ -336,10 +334,8 @@ class Master_model extends CI_Model {
             'level_id'=>$this->input->post('question_level'),
             'language_id'=>$this->input->post('language'),
             'default_question_id'=>$this->input->post('language'),
-            // 'created_by'=>$this->input->post(''), //get from session data
-            // 'created_date_time'=>$this->input->post(''),
-            // 'last_modified_by'=>$this->input->post(''),
-            'last_modified_date_time'=>date("Y-m-d H:i:s")
+            'updated_by'=>$this->user_id,
+            'updated_datetime'=>date("Y-m-d H:i:s")
         );
         // var_dump($data);  
 
@@ -366,13 +362,9 @@ class Master_model extends CI_Model {
                 'question_id'=>$question_id,
                 'correct_option'=>$correct_option[$key],
                 'answer_image'=>$answer_option_image[$key],
-                'answer_image_width'=>$answer_option_image_width[$key]
-                // 'answer_image'=>$a->answer_image,
-                // 'reference_note'=>$a->reference_note,
-                // 'created_by'=>$a->created_by, // will get from session data
-                // 'created_date_time'=>$this->input->post(''),
-                // 'last_modified_by'=>$this->input->post(''),
-                // 'last_modified_date_time'=>$this->input->post(''),
+                'answer_image_width'=>$answer_option_image_width[$key],
+                'updated_by'=> $this->user_id,
+                'updated_datetime'=>date("Y-m-d H:i:s")
             );
         }
         $this->db->update_batch('answer_option',$answer_option_data, 'answer_option_id');
@@ -396,11 +388,7 @@ class Master_model extends CI_Model {
                     'correct_option'=>$new_correct_option[$key],
                     'answer_image'=>$new_answer_option_image[$key],
                     'answer_image_width'=>$new_answer_option_image_width[$key],
-                    // 'reference_note'=>$a->reference_note,
-                    // 'created_by'=>$a->created_by, // will get from session data
-                    // 'created_date_time'=>$this->input->post(''),
-                    // 'last_modified_by'=>$this->input->post(''),
-                    // 'last_modified_date_time'=>$this->input->post(''),
+                    'created_by'=> $this->user_id
                 );
             }
             // insert all the answer options into the answer table
@@ -418,7 +406,9 @@ class Master_model extends CI_Model {
                     'question_id'=>$question_id,
                     'language_id'=>$transliterate_language[$key],
                     'question_transliterate'=>$question_transliterate[$key],
-                    'explanation_transliterate'=>$explanation_transliterate[$key]
+                    'explanation_transliterate'=>$explanation_transliterate[$key],
+                    'updated_by'=> $this->user_id,
+                    'updated_datetime'=>date("Y-m-d H:i:s")
                 );
             }
             $this->db->update_batch('transliterate_question',$question_transaliterate_data, 'question_transliterate_id');
@@ -446,7 +436,8 @@ class Master_model extends CI_Model {
                     'question_id'=>$question_id,
                     'language_id'=>$new_transliterate_language[$key],
                     'question_transliterate'=>$new_question_transliterate[$key],
-                    'explanation_transliterate'=>$new_explanation_transliterate[$key]
+                    'explanation_transliterate'=>$new_explanation_transliterate[$key],
+                    'created_by'=>$this->user_id
                 );
             }
             // insert all the question transliterate data into the transliterate_question table
