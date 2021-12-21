@@ -1,7 +1,18 @@
 <?php
 class Master_model extends CI_Model {
+
+    private $user_language_ids =[];
+    private $user_id ='';
+    private $logged_in = NULL;
     function __construct() {
         parent::__construct();
+        $this->load->model('user_model');
+        $this->logged_in = $this->session->userdata('logged_in');
+        $this->user_id = $this->logged_in['user_id'];
+        $user_languages=$this->user_model->user_languages($this->user_id);
+        foreach ($user_languages as $key => $value) {
+            array_push($this->user_language_ids, $value->language_id);
+        }
     }
     
     function get_banner_text(){
@@ -27,6 +38,9 @@ class Master_model extends CI_Model {
     }
 
     function get_pagination_data($per_page ,$group , $sub_group , $question_level, $language){
+        if($this->logged_in) {
+            $this->db->where_in('question.language_id', $this->user_language_ids);
+        }
         if($sub_group != 0){
 			$this->db->where('question_grouping.sub_group_id' , $sub_group);
 		}
@@ -51,9 +65,9 @@ class Master_model extends CI_Model {
 
     
     function get_questions($limit , $start  , $group , $sub_group , $question_level, $language) { 
-        
-        $logged_in=$this->session->userdata('logged_in'); 
-        
+        if($this->logged_in) {
+            $this->db->where_in('question.language_id', $this->user_language_ids);
+        }
         if($sub_group != 0){
 			$this->db->where('question_grouping.sub_group_id' , $sub_group);
 		}
@@ -63,7 +77,7 @@ class Master_model extends CI_Model {
         if($language != 0){
 			$this->db->where('question.language_id' , $language);
         }
-        if(!$logged_in){
+        if(!$this->logged_in){
             $this->db->where('question.status_id' , 1);
         }
 
@@ -153,6 +167,7 @@ class Master_model extends CI_Model {
             return false;
         }
     }
+
     function get_answer_options() {
         $this->db->select('answer_option_id , answer , correct_option , question_id , answer_image')
             ->from('answer_option')
@@ -493,7 +508,6 @@ class Master_model extends CI_Model {
         return [true , $status_id ? "Un-Locked" : "Locked"];
         }
     }
-
 
     function insert_language() {
         $language = $this->input->post('language');
