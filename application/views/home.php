@@ -103,11 +103,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <select class="form-control"  name="language" id="language" required>
                     <option value="0" selected >Language</option>
                     <?php
-                        foreach($languages as $r){ ?>
-                        <option value="<?php echo $r->language_id;?>"    
-                        <?php if($this->input->post('language') == $r->language_id || $default_quiz_language[0]->value == $r->language_id) echo " selected "; ?>
-                        ><?php echo $r->language;?></option>    
-                        <?php }  ?>
+                        if($logged_in) {
+                            foreach($user_languages as $r){ ?>
+                            <option value="<?php echo $r->language_id;?>"    
+                            <?php if($this->input->post('language') == $r->language_id) echo " selected "; ?>
+                            ><?php echo $r->language;?></option>    
+                        <?php } 
+                        } else {
+                            foreach($languages as $r){ ?>
+                            <option value="<?php echo $r->language_id;?>"    
+                            <?php if($this->input->post('language') == $r->language_id || $default_quiz_language[0]->value == $r->language_id) echo " selected "; ?>
+                            ><?php echo $r->language;?></option>    
+                        <?php } } ?>
                 </select>
             </div>
         </div>
