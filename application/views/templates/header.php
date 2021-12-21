@@ -62,7 +62,7 @@
       </ul>
       <ul class="navbar-nav navbar-right ">  
         <li class="nav-item active">
-          <a class="nav-link" href="<?php echo base_url();?>admin" >Home <span class="sr-only">(current)</span></a>
+          <a class="nav-link" href="<?php echo base_url();?>admin" >Operations <span class="sr-only">(current)</span></a>
         </li>
           <li class="nav-item">
              <a class="nav-link" href="#" style="text-decoration:none; color:black;"> <?php echo $logged_in['username']." | " ; ?></a>
