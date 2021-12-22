@@ -46,20 +46,23 @@ class User_model extends CI_Model {
             'gender'=>$this->input->post('gender'),
             'note'=>$this->input->post('note'),
             'username'=>$this->input->post('username'),
+            'default_language_id'=>$this->input->post('default_language_id'),
             'password'=>md5($this->input->post('password')),
+            'active_status'=>1,
+            'created_by'=>$this->session->userdata('logged_in')['user_id'],
         );
         $this->db->trans_start(); //Transaction begins
         $this->db->insert('user',$data); //Insert the $data array into 'user' table 
         $user_id=$this->db->insert_id(); //Get the User ID from the inserted record
 
 
-         // creating tuple for user access table
-         $user_access_data =  array(
-            'user_id'=>$user_id,
-            'language_id'=>$this->input->post('language'),
-            // 'expiry_date'=>$this->input->post('expiry_date')
-        );
-        $this->db->insert('user_access',$user_access_data); 
+        //  // creating tuple for user access table
+        //  $user_access_data =  array(
+        //     'user_id'=>$user_id,
+        //     'language_id'=>$this->input->post('language'),
+        //     // 'expiry_date'=>$this->input->post('expiry_date')
+        // );
+        // $this->db->insert('user_access',$user_access_data); 
         $this->db->trans_complete(); //Transaction Ends
 		if($this->db->trans_status()===TRUE) return true; else return false; //if transaction completed successfully return true, else false.
     }
