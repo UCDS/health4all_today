@@ -68,11 +68,16 @@ class Admin extends CI_Controller {
 				$this->load->library('form_validation');				
 				$this->form_validation->set_rules('username', 'Username', 'trim|required|xss_clean');
 				$this->form_validation->set_rules('password', 'Password', 'trim|required|xss_clean|callback_check_database');
-				if ($this->form_validation->run() === FALSE)
-				{
+				$login = 0;
+				if ($this->form_validation->run() === FALSE){
 					$this->load->view('admin/login');
+				} else {
+					$login=1;
 				}
-				else{
+				if($this->input->post('username') && $this->input->post('username')!=""){
+					$this->user_model->save_user_signin($this->input->post('username'), $login);
+				}
+				if($login==1){
 					redirect('admin', 'refresh');
 				}	
 			}
