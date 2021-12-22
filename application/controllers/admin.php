@@ -92,6 +92,8 @@ class Admin extends CI_Controller {
 			$sess_array = array(
 				'user_id' => $result->user_id,
 				'username' => $result->username,
+				'first_name' => $result->first_name,
+				'last_name' => $result->last_name,
 				'email'=>$result->email,
 				'admin'=>$result->admin
 				);

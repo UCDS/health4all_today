@@ -65,7 +65,7 @@
           <a class="nav-link" href="<?php echo base_url();?>admin" >Operations <span class="sr-only">(current)</span></a>
         </li>
           <li class="nav-item">
-             <a class="nav-link" href="#" style="text-decoration:none; color:black;"> <?php echo $logged_in['username']." | " ; ?></a>
+             <a class="nav-link" href="#" style="text-decoration:none; color:black;"> <?php echo $logged_in['first_name']." ".$logged_in['last_name']." | " ; ?></a>
           </li>
           <li class="dropdown">
             <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown" style="text-decoration:none; color:black;" ><i class="fa fa-gear"></i> Settings <b class="caret"></b></a>

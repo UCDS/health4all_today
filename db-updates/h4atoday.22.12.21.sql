@@ -11,3 +11,8 @@ ALTER TABLE `user`
     ADD `created_datetime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created_by`, 
     ADD `updated_by` INT(11) NULL DEFAULT NULL AFTER `created_datetime`, 
     ADD `updated_datetime` TIMESTAMP NULL DEFAULT NULL AFTER `updated_by`;
+
+---
+--- Making username as unique 
+---
+ALTER TABLE `user` ADD UNIQUE(`username`);
