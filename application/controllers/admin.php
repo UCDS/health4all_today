@@ -95,7 +95,8 @@ class Admin extends CI_Controller {
 				'first_name' => $result->first_name,
 				'last_name' => $result->last_name,
 				'email'=>$result->email,
-				'admin'=>$result->admin
+				'admin'=>$result->admin,
+				'default_language_id'=>$result->default_language_id,
 				);
 			$this->session->set_userdata('logged_in', $sess_array);
 			return TRUE;
