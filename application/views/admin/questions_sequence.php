@@ -51,6 +51,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     }
 </style>
 
+<?php 
+    $group = $this->input->post('group');
+?>
+
 <div class="container">
     <div class="card">
         <div class="card-header bg-primary text-white">
@@ -114,10 +118,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     
     $(function () {
         
-        initGroupSelectize();
+        initGroupSelectize(<?php echo $group; ?>);
     });
 
-    function initGroupSelectize(){
+    function initGroupSelectize(val){
         var groups = JSON.parse(escapeSpecialChars('<?php echo json_encode($groups); ?>'));
         var selectize = $('#group_id').selectize({
             valueField: 'group_id',
@@ -140,9 +144,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             },
 
         });
-        if($('#group_id').attr("data-previous-value")){
-		    selectize[0].selectize.setValue($('#group_id').attr("data-previous-value"));
-	    }
+        if(val){
+            selectize[0].selectize.setValue(val);
+        }
     }
 
     // function to filter sub_groups based on a selected group 
