@@ -49,6 +49,24 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         background-image: -o-linear-gradient(top,#f9f9f9,#f2f2f2);
         border: 1px solid #f2f2f2;
     }
+    body.dragging, body.dragging * {
+        cursor: move !important;
+    }
+
+    .dragged {
+        position: absolute;
+        opacity: 0.5;
+        z-index: 2000;
+    }
+
+    #sortable {
+        position: absolute;
+        /** More li styles **/
+    }
+    #sortable {
+        position: absolute;
+        /** Define arrowhead **/
+    }
 </style>
 
 <?php 
@@ -91,21 +109,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     </div>
                 </div>
             </form>
-            <?php 
-                if(isset($questions)) {
-                    $i=1; 
-                    foreach (json_decode($questions) as $q) { ?>
-                    <div class="row">
-                        <div class="col-md-1 col-sm-1 col-xs-1 col-lg-1">
-                            <?php echo $i++; ?>
-                        </div>
-                        <div class="col-md-11 col-sm-11 col-xs-11 col-lg-11 question-tile" question-id="<?php echo $q->question_id; ?>">
-                            <?php echo $q->question; ?>
-                        </div>
-                    </div>
-                <?php } 
-                } 
-            ?>
+            <ol class="row" id="sortable">
+                <?php 
+                    if(isset($questions)) {
+                        $i=1; 
+                        foreach (json_decode($questions) as $q) { ?>
+                            <li class="col-md-12 col-sm-11 col-xs-11 col-lg-11  " question-id="<?php echo $q->question_id; ?>">
+                                <?php echo $q->question; ?>
+                            </li>
+                    <?php } 
+                    } 
+                ?>
+            </ol>
         </div>
     </div>
 </div>
@@ -119,6 +134,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     $(function () {
         
         initGroupSelectize(<?php echo $group; ?>);
+        $("#sortable").sortable();
     });
 
     function initGroupSelectize(val){
