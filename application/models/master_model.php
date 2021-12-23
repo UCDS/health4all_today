@@ -77,6 +77,10 @@ class Master_model extends CI_Model {
         if($language != 0){
 			$this->db->where('question.language_id' , $language);
         }
+        if($limit && $start){
+            $this->db->limit($limit , $start);
+        }
+
         if(!$this->logged_in){
             $this->db->where('question.status_id' , 1);
         }
@@ -85,8 +89,7 @@ class Master_model extends CI_Model {
             ->from('question')
             ->join('question_grouping','question.question_id=question_grouping.question_id','inner')
             ->where('question_grouping.group_id' , $group)
-            ->order_by('question.question_id','asc')
-            ->limit($limit , $start);
+            ->order_by('question.question_id','asc');
         $query = $this->db->get();
         $result =  json_encode( $query->result() , JSON_PRETTY_PRINT);
         if($result){

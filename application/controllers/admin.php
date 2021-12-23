@@ -380,9 +380,26 @@ class Admin extends CI_Controller {
 			$this->data['title']="Question sequencing";
 			$this->data['groups'] = $this->master_model->get_groups();
 			$this->data['sub_groups'] = $this->master_model->get_sub_groups();
+			$this->data['languages'] = $this->master_model->get_languages();
+			$language = $this->input->post('language');
+			$group = $this->input->post('group');
+			$sub_group = $this->input->post('sub_group');
+			$this->data['questions'] =  $this->master_model->get_questions(NULL ,NULL , $group , $sub_group , NULL, $language);
 			$this->load->view('templates/header',$this->data);
-			$this->load->view('admin/questions_sequence',$this->data);
-			$this->load->view('templates/footer',$this->data);
+			$this->form_validation->set_rules('group','group','required');
+			$this->form_validation->set_rules('sub_group','sub_group','required');
+			if ($this->form_validation->run() === FALSE){
+				$this->load->view('admin/questions_sequence' , $this->data);
+			} else {
+				if($this->master_model->upload_image()){
+					$this->data['msg']="Sequence created successfully";
+					$this->load->view('admin/questions_sequence',$this->data);
+				} else {
+					$this->data['msg']="Error creating questions sequence. Please retry.";
+					$this->load->view('admin/questions_sequence',$this->data);
+				}
+			}
+		$this->load->view('templates/footer',$this->data);
 		} else {
 			show_404();
 		}
