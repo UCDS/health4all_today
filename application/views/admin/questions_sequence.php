@@ -43,7 +43,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         text-align: center;
         font-size: 17px;
         font-weight:bold;
-        background-image: -webkit-linear-gradient(top,#f9f9f9,#f2f2f2);
+        background-image: -webkit-linear-gradient(top,#f5f5f5,#f2f2f2);
         background-image: -moz-linear-gradient(top,#f9f9f9,#f2f2f2);
         background-image: -ms-linear-gradient(top,#f9f9f9,#f2f2f2);
         background-image: -o-linear-gradient(top,#f9f9f9,#f2f2f2);
@@ -58,12 +58,23 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         opacity: 0.5;
         z-index: 2000;
     }
-
-    #sortable {
-        position: absolute;
+    li {
+        cursor: pointer;
+        background: #f2f2f2;
+        color: #222;
+        border-radius: 4px;
+        background-image: -webkit-linear-gradient(top,#f9f9f9,#f2f2f2);
+        background-image: -moz-linear-gradient(top,#f9f9f9,#f2f2f2);
+        background-image: -ms-linear-gradient(top,#f9f9f9,#f2f2f2);
+        background-image: -o-linear-gradient(top,#f9f9f9,#f2f2f2);
+        border: 1px solid #f2f2f2;
+        margin-top: 3px;
+    }
+    #sortable li.placeholder{
+        position: relative;
         /** More li styles **/
     }
-    #sortable {
+    #sortable  li.placeholder:before{
         position: absolute;
         /** Define arrowhead **/
     }
@@ -109,12 +120,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     </div>
                 </div>
             </form>
-            <ol class="row" id="sortable">
+            <ol id="sortable">
                 <?php 
                     if(isset($questions)) {
                         $i=1; 
                         foreach (json_decode($questions) as $q) { ?>
-                            <li class="col-md-12 col-sm-11 col-xs-11 col-lg-11  " question-id="<?php echo $q->question_id; ?>">
+                            <li question-id="<?php echo $q->question_id; ?>">
                                 <?php echo $q->question; ?>
                             </li>
                     <?php } 
