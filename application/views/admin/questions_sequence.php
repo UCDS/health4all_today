@@ -114,9 +114,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 ><?php echo $r->language;?></option>    
                             <?php }  ?>
                         </select>
-                    </div>  
-                    <div class="form-group col-md-3" style="margin-top:2rem;">
+                    </div>
+                    <div class="col-md-3 form-group" style="display:inline-flex; margin-top:2.5rem;">
+                        <input  type="checkbox" name="enable_sorting" id="enable_sorting" style="width:25px;height:25px;">
+                        <label for="enableSorting" style="padding-left:10px;">Enable sorting</label>
+                    </div>
+                    <div class="form-group col-md-3">
                         <button type="submit" class="btn btn-md btn-primary btn-block">Submit</button>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <button type="button" class="btn btn-md btn-primary btn-block" onclick="save_sequence();" >Save sequence</button>
                     </div>
                 </div>
             </form>
@@ -125,7 +132,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     if(isset($questions)) {
                         $i=1; 
                         foreach (json_decode($questions) as $q) { ?>
-                            <li question-id="<?php echo $q->question_id; ?>">
+                            <li class="question" question-id="<?php echo $q->question_id; ?>">
                                 <?php echo $q->question; ?>
                             </li>
                     <?php } 
@@ -145,7 +152,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     $(function () {
         
         initGroupSelectize(<?php echo $group; ?>);
-        $("#sortable").sortable();
+        let isSortingEnabled = false;
+        $("#enable_sorting").change(function (e) { 
+            e.preventDefault();
+            isSortingEnabled = $(this).is(':checked') ? true : false;
+            if(isSortingEnabled){
+                $("#sortable").sortable({
+                    vertical:true,
+                    onMouseDown : ($item, container)=> {
+                        console.log('updated!!');
+                    }     
+                });
+            } else {
+                $("#sortable").sortable("disable");
+            }
+        });
     });
 
     function initGroupSelectize(val){
@@ -191,5 +212,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             const {sub_group_id ,sub_group} = valueOfElement;
             $("#sub_group_id").append($('<option></option>').val(sub_group_id).html(sub_group));
         });
+    }
+
+    function save_sequence() {
+        const question_ids =  [];
+        $('.question').each(function (index, element) {
+            question_ids.push($(element).attr('question-id'));
+        });
+        console.log(question_ids);
     }
 </script>
