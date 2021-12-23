@@ -372,4 +372,19 @@ class Admin extends CI_Controller {
 			show_404();
 		}
 	}
+
+	public function questions_sequence(){
+		if($this->session->userdata('logged_in')){
+			$this->load->helper('form');
+			$this->load->library('form_validation');
+			$this->data['title']="Question sequencing";
+			$this->data['groups'] = $this->master_model->get_groups();
+			$this->data['sub_groups'] = $this->master_model->get_sub_groups();
+			$this->load->view('templates/header',$this->data);
+			$this->load->view('admin/questions_sequence',$this->data);
+			$this->load->view('templates/footer',$this->data);
+		} else {
+			show_404();
+		}
+	}
 }

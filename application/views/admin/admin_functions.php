@@ -84,6 +84,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       </div>
     </div>
   <?php } ?>
+    <div class="col-sm-4">
+      <div class="card">
+        <div class="card-body">
+          <p class="card-text">Questions sequence</p>
+          <a href="<?php echo base_url();?>admin/questions_sequence" class="btn btn-primary">Sequence questions</a>
+        </div>
+      </div>
+    </div>
 </div>
   </div>
 </main>
