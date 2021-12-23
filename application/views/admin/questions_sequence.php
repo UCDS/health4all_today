@@ -4,21 +4,104 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 
 <style>
-  .card {
-    margin : 4px;
-  }
+    label{
+        font-weight:bold;
+    }
+    .card{
+        margin-top:2rem;
+    }
+    .card-header{
+        text-align:center;
+    }
+    select{
+        cursor: pointer;
+    }
+    .question-tile {
+        cursor: pointer;
+        margin-top: 3px;
+        margin-top: 3px;
+        padding: 12px 20px;
+        background: #f2f2f2;
+        color: #222;
+        border-radius: 4px;
+        text-align: left;
+        font-size: 17px;
+        background-image: -webkit-linear-gradient(top,#f9f9f9,#f2f2f2);
+        background-image: -moz-linear-gradient(top,#f9f9f9,#f2f2f2);
+        background-image: -ms-linear-gradient(top,#f9f9f9,#f2f2f2);
+        background-image: -o-linear-gradient(top,#f9f9f9,#f2f2f2);
+        border: 1px solid #f2f2f2;
+        width:100%;
+    }
+    .question-position{
+        margin-top: 3px;
+        /* margin-right:1px; */
+        padding: 12px 20px;
+        background: #f2f2f2;
+        color: #222;
+        border-radius: 4px;
+        text-align: center;
+        font-size: 17px;
+        font-weight:bold;
+        background-image: -webkit-linear-gradient(top,#f9f9f9,#f2f2f2);
+        background-image: -moz-linear-gradient(top,#f9f9f9,#f2f2f2);
+        background-image: -ms-linear-gradient(top,#f9f9f9,#f2f2f2);
+        background-image: -o-linear-gradient(top,#f9f9f9,#f2f2f2);
+        border: 1px solid #f2f2f2;
+    }
 </style>
 
 <div class="container">
-    <div class="row">
-        <div class="form-group col-md-3">
-                <select id="group_id" name="group" style=""  placeholder="Group" onchange="filter_sub_groups();">		
-                </select>
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+           <h4> Create Question Sequence </h4>
         </div>
-        <div class="form-group col-md-3">
-            <select class="form-control" name="sub_group" id="sub_group_id">
-            <option value="0" selected>Sub Group</option>
-            </select>        
+        <div class="card-body">
+            <form id="questions_sequence" action="<?= base_url('admin/questions_sequence') ?>" method="POST">
+                <div class="row">
+                    <div class="form-group col-md-3">
+                        <label for="groupId">Group <span class="star" style="color:red"> *</span></label>
+                        <select id="group_id" name="group" style=""  placeholder="Group" onchange="filter_sub_groups();">		
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="subGroupId">Sub Group</label>
+                        <select class="form-control" name="sub_group" id="sub_group_id">
+                        <option value="0" selected>Sub Group</option>
+                        </select>        
+                    </div>
+                    <div class="col-md-3 form-group">
+                        <label for="language">Language</label>
+                        <select class="form-control"  name="language" id="language" required>
+                            <option value="0" selected >Language</option>
+                            <?php
+                                foreach($languages as $r){ ?>
+                                <option value="<?php echo $r->language_id;?>"    
+                                <?php if($this->input->post('language') == $r->language_id) echo " selected "; ?>
+                                ><?php echo $r->language;?></option>    
+                            <?php }  ?>
+                        </select>
+                    </div>  
+                    <div class="form-group col-md-3" style="margin-top:2rem;">
+                        <button type="submit" class="btn btn-md btn-primary btn-block">Submit</button>
+                    </div>
+                </div>
+            </form>
+            <?php 
+                if(isset($questions)) {
+                    $i=1; 
+                    foreach (json_decode($questions) as $q) { ?>
+                    <div class="row">
+                        <div class="col-md-1 col-sm-1 col-xs-1 col-lg-1">
+                            <?php echo $i++; ?>
+                        </div>
+                        <div class="col-md-11 col-sm-11 col-xs-11 col-lg-11 question-tile" question-id="<?php echo $q->question_id; ?>">
+                            <?php echo $q->question; ?>
+                        </div>
+                    </div>
+                <?php } 
+                } 
+            ?>
         </div>
     </div>
 </div>
