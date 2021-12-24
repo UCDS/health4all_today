@@ -58,7 +58,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         opacity: 0.5;
         z-index: 2000;
     }
-    li {
+    ol>li {
         cursor: pointer;
         background: #f2f2f2;
         color: #222;
@@ -82,6 +82,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 <?php 
     $group = $this->input->post('group');
+    $sub_group = $this->input->post('sub_group');
+    $language = $this->input->post('language');
 ?>
 
 <div class="container">
@@ -127,18 +129,28 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     </div>
                 </div>
             </form>
-            <ol id="sortable">
-                <?php 
-                    if(isset($questions)) {
-                        $i=1; 
-                        foreach (json_decode($questions) as $q) { ?>
-                            <li class="question" question-id="<?php echo $q->question_id; ?>">
-                                <?php echo $q->question; ?>
-                            </li>
-                    <?php } 
-                    } 
-                ?>
-            </ol>
+        </div>
+        <div class="card-body">
+            <?php $questions = json_decode($questions); if($questions) { ?>
+                <ol id="sortable">
+                    <?php 
+                            $i=1; 
+                            foreach ($questions as $q) { ?>
+                                <li class="question" question-id="<?php echo $q->question_id; ?>">
+                                    <?php echo $q->question; ?>
+                                </li>
+                        <?php } ?>
+                </ol>
+            <?php } ?> 
+            <!-- <?php if($group && !$questions) {?>
+                <div class="row" style="margin-top:1rem;">
+                    <div class="col-md-12">
+                        <div class="alert alert-info">
+                            <p>No Questions found with the selected group, sub_group and language combination</p>
+                        </div>
+                    </div>
+                </div>
+            <?php } ?> -->
         </div>
     </div>
 </div>
