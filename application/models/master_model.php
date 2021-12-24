@@ -588,4 +588,18 @@ class Master_model extends CI_Model {
 		}
         return true;
     }
+
+    function create_question_sequence(){
+        $data = array(
+            'group_id' => $this->input->post('group'),
+            'sub_group_id' => $this->input->post('sub_group'),
+            'language_id' => $this->input->post('language'),
+            'sequence' => $this->input->post('sequence'),
+            'created_by' => $this->user_id
+        );
+        $this->db->trans_start();
+        $this->db->insert('question_sequence',$data);
+        $this->db->trans_complete(); //Transaction Ends
+        if($this->db->trans_status()===TRUE) return true; else return false; //if transaction completed successfully return true, else false.
+    }
 }
