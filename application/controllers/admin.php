@@ -393,7 +393,7 @@ class Admin extends CI_Controller {
 			$group = $this->input->post('group');
 			$sub_group = $this->input->post('sub_group');
 			$is_sequence_exists = FALSE;
-			$this->data['questions'] =  $this->master_model->get_questions(NULL ,NULL , $group , $sub_group , NULL, $language);
+			$this->data['questions'] =  $this->master_model->get_questions(NULL ,NULL , $group , $sub_group , NULL, $language, TRUE);
 			$sequence_info = $this->master_model->get_question_sequence_info();
 			if($sequence_info) {
 				$is_sequence_exists = TRUE;
@@ -408,7 +408,7 @@ class Admin extends CI_Controller {
 				if($this->input->post('is_sequence_updated') && $this->master_model->create_update_question_sequence($is_sequence_exists)){
 					$this->data['status']=200;
 					$this->data['sequence_info']=$this->master_model->get_question_sequence_info();
-					$this->data['questions'] =  $this->master_model->get_questions(NULL ,NULL , $group , $sub_group , NULL, $language);
+					$this->data['questions'] =  $this->master_model->get_questions(NULL ,NULL , $group , $sub_group , NULL, $language, TRUE);
 					$this->data['msg']="Sequence updated successfully";
 					$this->load->view('admin/questions_sequence',$this->data);
 				} else {
