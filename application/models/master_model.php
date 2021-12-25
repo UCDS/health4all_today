@@ -618,6 +618,19 @@ class Master_model extends CI_Model {
         return true;
     }
 
+    function get_question_sequence_info() {
+        $group = $this->input->post('group');
+        $sub_group = $this->input->post('sub_group');
+        $language = $this->input->post('language');
+        $this->db->select('group_id, sub_group_id, language_id, sequence, created_by, created_datetime, updated_by, updated_datetime')
+            ->from('question_sequence')
+            ->where('group_id' , $group)
+            ->where('sub_group_id' , $sub_group)
+            ->where('language_id' , $language);
+        $query = $this->db->get();    
+        return $query->row();
+    }
+
     function create_question_sequence(){
         $data = array(
             'group_id' => $this->input->post('group'),
