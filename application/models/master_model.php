@@ -64,7 +64,21 @@ class Master_model extends CI_Model {
     }
 
     
-    function get_questions($limit , $start  , $group , $sub_group , $question_level, $language) { 
+    function get_questions($limit , $start  , $group , $sub_group , $question_level, $language) {
+        $question_sequence = array();
+        $sequence_exists = FALSE;
+        $this->db->select('group_id, sub_group_id, language_id, sequence, created_by, created_datetime, updated_by, updated_datetime')
+            ->from('question_sequence')
+            ->where('group_id' , $group)
+            ->where('sub_group_id' , $sub_group)
+            ->where('language_id' , $language);
+        $query = $this->db->get();    
+        $question_sequence_result = $query->row();
+        if($question_sequence_result) {
+            $sequence_exists=TRUE;
+            array_push($question_sequence, $question_sequence_result->sequence);
+        }
+
         if($this->logged_in) {
             $this->db->where_in('question.language_id', $this->user_language_ids);
         }
@@ -91,7 +105,23 @@ class Master_model extends CI_Model {
             ->where('question_grouping.group_id' , $group)
             ->order_by('question.question_id','asc');
         $query = $this->db->get();
-        $result =  json_encode( $query->result() , JSON_PRETTY_PRINT);
+        // var_dump($query->result());
+        $questions = $query->result();
+        $questions_sequenced = array();
+        foreach ($question_sequence as $s) {
+            foreach ($questions as $key=>$value) {
+                if($value->question_id == $s){
+                    array_push($questions_sequenced, $value);
+                    break;
+                }
+            }
+        }
+        foreach ($questions as $key => $value) {
+            if(!in_array($value->question_id, $question_sequence)){
+                array_push($questions_sequenced, $value);
+            }
+        }
+        $result =  json_encode( $questions_sequenced , JSON_PRETTY_PRINT);
         if($result){
             return $result;       
            }else{
@@ -594,9 +624,10 @@ class Master_model extends CI_Model {
             'group_id' => $this->input->post('group'),
             'sub_group_id' => $this->input->post('sub_group'),
             'language_id' => $this->input->post('language'),
-            'sequence' => $this->input->post('sequence'),
+            'sequence' => $this->input->post('question_sequence'),
             'created_by' => $this->user_id
         );
+        // echo $this->input->post('question_sequence');
         $this->db->trans_start();
         $this->db->insert('question_sequence',$data);
         $this->db->trans_complete(); //Transaction Ends
