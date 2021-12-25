@@ -60,15 +60,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     }
     ol>li {
         cursor: pointer;
-        background: #f2f2f2;
+        background: #dbdada;
         color: #222;
         border-radius: 4px;
-        background-image: -webkit-linear-gradient(top,#f9f9f9,#f2f2f2);
+        
+        /* background-image: -webkit-linear-gradient(top,#f9f9f9,#f2f2f2);
         background-image: -moz-linear-gradient(top,#f9f9f9,#f2f2f2);
         background-image: -ms-linear-gradient(top,#f9f9f9,#f2f2f2);
-        background-image: -o-linear-gradient(top,#f9f9f9,#f2f2f2);
+        background-image: -o-linear-gradient(top,#f9f9f9,#f2f2f2); */
         border: 1px solid #f2f2f2;
-        margin-top: 3px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        padding-left: 10px;
+    }
+    ol>li:nth-child(odd) {
+        background-color : #d0e3b9;
     }
     #sortable li.placeholder{
         position: relative;
@@ -122,7 +128,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     </div>
                     <div class="col-md-3 form-group" style="display:inline-flex; margin-top:2.5rem;">
                         <input  type="checkbox" name="enable_sorting" id="enable_sorting" style="width:25px;height:25px;">
-                        <label for="enableSorting" style="padding-left:10px;">Enable sorting</label>
+                        <label for="enableSorting" style="padding-left:10px;">Change Sequence</label>
                     </div>
                     <div class="form-group col-md-3">
                         <button type="submit" class="btn btn-md btn-secondary btn-block">Get Questions</button>
