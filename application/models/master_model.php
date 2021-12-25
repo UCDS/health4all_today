@@ -93,9 +93,6 @@ class Master_model extends CI_Model {
         if($language != 0){
 			$this->db->where('question.language_id' , $language);
         }
-        if(!$by_pass_pagination){
-            $this->db->limit($limit , $start);
-        }
 
         if(!$this->logged_in){
             $this->db->where('question.status_id' , 1);
@@ -104,8 +101,7 @@ class Master_model extends CI_Model {
         $this->db->select('question.question_id, question, explanation, question_image, question_image_width, explanation_image, explanation_image_width, status_id as status')
             ->from('question')
             ->join('question_grouping','question.question_id=question_grouping.question_id','inner')
-            ->where('question_grouping.group_id' , $group)
-            ->order_by('question.question_id','asc');
+            ->where('question_grouping.group_id' , $group);
         $query = $this->db->get();
         $questions = $query->result();
         $questions_sequenced = array();
@@ -121,6 +117,9 @@ class Master_model extends CI_Model {
             if(!in_array($value->question_id, $question_sequence)){
                 array_push($questions_sequenced, $value);
             }
+        }
+        if(!$by_pass_pagination){
+            $questions_sequenced = array_slice($questions_sequenced, $start, $limit);
         }
         $result =  json_encode( $questions_sequenced , JSON_PRETTY_PRINT);
         if($result){
