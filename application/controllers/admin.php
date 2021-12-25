@@ -68,11 +68,16 @@ class Admin extends CI_Controller {
 				$this->load->library('form_validation');				
 				$this->form_validation->set_rules('username', 'Username', 'trim|required|xss_clean');
 				$this->form_validation->set_rules('password', 'Password', 'trim|required|xss_clean|callback_check_database');
-				if ($this->form_validation->run() === FALSE)
-				{
+				$login = 0;
+				if ($this->form_validation->run() === FALSE){
 					$this->load->view('admin/login');
+				} else {
+					$login=1;
 				}
-				else{
+				if($this->input->post('username') && $this->input->post('username')!=""){
+					$this->user_model->save_user_signin($this->input->post('username'), $login);
+				}
+				if($login==1){
 					redirect('admin', 'refresh');
 				}	
 			}
@@ -92,8 +97,11 @@ class Admin extends CI_Controller {
 			$sess_array = array(
 				'user_id' => $result->user_id,
 				'username' => $result->username,
+				'first_name' => $result->first_name,
+				'last_name' => $result->last_name,
 				'email'=>$result->email,
-				'admin'=>$result->admin
+				'admin'=>$result->admin,
+				'default_language_id'=>$result->default_language_id,
 				);
 			$this->session->set_userdata('logged_in', $sess_array);
 			return TRUE;

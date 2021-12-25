@@ -60,9 +60,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </div>
             </div>
             <div class="form-group col-md-6">
-                <label for="languageId">Select The Language<span class="star" style="color:red"> *</span></label>
-                <select class="form-control"  name="language" id="language" required>
-                    <option value="" selected disabled>--Select--</option>
+                <label for="languageId">Select default language<span class="star" style="color:red"> *</span></label>
+                <select class="form-control"  name="default_language_id" id="default_language_id" required>
+                    <option value="" selected disabled>Default language</option>
                     <?php
                         foreach($languages as $r){ ?>
                         <option value="<?php echo $r->language_id;?>"    

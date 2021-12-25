@@ -61,8 +61,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     }    
 </style>
 
-<?php  $logged_in=$this->session->userdata('logged_in'); ?>
-<?php
+<?php  
+    $logged_in=$this->session->userdata('logged_in'); 
+    $default_language_id = $logged_in['default_language_id'];
     $defaut_group = '';
     foreach($groups as $r){
         if($r->default_group == 1) {
@@ -106,7 +107,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         if($logged_in) {
                             foreach($user_languages as $r){ ?>
                             <option value="<?php echo $r->language_id;?>"    
-                            <?php if($this->input->post('language') == $r->language_id) echo " selected "; ?>
+                            <?php if($this->input->post('language') == $r->language_id || $default_language_id === $r->language_id) echo " selected "; ?>
                             ><?php echo $r->language;?></option>    
                         <?php } 
                         } else {
