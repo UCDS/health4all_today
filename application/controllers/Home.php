@@ -68,6 +68,7 @@ class Home extends CI_Controller {
 				"transliterate"=> json_decode($this->master_model->get_transliterate_data_by_question_and_language_id($q->question_id, $transliterate_language))
 			];
 		}
+		$question_answers_list = array_values($question_answers_list); 
 		print json_encode($question_answers_list);				
 						
 	}
