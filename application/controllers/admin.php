@@ -384,18 +384,28 @@ class Admin extends CI_Controller {
 			$language = $this->input->post('language');
 			$group = $this->input->post('group');
 			$sub_group = $this->input->post('sub_group');
+			$is_sequence_exists = FALSE;
 			$this->data['questions'] =  $this->master_model->get_questions(NULL ,NULL , $group , $sub_group , NULL, $language);
+			$sequence_info = $this->master_model->get_question_sequence_info();
+			if($sequence_info) {
+				$is_sequence_exists = TRUE;
+			}
+			$this->data['sequence_info']=$sequence_info;
 			$this->load->view('templates/header',$this->data);
 			$this->form_validation->set_rules('group','group','required');
 			$this->form_validation->set_rules('sub_group','sub_group','required');
 			if ($this->form_validation->run() === FALSE){
 				$this->load->view('admin/questions_sequence' , $this->data);
 			} else {
-				if($this->master_model->upload_image()){
-					$this->data['msg']="Sequence created successfully";
+				if($this->input->post('is_sequence_updated') && $this->master_model->create_update_question_sequence($is_sequence_exists)){
+					$this->data['status']=200;
+					$this->data['sequence_info']=$this->master_model->get_question_sequence_info();
+					$this->data['questions'] =  $this->master_model->get_questions(NULL ,NULL , $group , $sub_group , NULL, $language);
+					$this->data['msg']="Sequence updated successfully";
 					$this->load->view('admin/questions_sequence',$this->data);
 				} else {
-					$this->data['msg']="Error creating questions sequence. Please retry.";
+					$this->data['status']=500;
+					$this->data['msg']="Error updating questions sequence. Please retry.";
 					$this->load->view('admin/questions_sequence',$this->data);
 				}
 			}

@@ -84,6 +84,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     $group = $this->input->post('group');
     $sub_group = $this->input->post('sub_group');
     $language = $this->input->post('language');
+    $sequence = $sequence_info ? $sequence_info->sequence : '';
 ?>
 
 <div class="container">
@@ -93,6 +94,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         </div>
         <div class="card-body">
             <form id="questions_sequence" action="<?= base_url('admin/questions_sequence') ?>" method="POST">
+                <input type="hidden" id="question_sequence" name="question_sequence" value="<?= $sequence; ?>" />
+                <input type="hidden" id="is_sequence_updated" name="is_sequence_updated" />
                 <div class="row">
                     <div class="form-group col-md-3">
                         <label for="groupId">Group <span class="star" style="color:red"> *</span></label>
@@ -122,10 +125,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <label for="enableSorting" style="padding-left:10px;">Enable sorting</label>
                     </div>
                     <div class="form-group col-md-3">
-                        <button type="submit" class="btn btn-md btn-primary btn-block">Submit</button>
+                        <button type="submit" class="btn btn-md btn-secondary btn-block">Get Questions</button>
                     </div>
                     <div class="form-group col-md-3">
-                        <button type="button" class="btn btn-md btn-primary btn-block" onclick="save_sequence();" >Save sequence</button>
+                        <button type="submit" class="btn btn-md btn-primary btn-block" onclick="save_sequence();">Save Sequence</button>
                     </div>
                 </div>
             </form>
@@ -156,6 +159,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 </div>
 
 <script>
+
+    <?php if(isset($status)) { ?>
+        const status = <?php echo $status; ?>;
+        const msg= '<?php echo $msg; ?>';
+    <?php } ?>
+    
+    if(status==200){
+        swal({
+            title: "Success",
+            text: msg,
+            type: "success",
+            timer: 2000
+        });
+    }
     
     function escapeSpecialChars(str) {
         return str.replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\t/g, "\\t");
@@ -227,10 +244,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     }
 
     function save_sequence() {
-        const question_ids =  [];
+        let question_sequence = '';
         $('.question').each(function (index, element) {
-            question_ids.push($(element).attr('question-id'));
+            const question_id = $(element).attr('question-id').toString();
+            question_sequence = question_sequence.concat(`${question_id},`);
         });
-        console.log(question_ids);
+        $("#is_sequence_updated").val(1);
+        $("#question_sequence").val(question_sequence);
     }
 </script>
