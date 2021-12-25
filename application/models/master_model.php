@@ -66,7 +66,6 @@ class Master_model extends CI_Model {
     
     function get_questions($limit , $start  , $group , $sub_group , $question_level, $language) {
         $question_sequence = array();
-        $sequence_exists = FALSE;
         $this->db->select('group_id, sub_group_id, language_id, sequence, created_by, created_datetime, updated_by, updated_datetime')
             ->from('question_sequence')
             ->where('group_id' , $group)
@@ -75,10 +74,10 @@ class Master_model extends CI_Model {
         $query = $this->db->get();    
         $question_sequence_result = $query->row();
         if($question_sequence_result) {
-            $sequence_exists=TRUE;
-            array_push($question_sequence, $question_sequence_result->sequence);
+            // array_push($question_sequence, (int)$question_sequence_result->sequence);
+            $sequence_list = $question_sequence_result->sequence;
+            $question_sequence = array_map('intval',explode(',', $question_sequence_result->sequence));
         }
-
         if($this->logged_in) {
             $this->db->where_in('question.language_id', $this->user_language_ids);
         }
@@ -627,7 +626,6 @@ class Master_model extends CI_Model {
             'sequence' => $this->input->post('question_sequence'),
             'created_by' => $this->user_id
         );
-        // echo $this->input->post('question_sequence');
         $this->db->trans_start();
         $this->db->insert('question_sequence',$data);
         $this->db->trans_complete(); //Transaction Ends
