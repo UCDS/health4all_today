@@ -26,6 +26,7 @@ class Admin extends CI_Controller {
 			$add_image_access=0;
 			$add_level_access=0;
 			$add_language_access=0;
+			$edit_question_sequence_access=0;
 			foreach($this->data['functions'] as $f){
 				if($f->user_function=="user" && $f->add) 	$add_user_access=1;  	
 				if($f->user_function=="question" && $f->add) 	$add_question_access=1;  	
@@ -34,6 +35,7 @@ class Admin extends CI_Controller {
 				if($f->user_function=="image" && $f->add)	$add_image_access=1;  	
 				if($f->user_function=="language" && $f->add)	$add_language_access=1;  	
 				if($f->user_function=="level" && $f->add)	$add_level_access=1;  	
+				if($f->user_function=="question_sequence" && $f->edit)	$edit_question_sequence_access=1;  	
 			}
 			$this->data['title']="Home";
 			$this->data['userdata']=$this->session->userdata('logged_in');
@@ -44,6 +46,7 @@ class Admin extends CI_Controller {
 			$this->data['add_image_access']=$add_image_access;
 			$this->data['add_language_access']=$add_language_access;
 			$this->data['add_level_access']=$add_level_access;
+			$this->data['edit_question_sequence_access']=$edit_question_sequence_access;
 			$this->load->view('templates/header' , $this->data);
 			$this->load->view('admin/admin_functions' , $this->data);
 		} else {
@@ -383,41 +386,52 @@ class Admin extends CI_Controller {
 
 	public function questions_sequence(){
 		if($this->session->userdata('logged_in')){
-			$this->load->helper('form');
-			$this->load->library('form_validation');
-			$this->data['title']="Question sequencing";
-			$this->data['groups'] = $this->master_model->get_groups();
-			$this->data['sub_groups'] = $this->master_model->get_sub_groups();
-			$this->data['languages'] = $this->master_model->get_languages();
-			$language = $this->input->post('language');
-			$group = $this->input->post('group');
-			$sub_group = $this->input->post('sub_group');
-			$is_sequence_exists = FALSE;
-			$this->data['questions'] =  $this->master_model->get_questions(NULL ,NULL , $group , $sub_group , NULL, $language, TRUE);
-			$sequence_info = $this->master_model->get_question_sequence_info();
-			if($sequence_info) {
-				$is_sequence_exists = TRUE;
+			$edit_question_sequence_access = 0;
+			foreach($this->data['functions'] as $f){
+				if($f->user_function=="question_sequence"){ 
+					if($f->add)
+						$edit_question_sequence_access=1;  	
+				}	
 			}
-			$this->data['sequence_info']=$sequence_info;
-			$this->load->view('templates/header',$this->data);
-			$this->form_validation->set_rules('group','group','required');
-			$this->form_validation->set_rules('sub_group','sub_group','required');
-			if ($this->form_validation->run() === FALSE){
-				$this->load->view('admin/questions_sequence' , $this->data);
-			} else {
-				if($this->input->post('is_sequence_updated') && $this->master_model->create_update_question_sequence($is_sequence_exists)){
-					$this->data['status']=200;
-					$this->data['sequence_info']=$this->master_model->get_question_sequence_info();
-					$this->data['questions'] =  $this->master_model->get_questions(NULL ,NULL , $group , $sub_group , NULL, $language, TRUE);
-					$this->data['msg']="Sequence updated successfully";
-					$this->load->view('admin/questions_sequence',$this->data);
-				} else {
-					$this->data['status']=500;
-					$this->data['msg']="Error updating questions sequence. Please retry.";
-					$this->load->view('admin/questions_sequence',$this->data);
+			if($edit_question_sequence_access) {
+				$this->load->helper('form');
+				$this->load->library('form_validation');
+				$this->data['title']="Question sequencing";
+				$this->data['groups'] = $this->master_model->get_groups();
+				$this->data['sub_groups'] = $this->master_model->get_sub_groups();
+				$this->data['languages'] = $this->master_model->get_languages();
+				$language = $this->input->post('language');
+				$group = $this->input->post('group');
+				$sub_group = $this->input->post('sub_group');
+				$is_sequence_exists = FALSE;
+				$this->data['questions'] =  $this->master_model->get_questions(NULL ,NULL , $group , $sub_group , NULL, $language, TRUE);
+				$sequence_info = $this->master_model->get_question_sequence_info();
+				if($sequence_info) {
+					$is_sequence_exists = TRUE;
 				}
+				$this->data['sequence_info']=$sequence_info;
+				$this->load->view('templates/header',$this->data);
+				$this->form_validation->set_rules('group','group','required');
+				$this->form_validation->set_rules('sub_group','sub_group','required');
+				if ($this->form_validation->run() === FALSE){
+					$this->load->view('admin/questions_sequence' , $this->data);
+				} else {
+					if($this->input->post('is_sequence_updated') && $this->master_model->create_update_question_sequence($is_sequence_exists)){
+						$this->data['status']=200;
+						$this->data['sequence_info']=$this->master_model->get_question_sequence_info();
+						$this->data['questions'] =  $this->master_model->get_questions(NULL ,NULL , $group , $sub_group , NULL, $language, TRUE);
+						$this->data['msg']="Sequence updated successfully";
+						$this->load->view('admin/questions_sequence',$this->data);
+					} else {
+						$this->data['status']=500;
+						$this->data['msg']="Error updating questions sequence. Please retry.";
+						$this->load->view('admin/questions_sequence',$this->data);
+					}
+				}
+				$this->load->view('templates/footer',$this->data);
+			} else {
+				show_404();
 			}
-		$this->load->view('templates/footer',$this->data);
 		} else {
 			show_404();
 		}

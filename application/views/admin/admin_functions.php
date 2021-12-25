@@ -83,7 +83,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         </div>
       </div>
     </div>
-  <?php } ?>
+  <?php } if($edit_question_sequence_access) { ?>
     <div class="col-sm-4">
       <div class="card">
         <div class="card-body">
@@ -92,6 +92,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         </div>
       </div>
     </div>
+  <?php } ?>
 </div>
   </div>
 </main>
