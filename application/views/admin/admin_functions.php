@@ -78,12 +78,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <div class="col-sm-4">
       <div class="card">
         <div class="card-body">
-          <p class="card-text">upload a image</p>
-          <a href="<?php echo base_url();?>admin/upload_image" class="btn btn-primary">upload image</a>
+          <p class="card-text">Upload an image</p>
+          <a href="<?php echo base_url();?>admin/upload_image" class="btn btn-primary">Upload Image</a>
         </div>
       </div>
     </div>
-  <?php } ?>
+  <?php } if($edit_question_sequence_access) { ?>
     <div class="col-sm-4">
       <div class="card">
         <div class="card-body">
@@ -92,6 +92,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         </div>
       </div>
     </div>
+  <?php } ?>
 </div>
   </div>
 </main>

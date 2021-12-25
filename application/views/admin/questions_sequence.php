@@ -146,7 +146,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             $i=1; 
                             foreach ($questions as $q) { ?>
                                 <li class="question" question-id="<?php echo $q->question_id; ?>">
-                                    <?php echo $q->question; ?>
+                                    <?php echo $q->question; ?> <span style="float:right;margin-right:10px;"><?php echo $q->status==0 ? "<i class='fa fa-lock' aria-hidden='true'></i>" : ""; ?></span>
                                 </li>
                         <?php } ?>
                 </ol>

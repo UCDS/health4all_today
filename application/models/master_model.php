@@ -50,6 +50,9 @@ class Master_model extends CI_Model {
         if($language != 0){
 			$this->db->where('question.language_id' , $language);
 		}
+        if(!$this->logged_in){
+            $this->db->where('question.status_id' , 1);
+        }
         $this->db->select("question.question_id")
                 ->from('question')
                 ->join('question_grouping','question.question_id=question_grouping.question_id','inner')
@@ -64,7 +67,7 @@ class Master_model extends CI_Model {
     }
 
     
-    function get_questions($limit , $start  , $group , $sub_group , $question_level, $language) {
+    function get_questions($limit , $start  , $group , $sub_group , $question_level, $language, $by_pass_pagination) {
         $question_sequence = array();
         $this->db->select('group_id, sub_group_id, language_id, sequence, created_by, created_datetime, updated_by, updated_datetime')
             ->from('question_sequence')
@@ -90,7 +93,7 @@ class Master_model extends CI_Model {
         if($language != 0){
 			$this->db->where('question.language_id' , $language);
         }
-        if($limit && $start){
+        if(!$by_pass_pagination){
             $this->db->limit($limit , $start);
         }
 
@@ -104,7 +107,6 @@ class Master_model extends CI_Model {
             ->where('question_grouping.group_id' , $group)
             ->order_by('question.question_id','asc');
         $query = $this->db->get();
-        // var_dump($query->result());
         $questions = $query->result();
         $questions_sequenced = array();
         foreach ($question_sequence as $s) {
