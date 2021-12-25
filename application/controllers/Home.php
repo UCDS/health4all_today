@@ -60,7 +60,7 @@ class Home extends CI_Controller {
 		$per_page = 10;
 		$start = ($page -1 ) * $per_page;
 		$question_answers_list = array();
-		$questions =  $this->master_model->get_questions($per_page ,$start , $group , $sub_group , $question_level, $language);
+		$questions =  $this->master_model->get_questions($per_page ,$start , $group , $sub_group , $question_level, $language, FALSE);
 		foreach( json_decode($questions) as $q){
 			$question_answers_list[$q->question_id]  = (object)[ 
 				"question"=>$q, 
