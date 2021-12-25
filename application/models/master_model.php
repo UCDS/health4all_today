@@ -631,16 +631,22 @@ class Master_model extends CI_Model {
         return $query->row();
     }
 
-    function create_question_sequence(){
+    function create_update_question_sequence($is_sequence_exists){
         $data = array(
             'group_id' => $this->input->post('group'),
             'sub_group_id' => $this->input->post('sub_group'),
             'language_id' => $this->input->post('language'),
-            'sequence' => $this->input->post('question_sequence'),
-            'created_by' => $this->user_id
+            'sequence' => $this->input->post('question_sequence')
         );
         $this->db->trans_start();
-        $this->db->insert('question_sequence',$data);
+        if(!$is_sequence_exists) {
+            $data['created_by'] = $this->user_id;
+            $this->db->insert('question_sequence',$data);
+        } else {
+            $data['updated_by'] = $this->user_id;
+            $data['updated_datetime'] = date("Y-m-d H:i:s");
+            $this->db->update('question_sequence',$data);
+        }
         $this->db->trans_complete(); //Transaction Ends
         if($this->db->trans_status()===TRUE) return true; else return false; //if transaction completed successfully return true, else false.
     }
