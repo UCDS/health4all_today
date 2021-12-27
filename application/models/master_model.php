@@ -633,10 +633,13 @@ class Master_model extends CI_Model {
     }
 
     function create_update_question_sequence($is_sequence_exists){
+        $group_id =  $this->input->post('group');
+        $sub_group_id = $this->input->post('sub_group');
+        $language_id = $this->input->post('language');
         $data = array(
-            'group_id' => $this->input->post('group'),
-            'sub_group_id' => $this->input->post('sub_group'),
-            'language_id' => $this->input->post('language'),
+            'group_id' => $group_id,
+            'sub_group_id' => $sub_group_id,
+            'language_id' => $language_id,
             'sequence' => $this->input->post('question_sequence')
         );
         $this->db->trans_start();
@@ -644,6 +647,9 @@ class Master_model extends CI_Model {
             $data['created_by'] = $this->user_id;
             $this->db->insert('question_sequence',$data);
         } else {
+            $this->db->where('question_sequence.group_id', $group_id);
+            $this->db->where('question_sequence.sub_group_id', $sub_group_id);
+            $this->db->where('question_sequence.language_id', $language_id);
             $data['updated_by'] = $this->user_id;
             $data['updated_datetime'] = date("Y-m-d H:i:s");
             $this->db->update('question_sequence',$data);
