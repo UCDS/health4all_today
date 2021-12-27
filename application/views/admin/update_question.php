@@ -361,7 +361,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 `<div class="row"> 
                     <div class="form-group col-md-5">
                         <label for="groupId">Select Group <span class="star" style="color:red"> *</span></label>
-                        <select name="group[${grouping_id}]" id="group_${grouping_id}" onChange="filter_sub_groups("group_${grouping_id}" , 'sub_group_${grouping_id}')" placeholder='-- Select Group --'>
+                        <select name="group[${grouping_id}]" id="group_${grouping_id}" onChange="filter_sub_groups('group_${grouping_id}', 'sub_group_${grouping_id}')" placeholder='-- Select Group --'>
                         </select>
                     </div>
                     <div class="form-group col-md-5">
@@ -371,7 +371,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         </select>
                     </div>
                     ${ 
-                        index ===0 ? 
+                        index === 0 ? 
                         `<div class="form-group col-md-1">
                             <label for="">Add</label>  
                             <button type="button" class="btn btn-primary btn-block" id="addGroupAndSubGroup"><i class="fa fa-plus" aria-hidden="true"></i></button>
