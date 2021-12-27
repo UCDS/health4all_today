@@ -23,11 +23,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     }
 </style>
 <div class="container">
-        <?php if(isset($msg)){ ?>
-            <div class="alert alert-success" id="alert-success" role="alert"><?php echo $msg;?></div>
-        <?php
-        }
-        ?>
     <div class="card ">
         <div class="card-header bg-primary text-white">
            <h4> Update Question ID :<?php echo $question_id?> </h4>
