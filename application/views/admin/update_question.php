@@ -23,11 +23,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     }
 </style>
 <div class="container">
-        <?php if(isset($msg)){ ?>
-            <div class="alert alert-success" id="alert-success" role="alert"><?php echo $msg;?></div>
-        <?php
-        }
-        ?>
     <div class="card ">
         <div class="card-header bg-primary text-white">
            <h4> Update Question ID :<?php echo $question_id?> </h4>
@@ -54,6 +49,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <div class="form-group">
         </div>
         <div class="transliterate_wrapper">
+        </div>
+        <div class="groups_wrapper">    
         </div>
         <div class="row">
             <div class="form-group col-md-6">
@@ -149,12 +146,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     }
 
      // function to filter sub_groups based on a selected group 
-     function filter_sub_groups(group , id, selected_sub_group=''){
+     function filter_sub_groups(group , id, selected_sub_group){
         // fetching list of all subgroups
         var sub_groups = <?php echo json_encode($sub_groups); ?>;
         var selected_group = $(`#${group}`).val();
         var filtered_sub_groups;
-        $(`#${id}`).empty().append(`<option  selected>Sub Group</option>`);
+        $(`#${id}`).empty().append(`<option value="0" selected>Sub Group</option>`);
         
         filtered_sub_groups = $.grep(sub_groups , function(v){
             return v.group_id == selected_group;
@@ -162,7 +159,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             // iterating the selected sub groups
         $.each(filtered_sub_groups, function (indexInArray, valueOfElement) { 
             const {sub_group_id ,sub_group} = valueOfElement;
-            $(`#${id}`).append($(`<option ${ selected_sub_group && 'selected'} ></option>`).val(sub_group_id).html(sub_group));
+            $(`#${id}`).append($(`<option ${ selected_sub_group===sub_group_id && 'selected'} ></option>`).val(sub_group_id).html(sub_group));
         });
     }
 
@@ -184,7 +181,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
     function showImagePreview(imageSrc, previewImageId){
         let selectedImageName = $(`#${imageSrc}`).val();
-        if(!selectedImageName){    
+        if(!selectedImageName){
             $(`#${previewImageId}`).hide();
         }  else {
             let imagePath = `<?= base_url() ?>assets/images/quiz/${selectedImageName}.jpeg`;
@@ -237,6 +234,34 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	    }
     }
 
+    function initGroupSelectize(id, value) {
+        const groups = JSON.parse(escapeSpecialChars('<?php echo json_encode($groups); ?>'));
+        var selectize = $(`#${id}`).selectize({
+            valueField: 'group_id',
+	        labelField: 'group_name',
+            sortField: 'group_name',
+            searchField: ['group_name'],
+            options: groups,
+            create: false,
+            render: {
+                option: function(item, escape) {
+                    return `<div>
+                                <span class="title">
+                                    <span class="option-name">${escape(item.group_name)}</span>
+                                </span>
+                            </div>`;
+                }
+    	    },
+            load: function(query, callback) {
+                if (!query.length) return callback();
+            },
+
+        });
+        if(value){
+		    selectize[0].selectize.setValue(value);
+	    }
+    }
+
     $(function() {
 
         /* on page load, initializing image search filters */
@@ -280,8 +305,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             ); 
         }
         
-        var grouping_details = <?php echo json_encode($grouping_details) ?>;
-        filter_sub_groups('group_1', 'sub_group_1',grouping_details[0].sub_group_id);
+        
         
         var add_button = $("#add_fields"); //Add button class or ID
         let x = 0; //Initial input field is set to 1
@@ -321,15 +345,51 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             x--; 
         });
 
+        const groups_wrapper = $(".groups_wrapper"); // Question groups and subgroups wrapper; 
+        const grouping_details = <?php echo json_encode($grouping_details) ?>;
+        // initGroupSelectize('group_0', grouping_details[0].group_id)
+        // filter_sub_groups('group_0', 'sub_group_0',grouping_details[0].sub_group_id);
+        if(grouping_details) {
+            grouping_details.forEach((element, index) => {
+                const {grouping_id, group_id, sub_group_id} = element;
+                $(groups_wrapper).append(
+                `<div class="row"> 
+                    <div class="form-group col-md-5">
+                        <label for="groupId">Select Group <span class="star" style="color:red"> *</span></label>
+                        <select name="group[${grouping_id}]" id="group_${grouping_id}" onChange="filter_sub_groups('group_${grouping_id}', 'sub_group_${grouping_id}')" placeholder='-- Select Group --'>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-5">
+                        <label for="subGroupId">Select Sub Group</label>
+                        <select class="form-control" name="sub_group[${grouping_id}]" id='sub_group_${grouping_id}'>
+                            <option value="" selected >--Select--</option>
+                        </select>
+                    </div>
+                    ${ 
+                        index === 0 ? 
+                        `<div class="form-group col-md-1">
+                            <label for="">Add</label>  
+                            <button type="button" class="btn btn-primary btn-block" id="addGroupAndSubGroup"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                        </div>` 
+                            :
+                        `<div class="form-group col-md-1">
+                            <label for="">Remove</label>  
+                            <button class="btn btn-danger removeGroupAndSubGroup" ><i class="fa fa-trash" aria-hidden="true"></i></button>
+                        </div>`
+                    }
+                </div>`);
+                initGroupSelectize(`group_${grouping_id}`, group_id);
+                filter_sub_groups(`group_${grouping_id}`, `sub_group_${grouping_id}`,sub_group_id);
+            });
+        }
 
-        var count=2;
-        var groups_wrapper = $(".groups_wrapper"); //Groups and subgroup wrapper 
-        var addGroupAndSubGroup = $("#addGroupAndSubGroup");
+        let group_count=0;
+        const addGroupAndSubGroup = $("#addGroupAndSubGroup");
         $(addGroupAndSubGroup).click(function (e) { 
             $(groups_wrapper).append(`<div class="row">
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-5">
                     <label for="group">Select Group <span class="star" style="color:red"> *</span></label>
-                    <select class="form-control" name="group[]" id="group_${count}" onChange="filter_sub_groups('group_${count}' , 'sub_group_${count}')" required>
+                    <select name="new_group[]" id="group_${group_count}" onChange="filter_sub_groups('group_${group_count}' , 'sub_group_${group_count}')" required>
                     <option value="" selected disabled>--Select--</option>
                     <?php
                         foreach($groups as $r){
@@ -340,9 +400,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     ?>
                 </select>
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-5">
                     <label for="subGroup">Select Sub Group</label>
-                    <select class="form-control" name="sub_group[]" id="sub_group_${count}">
+                    <select class="form-control" name="new_sub_group[]" id="sub_group_${group_count}">
                         <option value="0" selected >--Select--</option>
                     </select>
                 </div>
@@ -351,13 +411,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <button class="btn btn-danger removeGroupAndSubGroup" ><i class="fa fa-trash" aria-hidden="true"></i></button>
                 </div>
                 </div`);
-                count++;   
+                initGroupSelectize(`group_${group_count}`);
+                group_count++;   
         });
         //when user click on remove button in groupAndSubGroup row
         $(groups_wrapper).on("click",".removeGroupAndSubGroup", function(e){ 
             e.preventDefault();
             $(this).parent().parent('div').remove();
-            x--; 
+            group_count--; 
         });
 
         // fetching and populating transliterate data
