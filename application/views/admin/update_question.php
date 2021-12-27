@@ -356,17 +356,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         // filter_sub_groups('group_0', 'sub_group_0',grouping_details[0].sub_group_id);
         if(grouping_details) {
             grouping_details.forEach((element, index) => {
-                const {group_id, sub_group_id} = element;
+                const {grouping_id, group_id, sub_group_id} = element;
                 $(groups_wrapper).append(
                 `<div class="row"> 
                     <div class="form-group col-md-5">
                         <label for="groupId">Select Group <span class="star" style="color:red"> *</span></label>
-                        <select name="group[${group_id}]" id="group_${group_id}" onChange="filter_sub_groups("group_${group_id}" , 'sub_group_${sub_group_id}')" placeholder='-- Select Group --'>
+                        <select name="group[${grouping_id}]" id="group_${grouping_id}" onChange="filter_sub_groups("group_${grouping_id}" , 'sub_group_${grouping_id}')" placeholder='-- Select Group --'>
                         </select>
                     </div>
                     <div class="form-group col-md-5">
                         <label for="subGroupId">Select Sub Group</label>
-                        <select class="form-control" name="sub_group[${sub_group_id}]" id='sub_group_${sub_group_id}'>
+                        <select class="form-control" name="sub_group[${grouping_id}]" id='sub_group_${grouping_id}'>
                             <option value="" selected >--Select--</option>
                         </select>
                     </div>
@@ -383,18 +383,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         </div>`
                     }
                 </div>`);
-                initGroupSelectize(`group_${group_id}`, group_id);
-                filter_sub_groups(`group_${group_id}`, `sub_group_${sub_group_id}`,sub_group_id);
+                initGroupSelectize(`group_${grouping_id}`, group_id);
+                filter_sub_groups(`group_${grouping_id}`, `sub_group_${grouping_id}`,sub_group_id);
             });
         }
-        
+
         let group_count=0;
-        var addGroupAndSubGroup = $("#addGroupAndSubGroup");
+        const addGroupAndSubGroup = $("#addGroupAndSubGroup");
         $(addGroupAndSubGroup).click(function (e) { 
             $(groups_wrapper).append(`<div class="row">
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-5">
                     <label for="group">Select Group <span class="star" style="color:red"> *</span></label>
-                    <select class="form-control" name="group[]" id="group_${group_count}" onChange="filter_sub_groups('group_${group_count}' , 'sub_group_${group_count}')" required>
+                    <select name="new_group[]" id="group_${group_count}" onChange="filter_sub_groups('group_${group_count}' , 'sub_group_${group_count}')" required>
                     <option value="" selected disabled>--Select--</option>
                     <?php
                         foreach($groups as $r){
@@ -405,9 +405,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     ?>
                 </select>
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-5">
                     <label for="subGroup">Select Sub Group</label>
-                    <select class="form-control" name="sub_group[]" id="sub_group_${group_count}">
+                    <select class="form-control" name="new_sub_group[]" id="sub_group_${group_count}">
                         <option value="0" selected >--Select--</option>
                     </select>
                 </div>
@@ -416,6 +416,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <button class="btn btn-danger removeGroupAndSubGroup" ><i class="fa fa-trash" aria-hidden="true"></i></button>
                 </div>
                 </div`);
+                initGroupSelectize(`group_${group_count}`);
                 group_count++;   
         });
         //when user click on remove button in groupAndSubGroup row
