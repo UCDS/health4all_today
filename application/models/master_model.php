@@ -376,10 +376,44 @@ class Master_model extends CI_Model {
         $this->db->where('question_id',$question_id);
         $this->db->update('question',$data); //updating the question w.r.t question_id
 
-        // $groups = $this->input->post('group');
-        // $sub_groups = $this->input->post('sub_group'); 
+        $groups = $this->input->post('group');
+        $sub_groups = $this->input->post('sub_group'); 
         // var_dump($groups);
         // var_dump($sub_groups);
+        $grouping_info = array();
+        foreach($groups as $key=>$value) { //loop through the answer options 
+            $grouping_info[]=array(
+                'grouping_id'=>$key,
+                'group_id'=>$groups[$key],
+                'sub_group_id'=>$sub_groups[$key],
+                'question_id'=>$question_id,
+                'updated_by'=> $this->user_id,
+                'updated_datetime'=>date("Y-m-d H:i:s")
+            );
+        }
+        $this->db->update_batch('question_grouping',$grouping_info, 'grouping_id');
+        //clean up , redundant data:  delete all other grouing records of this question which are deleted from by user 
+        $not_to_be_deleted_grouping_ids = array_keys($grouping_info);
+        $this->db->where('question_id',$question_id);
+        $this->db->where_not_in('grouping_id', $not_to_be_deleted_grouping_ids);
+        $delete_question_grouping_info = $this->db->delete('question_grouping');
+        $new_groups = $this->input->post('new_group');
+        $new_sub_groups = $this->input->post('new_sub_group'); 
+        // var_dump($new_groups);
+        // var_dump($new_sub_groups);
+        $new_grouping_info = array();
+        if(isset($new_groups)){
+            foreach($new_groups as $key=>$value) { //loop through the new group 
+                $new_grouping_info[]=array(
+                    'question_id'=>$question_id,
+                    'group_id'=>$new_groups[$key],
+                    'sub_group_id'=>$new_sub_groups[$key],
+                    'created_by'=> $this->user_id
+                );
+            }
+            // insert all the new groupig info to the question grouping_table
+            $this->db->insert_batch('question_grouping' ,$new_grouping_info);
+        }
 
         $answer_option=$this->input->post('answer_option'); //Get the answer options wrote by the user.
         $correct_option=$this->input->post('correct_option'); // Get the correct/incorrect value for answer options 
