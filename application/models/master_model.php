@@ -393,7 +393,8 @@ class Master_model extends CI_Model {
         }
         $this->db->update_batch('question_grouping',$grouping_info, 'grouping_id');
         //clean up , redundant data:  delete all other grouing records of this question which are deleted from by user 
-        $not_to_be_deleted_grouping_ids = array_keys($grouping_info);
+        $not_to_be_deleted_grouping_ids = array_keys($groups);
+        var_dump($not_to_be_deleted_grouping_ids);
         $this->db->where('question_id',$question_id);
         $this->db->where_not_in('grouping_id', $not_to_be_deleted_grouping_ids);
         $delete_question_grouping_info = $this->db->delete('question_grouping');
