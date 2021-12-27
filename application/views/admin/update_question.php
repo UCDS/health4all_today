@@ -55,24 +55,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         </div>
         <div class="transliterate_wrapper">
         </div>
-        <div class="groups_wrapper">
-            <div class="row">
-                <div class="form-group col-md-5">
-                    <label for="groupId">Select Group <span class="star" style="color:red"> *</span></label>
-                    <select name="group[]" id="group_0" onChange="filter_sub_groups('group_0' , 'sub_group_0')" placeholder='-- Select Group --'>
-                </select>
-                </div>
-                <div class="form-group col-md-5">
-                    <label for="subGroupId">Select Sub Group</label>
-                    <select class="form-control" name="sub_group[]" id="sub_group_0">
-                        <option value="" selected >--Select--</option>
-                    </select>
-                </div>
-                <div class="form-group col-md-1">
-                <label for="">Add</label>  
-                    <button type="button" class="btn btn-primary btn-block" id="addGroupAndSubGroup"><i class="fa fa-plus" aria-hidden="true"></i></button>
-                </div>
-            </div>    
+        <div class="groups_wrapper">    
         </div>
         <div class="row">
             <div class="form-group col-md-6">
@@ -369,38 +352,43 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
         const groups_wrapper = $(".groups_wrapper"); // Question groups and subgroups wrapper; 
         const grouping_details = <?php echo json_encode($grouping_details) ?>;
-        initGroupSelectize('group_0', grouping_details[0].group_id)
-        filter_sub_groups('group_0', 'sub_group_0',grouping_details[0].sub_group_id);
-        let group_count=1;
-        if(grouping_details.length >1) {
+        // initGroupSelectize('group_0', grouping_details[0].group_id)
+        // filter_sub_groups('group_0', 'sub_group_0',grouping_details[0].sub_group_id);
+        if(grouping_details) {
             grouping_details.forEach((element, index) => {
-                if(index==0){
-                    return true;
-                }
+                const {group_id, sub_group_id} = element;
                 $(groups_wrapper).append(
                 `<div class="row"> 
                     <div class="form-group col-md-5">
                         <label for="groupId">Select Group <span class="star" style="color:red"> *</span></label>
-                        <select name="group[]" id="group_${group_count}" onChange="filter_sub_groups("group_${group_count}" , 'sub_group_${group_count}')" placeholder='-- Select Group --'>
+                        <select name="group[${group_id}]" id="group_${group_id}" onChange="filter_sub_groups("group_${group_id}" , 'sub_group_${sub_group_id}')" placeholder='-- Select Group --'>
                         </select>
                     </div>
                     <div class="form-group col-md-5">
                         <label for="subGroupId">Select Sub Group</label>
-                        <select class="form-control" name="sub_group[]" id='sub_group_${group_count}'>
+                        <select class="form-control" name="sub_group[${sub_group_id}]" id='sub_group_${sub_group_id}'>
                             <option value="" selected >--Select--</option>
                         </select>
                     </div>
-                    <div class="form-group col-md-1">
-                        <label for="">Remove</label>  
-                        <button class="btn btn-danger removeGroupAndSubGroup" ><i class="fa fa-trash" aria-hidden="true"></i></button>
-                    </div>
+                    ${ 
+                        index ===0 ? 
+                        `<div class="form-group col-md-1">
+                            <label for="">Add</label>  
+                            <button type="button" class="btn btn-primary btn-block" id="addGroupAndSubGroup"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                        </div>` 
+                            :
+                        `<div class="form-group col-md-1">
+                            <label for="">Remove</label>  
+                            <button class="btn btn-danger removeGroupAndSubGroup" ><i class="fa fa-trash" aria-hidden="true"></i></button>
+                        </div>`
+                    }
                 </div>`);
-                initGroupSelectize(`group_${group_count}`, grouping_details[group_count].group_id);
-                filter_sub_groups(`group_${group_count}`, `sub_group_${group_count}`,grouping_details[group_count].sub_group_id);
-                group_count++;
+                initGroupSelectize(`group_${group_id}`, group_id);
+                filter_sub_groups(`group_${group_id}`, `sub_group_${sub_group_id}`,sub_group_id);
             });
         }
         
+        let group_count=0;
         var addGroupAndSubGroup = $("#addGroupAndSubGroup");
         $(addGroupAndSubGroup).click(function (e) { 
             $(groups_wrapper).append(`<div class="row">
