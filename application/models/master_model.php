@@ -216,6 +216,9 @@ class Master_model extends CI_Model {
     }
 
     function get_groups() { 
+        if(!$this->logged_in){
+            $this->db->where('groups.display', 1);
+        }
         $this->db->select('*')
                 ->from('groups')
                 ->order_by('group_name', 'asc');
