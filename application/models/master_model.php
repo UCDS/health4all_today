@@ -444,8 +444,7 @@ class Master_model extends CI_Model {
                 'correct_option'=>$correct_option[$key],
                 'answer_image'=>$answer_option_image[$key],
                 'answer_image_width'=>$answer_option_image_width[$key],
-                'updated_by'=> $this->user_id,
-                'updated_datetime'=>date("Y-m-d H:i:s")
+                'updated_by'=> $this->user_id
             );
         }
         $this->db->update_batch('answer_option',$answer_option_data, 'answer_option_id');
