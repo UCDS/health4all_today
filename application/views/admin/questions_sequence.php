@@ -138,6 +138,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     </div>
                 </div>
             </form>
+            <?php if($sequence) { ?>
+                <div class="row">
+                    <div class="col-md-6">
+                        <b> Created By :</b> <?php echo $sequence_info->created_user_first_name ? $sequence_info->created_user_first_name :''; echo $sequence_info->created_user_last_name ? ' '.$sequence_info->created_user_last_name.', ' : ''; echo $sequence_info->sequence_created_datetime ? date("d-M-Y h:i A", strtotime($sequence_info->sequence_created_datetime)) : ''; ?>
+                    </div>
+                    <div class="col-md-6">
+                        <b> Last Updated By :</b> <?php echo $sequence_info->last_updated_user_first_name ? $sequence_info->last_updated_user_first_name : ''; echo  $sequence_info->last_updated_user_last_name ? ' '.$sequence_info->last_updated_user_last_name.', ' : ''; echo $sequence_info->sequence_updated_datetime ? date("d-M-Y h:i A", strtotime($sequence_info->sequence_updated_datetime)) : ''; ?>
+                    </div>
+                </div>
+            <?php } ?>
         </div>
         <div class="card-body">
             <?php $questions = json_decode($questions); if($questions) { ?>

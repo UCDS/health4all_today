@@ -661,12 +661,16 @@ class Master_model extends CI_Model {
         $group = $this->input->post('group');
         $sub_group = $this->input->post('sub_group');
         $language = $this->input->post('language');
-        $this->db->select('group_id, sub_group_id, language_id, sequence, created_by, created_datetime, updated_by, updated_datetime')
+        $this->db->select('group_id, sub_group_id, language_id, sequence, created_user.first_name as created_user_first_name, created_user.last_name  as created_user_last_name,
+            question_sequence.created_datetime as sequence_created_datetime, updated_user.first_name as last_updated_user_first_name, updated_user.last_name  as last_updated_user_last_name, 
+            question_sequence.updated_datetime as sequence_updated_datetime')
             ->from('question_sequence')
+            ->join('user as created_user','created_user.user_id=question_sequence.created_by','left')
+            ->join('user as updated_user','updated_user.user_id=question_sequence.updated_by','left')
             ->where('group_id' , $group)
             ->where('sub_group_id' , $sub_group)
             ->where('language_id' , $language);
-        $query = $this->db->get();    
+        $query = $this->db->get();
         return $query->row();
     }
 
