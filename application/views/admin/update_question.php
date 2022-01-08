@@ -288,6 +288,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <div class="row">
                             <div class="form-group col-md-5">
                                 <textarea name="answer_option[${element.answer_option_id}]" class="form-control" ${[0,1].includes(index) ? "required" :''} rows='1' >${element.answer} </textarea>
+                                <span> <b> Created By :</b> ${element?.created_user_first_name+" "} ${element?.created_user_last_name } ${", "+ getFormattedDate(element?.answer_option_created_datetime)} </span>
                             </div>
                             <div class="form-group col-md-4">
                                 <select id='answer_option_image_${element.answer_option_id}' name="answer_option_image[${element.answer_option_id}]">
@@ -305,7 +306,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 <div class='form-group col-md-1'>
                                     <button type="button" class="btn btn-danger remove_field"><i class="fa fa-trash" aria-hidden="true"></i></button>
                                 </div>` : ``
-                            }  
+                            } 
                         </div>
                     `);
                     initImageSelectize(`answer_option_image_${element.answer_option_id}`, element.answer_image);
@@ -505,5 +506,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             $("#alert-success").slideUp(500);
         });
     });
+
+    function getFormattedDate(timestamp){
+        var date = new Date(timestamp);
+        return +date.getDate()+
+          "-"+(date.getMonth()+1)+
+          "-"+date.getFullYear()+
+          " "+date.getHours()+
+          ":"+date.getMinutes()+
+          " "+(date.getHours()>= 12 ? "PM":"AM" )
+    }
    
 </script>
