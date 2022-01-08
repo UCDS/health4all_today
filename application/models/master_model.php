@@ -130,9 +130,14 @@ class Master_model extends CI_Model {
     }
 
     function get_question_by_id($question_id){
-        $this->db->select('question.question_id, question, question_image, question_image_width, explanation, explanation_image, explanation_image_width, level_id, language_id')
+        $this->db->select('question.question_id, question, question_image, question_image_width, explanation, explanation_image, explanation_image_width, level_id,
+            language_id,created_user.first_name as created_user_first_name, created_user.last_name  as created_user_last_name,
+            question.created_datetime as question_created_datetime, updated_user.first_name as last_updated_user_first_name, updated_user.last_name  as last_updated_user_last_name, 
+            question.updated_datetime as question_updated_datetime')
             ->from('question')
             ->join('question_grouping', 'question.question_id=question_grouping.question_id', 'inner')
+            ->join('user as created_user','created_user.user_id=question.created_by','left')
+            ->join('user as updated_user','updated_user.user_id=question.updated_by','left')
             ->where('question.question_id', $question_id);
         $query = $this->db->get();
         $result = $query->result();
@@ -157,8 +162,13 @@ class Master_model extends CI_Model {
     }
 
     function get_answer_options_by_question_id($question_id) {
-        $this->db->select('answer_option_id , answer , correct_option , question_id , answer_image, answer_image_width')
+        $this->db->select('answer_option_id , answer , correct_option , question_id , answer_image, answer_image_width, 
+            created_user.first_name as created_user_first_name, created_user.last_name  as created_user_last_name,
+            answer_option.created_datetime as answer_option_created_datetime, updated_user.first_name as last_updated_user_first_name, updated_user.last_name  as last_updated_user_last_name, 
+            answer_option.updated_datetime as answer_option_updated_datetime')
             ->from('answer_option')
+            ->join('user as created_user','created_user.user_id=answer_option.created_by','left')
+            ->join('user as updated_user','updated_user.user_id=answer_option.updated_by','left')
             ->order_by('answer_option_id','asc')
             ->where('answer_option.question_id' , $question_id);
         $query = $this->db->get();
@@ -216,6 +226,9 @@ class Master_model extends CI_Model {
     }
 
     function get_groups() { 
+        if(!$this->logged_in){
+            $this->db->where('groups.display', 1);
+        }
         $this->db->select('*')
                 ->from('groups')
                 ->order_by('group_name', 'asc');
@@ -431,8 +444,7 @@ class Master_model extends CI_Model {
                 'correct_option'=>$correct_option[$key],
                 'answer_image'=>$answer_option_image[$key],
                 'answer_image_width'=>$answer_option_image_width[$key],
-                'updated_by'=> $this->user_id,
-                'updated_datetime'=>date("Y-m-d H:i:s")
+                'updated_by'=> $this->user_id
             );
         }
         $this->db->update_batch('answer_option',$answer_option_data, 'answer_option_id');
@@ -658,12 +670,16 @@ class Master_model extends CI_Model {
         $group = $this->input->post('group');
         $sub_group = $this->input->post('sub_group');
         $language = $this->input->post('language');
-        $this->db->select('group_id, sub_group_id, language_id, sequence, created_by, created_datetime, updated_by, updated_datetime')
+        $this->db->select('group_id, sub_group_id, language_id, sequence, created_user.first_name as created_user_first_name, created_user.last_name  as created_user_last_name,
+            question_sequence.created_datetime as sequence_created_datetime, updated_user.first_name as last_updated_user_first_name, updated_user.last_name  as last_updated_user_last_name, 
+            question_sequence.updated_datetime as sequence_updated_datetime')
             ->from('question_sequence')
+            ->join('user as created_user','created_user.user_id=question_sequence.created_by','left')
+            ->join('user as updated_user','updated_user.user_id=question_sequence.updated_by','left')
             ->where('group_id' , $group)
             ->where('sub_group_id' , $sub_group)
             ->where('language_id' , $language);
-        $query = $this->db->get();    
+        $query = $this->db->get();
         return $query->row();
     }
 

@@ -21,6 +21,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     input[type=number] {
         font-size:0.90rem;
     }
+    .time-stamp {
+        font-size:0.80rem;
+    }
 </style>
 <div class="container">
     <div class="card ">
@@ -42,6 +45,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <div class="col-md-1">
                 <label for="transliterate">Add Transliterate</label> <br>
                 <button type="button" class="btn btn-primary btn-block" id="addTransliterate"><i class="fa fa-plus" aria-hidden="true"></i></button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <b> Created By :</b> <?php echo $question_details[0]->created_user_first_name ? $question_details[0]->created_user_first_name :''; echo $question_details[0]->created_user_last_name ? ' '.$question_details[0]->created_user_last_name.', ' : ''; echo $question_details[0]->question_created_datetime ? date("d-M-Y h:i A", strtotime($question_details[0]->question_created_datetime)) : ''; ?>
+            </div>
+            <div class="col-md-6">
+                <b> Last Updated By :</b> <?php echo $question_details[0]->last_updated_user_first_name ? $question_details[0]->last_updated_user_first_name : ''; echo  $question_details[0]->last_updated_user_last_name ? ' '.$question_details[0]->last_updated_user_last_name.', ' : ''; echo $question_details[0]->question_updated_datetime ? date("d-M-Y h:i A", strtotime($question_details[0]->question_updated_datetime)) : ''; ?>
             </div>
         </div>
         <div class="form-group">
@@ -280,10 +291,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <div class="row">
                             <div class="form-group col-md-5">
                                 <textarea name="answer_option[${element.answer_option_id}]" class="form-control" ${[0,1].includes(index) ? "required" :''} rows='1' >${element.answer} </textarea>
+                                <span class="time-stamp"> <b> Created By :</b> ${element?.created_user_first_name+" "} ${element?.created_user_last_name } ${", "+ getFormattedDate(element?.answer_option_created_datetime)} </span>
                             </div>
                             <div class="form-group col-md-4">
                                 <select id='answer_option_image_${element.answer_option_id}' name="answer_option_image[${element.answer_option_id}]">
                                 </select>
+                                <span class="time-stamp"> <b> Updated By :</b> ${element?.last_updated_user_first_name? element?.last_updated_user_first_name : " " +" "} ${element?.last_updated_user_last_name? element?.last_updated_user_last_name : ""} ${", "+ getFormattedDate(element?.answer_option_updated_datetime)} </span>
                             </div>
                             <div class="form-group col-md-1">
                                 <input class="form-control" type="number" name="answer_option_image_width[${element.answer_option_id}]" value=${element.answer_image_width} placeholder="width" min=<?= $display_max_width[0]->lower_range;?> max=<?= $display_max_width[0]->upper_range; ?> />
@@ -297,7 +310,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 <div class='form-group col-md-1'>
                                     <button type="button" class="btn btn-danger remove_field"><i class="fa fa-trash" aria-hidden="true"></i></button>
                                 </div>` : ``
-                            }  
+                            } 
                         </div>
                     `);
                     initImageSelectize(`answer_option_image_${element.answer_option_id}`, element.answer_image);
@@ -497,5 +510,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             $("#alert-success").slideUp(500);
         });
     });
+
+    function getFormattedDate(timestamp){
+        if(!timestamp) {
+            return '';
+        }
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun","Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        var date = new Date(timestamp);
+        return +date.getDate()+
+          "-"+(monthNames[date.getMonth()])+
+          "-"+date.getFullYear()+
+          " "+date.getHours()+
+          ":"+date.getMinutes();
+    }
    
 </script>
