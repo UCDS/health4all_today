@@ -21,6 +21,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     input[type=number] {
         font-size:0.90rem;
     }
+    .time-stamp {
+        font-size:0.80rem;
+    }
 </style>
 <div class="container">
     <div class="card ">
@@ -288,11 +291,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <div class="row">
                             <div class="form-group col-md-5">
                                 <textarea name="answer_option[${element.answer_option_id}]" class="form-control" ${[0,1].includes(index) ? "required" :''} rows='1' >${element.answer} </textarea>
-                                <span> <b> Created By :</b> ${element?.created_user_first_name+" "} ${element?.created_user_last_name } ${", "+ getFormattedDate(element?.answer_option_created_datetime)} </span>
+                                <span class="time-stamp"> <b> Created By :</b> ${element?.created_user_first_name+" "} ${element?.created_user_last_name } ${", "+ getFormattedDate(element?.answer_option_created_datetime)} </span>
                             </div>
                             <div class="form-group col-md-4">
                                 <select id='answer_option_image_${element.answer_option_id}' name="answer_option_image[${element.answer_option_id}]">
                                 </select>
+                                <span class="time-stamp"> <b> Updated By :</b> ${element?.last_updated_user_first_name+" "} ${element?.last_updated_user_last_name} ${", "+ getFormattedDate(element?.answer_option_updated_datetime)} </span>
                             </div>
                             <div class="form-group col-md-1">
                                 <input class="form-control" type="number" name="answer_option_image_width[${element.answer_option_id}]" value=${element.answer_image_width} placeholder="width" min=<?= $display_max_width[0]->lower_range;?> max=<?= $display_max_width[0]->upper_range; ?> />
@@ -508,13 +512,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     });
 
     function getFormattedDate(timestamp){
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun","Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         var date = new Date(timestamp);
         return +date.getDate()+
-          "-"+(date.getMonth()+1)+
+          "-"+(monthNames[date.getMonth()])+
           "-"+date.getFullYear()+
           " "+date.getHours()+
-          ":"+date.getMinutes()+
-          " "+(date.getHours()>= 12 ? "PM":"AM" )
+          ":"+date.getMinutes();
     }
    
 </script>
