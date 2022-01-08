@@ -296,7 +296,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <div class="form-group col-md-4">
                                 <select id='answer_option_image_${element.answer_option_id}' name="answer_option_image[${element.answer_option_id}]">
                                 </select>
-                                <span class="time-stamp"> <b> Updated By :</b> ${element?.last_updated_user_first_name+" "} ${element?.last_updated_user_last_name} ${", "+ getFormattedDate(element?.answer_option_updated_datetime)} </span>
+                                <span class="time-stamp"> <b> Updated By :</b> ${element?.last_updated_user_first_name? element?.last_updated_user_first_name : " " +" "} ${element?.last_updated_user_last_name? element?.last_updated_user_last_name : ""} ${", "+ getFormattedDate(element?.answer_option_updated_datetime)} </span>
                             </div>
                             <div class="form-group col-md-1">
                                 <input class="form-control" type="number" name="answer_option_image_width[${element.answer_option_id}]" value=${element.answer_image_width} placeholder="width" min=<?= $display_max_width[0]->lower_range;?> max=<?= $display_max_width[0]->upper_range; ?> />
@@ -512,6 +512,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     });
 
     function getFormattedDate(timestamp){
+        if(!timestamp) {
+            return '';
+        }
         const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun","Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         var date = new Date(timestamp);
         return +date.getDate()+
