@@ -130,9 +130,14 @@ class Master_model extends CI_Model {
     }
 
     function get_question_by_id($question_id){
-        $this->db->select('question.question_id, question, question_image, question_image_width, explanation, explanation_image, explanation_image_width, level_id, language_id')
+        $this->db->select('question.question_id, question, question_image, question_image_width, explanation, explanation_image, explanation_image_width, level_id,
+            language_id,created_user.first_name as created_user_first_name, created_user.last_name  as created_user_last_name,
+            question.created_datetime as question_created_datetime, updated_user.first_name as last_updated_user_first_name, updated_user.last_name  as last_updated_user_last_name, 
+            question.updated_datetime as question_updated_datetime')
             ->from('question')
             ->join('question_grouping', 'question.question_id=question_grouping.question_id', 'inner')
+            ->join('user as created_user','created_user.user_id=question.created_by','left')
+            ->join('user as updated_user','updated_user.user_id=question.updated_by','left')
             ->where('question.question_id', $question_id);
         $query = $this->db->get();
         $result = $query->result();
