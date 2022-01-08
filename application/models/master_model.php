@@ -162,8 +162,13 @@ class Master_model extends CI_Model {
     }
 
     function get_answer_options_by_question_id($question_id) {
-        $this->db->select('answer_option_id , answer , correct_option , question_id , answer_image, answer_image_width')
+        $this->db->select('answer_option_id , answer , correct_option , question_id , answer_image, answer_image_width, 
+            created_user.first_name as created_user_first_name, created_user.last_name  as created_user_last_name,
+            answer_option.created_datetime as answer_option_created_datetime, updated_user.first_name as last_updated_user_first_name, updated_user.last_name  as last_updated_user_last_name, 
+            answer_option.updated_datetime as answer_option_updated_datetime')
             ->from('answer_option')
+            ->join('user as created_user','created_user.user_id=answer_option.created_by','left')
+            ->join('user as updated_user','updated_user.user_id=answer_option.updated_by','left')
             ->order_by('answer_option_id','asc')
             ->where('answer_option.question_id' , $question_id);
         $query = $this->db->get();
