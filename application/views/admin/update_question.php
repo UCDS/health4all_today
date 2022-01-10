@@ -49,10 +49,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         </div>
         <div class="row">
             <div class="col-md-6">
-                <b> Created By :</b> <?php echo $question_details[0]->created_user_first_name ? $question_details[0]->created_user_first_name :''; echo $question_details[0]->created_user_last_name ? ' '.$question_details[0]->created_user_last_name.', ' : ''; echo $question_details[0]->question_created_datetime ? date("d-M-Y h:i A", strtotime($question_details[0]->question_created_datetime)) : ''; ?>
+                <b> Created By :</b> <?php echo $question_details[0]->created_user_first_name ? $question_details[0]->created_user_first_name :''; echo $question_details[0]->created_user_last_name ? ' '.$question_details[0]->created_user_last_name.', ' : ', '; echo $question_details[0]->question_created_datetime ? date("d-M-Y h:i A", strtotime($question_details[0]->question_created_datetime)) : ''; ?>
             </div>
             <div class="col-md-6">
-                <b> Last Updated By :</b> <?php echo $question_details[0]->last_updated_user_first_name ? $question_details[0]->last_updated_user_first_name : ''; echo  $question_details[0]->last_updated_user_last_name ? ' '.$question_details[0]->last_updated_user_last_name.', ' : ''; echo $question_details[0]->question_updated_datetime ? date("d-M-Y h:i A", strtotime($question_details[0]->question_updated_datetime)) : ''; ?>
+                <b> Last Updated By :</b> <?php echo $question_details[0]->last_updated_user_first_name ? $question_details[0]->last_updated_user_first_name : ''; echo  $question_details[0]->last_updated_user_last_name ? ' '.$question_details[0]->last_updated_user_last_name.', ' : ', '; echo $question_details[0]->question_updated_datetime ? date("d-M-Y h:i A", strtotime($question_details[0]->question_updated_datetime)) : ''; ?>
             </div>
         </div>
         <div class="form-group">
