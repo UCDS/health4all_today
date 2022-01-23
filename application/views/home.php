@@ -331,6 +331,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         selected_transliterate_language = $("#transliterate_language").val();
         show_images = $("#show_images").is(':checked');
         page_number = getQueryParamvalue(PAGE_NUMBER) || 1;
+        // TODO: refactor the page number reset to 1 logic
+        $("#sub_group_id , #question_level_id, #language,#group_id").change(function (e) { 
+            updateSemanticUrl({[PAGE_NUMBER] : 1});
+        });
         updateSemanticUrl({
             [GROUP] :selected_group,
             [SUB_GROUP]:selected_sub_group,
