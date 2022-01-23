@@ -316,8 +316,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         // }); 
 
         /* updating dropdown values based on query params, if value exists */
-        // getQueryParamvalue(GROUP) && $("#group_id").val(getQueryParamvalue(GROUP));
-        // getQueryParamvalue(SUB_GROUP) && $("#sub_group_id").val(getQueryParamvalue(SUB_GROUP));
+        getQueryParamvalue(GROUP) && $("#group_id").data('selectize').setValue(getQueryParamvalue(GROUP));
+        getQueryParamvalue(SUB_GROUP) && $("#sub_group_id").val(getQueryParamvalue(SUB_GROUP));
         getQueryParamvalue(LEVEL) && $("#question_level_id").val(getQueryParamvalue(LEVEL));
         getQueryParamvalue(LANGUAGE) && $("#language").val(getQueryParamvalue(LANGUAGE));
 
@@ -337,7 +337,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         // on page load fetching quiz data , pages_count and filtering sub groups
         load_quiz_data(1, selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
         get_pagination_data(selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
-        filter_sub_groups(); 
+        filter_sub_groups();
+        /* updating the sub_group dropdown value again, as the filter_sub_groups() method will re-render the dropdown */
+        getQueryParamvalue(SUB_GROUP) && $("#sub_group_id").val(getQueryParamvalue(SUB_GROUP));
     });
 
     function loadData() {
