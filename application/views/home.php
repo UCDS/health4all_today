@@ -205,6 +205,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         history.replaceState(null, null, "?" + queryParams.toString());
     }
     
+    function getQueryParamvalue(key){
+        let queryParams = new URLSearchParams(window.location.search);
+        return queryParams.get(key);
+    }
+    
     $(function() {
         // onload setting the default group value and initializing the search filter for group
         $('#group_id').attr("data-previous-value", <?php echo $defaut_group->group_id; ?>);
@@ -309,6 +314,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         //     load_quiz_data(1  , selected_group , selected_sub_group ,selected_question_level, selected_language, selected_transliterate_language, show_images );
         //     get_pagination_data(selected_group , selected_sub_group , selected_question_level, selected_language, selected_transliterate_language, show_images);
         // }); 
+
+        /* updating dropdown values based on query params, if value exists */
+        // getQueryParamvalue(GROUP) && $("#group_id").val(getQueryParamvalue(GROUP));
+        // getQueryParamvalue(SUB_GROUP) && $("#sub_group_id").val(getQueryParamvalue(SUB_GROUP));
+        getQueryParamvalue(LEVEL) && $("#question_level_id").val(getQueryParamvalue(LEVEL));
+        getQueryParamvalue(LANGUAGE) && $("#language").val(getQueryParamvalue(LANGUAGE));
 
         selected_group = $("#group_id").val();
         selected_sub_group = $("#sub_group_id").val();
