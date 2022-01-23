@@ -364,14 +364,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         selected_language = $("#language").val();
         selected_transliterate_language = $("#transliterate_language").val();
         show_images = $("#show_images").is(':checked');
+        page_number = getQueryParamvalue(PAGE_NUMBER) || 1;
         updateSemanticUrl({
             [GROUP] : selected_group,
             [SUB_GROUP] :selected_sub_group,
             [LEVEL] : selected_question_level,
             [LANGUAGE] : selected_language,
             [SHOW_IMAGES]:show_images,
+            [PAGE_NUMBER]:page_number
         });
-        load_quiz_data(1, selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
+        load_quiz_data(page_number, selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
         get_pagination_data(selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
     }
 
