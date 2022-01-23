@@ -185,12 +185,27 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     const LOCK_ICON = "<i class='fa fa-lock' aria-hidden='true'></i>";
     const UNLOCK_ICON = "<i class='fa fa-unlock-alt' aria-hidden='true'></i>";
     const EDIT_ICON = "<i class='fa fa-pencil' aria-hidden='true'></i>";
+    const GROUP = 'gp';
+    const SUB_GROUP = 'sgp';
+    const LEVEL = 'lvl';
+    const LANGUAGE = 'lg';
  
     function escapeSpecialChars(str) {
         return str.replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\t/g, "\\t");
     }
+
+    function updateSemanticUrl(queryObj) {
+
+        let queryParams = new URLSearchParams(window.location.search);
+        // Set new or modify existing page value
+        for (const prop in queryObj) {
+            queryParams.set(prop, queryObj[prop]);
+        }
+        // Replace current querystring with the new one
+        history.replaceState(null, null, "?" + queryParams.toString());
+    }
     
-    $(function() {   
+    $(function() {
         // onload setting the default group value and initializing the search filter for group
         $('#group_id').attr("data-previous-value", <?php echo $defaut_group->group_id; ?>);
         initGroupSelectize();
@@ -301,6 +316,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         selected_language = $("#language").val();
         selected_transliterate_language = $("#transliterate_language").val();
         show_images = $("#show_images").is(':checked');
+        updateSemanticUrl({
+            GROUP :selected_group,
+            SUB_GROUP:selected_sub_group,
+            LEVEL:selected_question_level,
+            LANGUAGE:selected_language
+        });
         // console.log("selected_question_level" , selected_question_level);
         // on page load fetching quiz data , pages_count and filtering sub groups
         load_quiz_data(1, selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
@@ -324,6 +345,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         selected_language = $("#language").val();
         selected_transliterate_language = $("#transliterate_language").val();
         show_images = $("#show_images").is(':checked');
+        updateSemanticUrl({
+            GROUP :selected_group,
+            SUB_GROUP:selected_sub_group,
+            LEVEL:selected_question_level,
+            LANGUAGE:selected_language
+        });
         load_quiz_data(1, selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
         get_pagination_data(selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
     }
