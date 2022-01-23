@@ -190,6 +190,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     const LEVEL = 'lvl';
     const LANGUAGE = 'lg';
     const SHOW_IMAGES = 'img';
+    const PAGE_NUMBER = 'page';
  
     function escapeSpecialChars(str) {
         return str.replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\t/g, "\\t");
@@ -329,16 +330,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         selected_language = $("#language").val();
         selected_transliterate_language = $("#transliterate_language").val();
         show_images = $("#show_images").is(':checked');
+        page_number = getQueryParamvalue(PAGE_NUMBER) || 1;
         updateSemanticUrl({
             [GROUP] :selected_group,
             [SUB_GROUP]:selected_sub_group,
             [LEVEL]:selected_question_level,
             [LANGUAGE]:selected_language,
             [SHOW_IMAGES]:show_images,
+            [PAGE_NUMBER]:page_number
         });
         // console.log("selected_question_level" , selected_question_level);
         // on page load fetching quiz data , pages_count and filtering sub groups
-        load_quiz_data(1, selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
+        load_quiz_data(page_number, selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
         get_pagination_data(selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
         filter_sub_groups();
         /* updating the sub_group dropdown value again, as the filter_sub_groups() method will re-render the dropdown */
@@ -495,6 +498,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
     // api call to get quiz data and mount it on DOM
     function load_quiz_data(page , group , sub_group , question_level, language_id, transliterate_language,  show_images){
+        /* updating page number in the semantic URL */
+        updateSemanticUrl({[PAGE_NUMBER] : page});
         // console.log(sub_group);
         $(".pagination li").removeClass("active");
         $(`.pagination li:nth-child(${page})`).addClass("active");
