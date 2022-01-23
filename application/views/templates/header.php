@@ -46,7 +46,7 @@
   <nav class="navbar navbar-expand-md navbar-light   justify-content-between">
     <a class="navbar-brand" href="<?php echo $yousee_website[0]->value; ?>" target="_blank"><span style="position:absolute;font-size:2.7em;left:5%;top:-18px" class="logo logo-yousee"></a>
     
-    <a class="navbar-brand" href="<?php echo base_url();?>" > 
+    <a class="navbar-brand" href="<?php echo base_url().'quiz';?>" > 
     <span style="position:absolute;left:20%;top:10px">Health4All.Today</span></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>

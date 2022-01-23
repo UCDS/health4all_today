@@ -18,6 +18,10 @@ class Home extends CI_Controller {
     }
 
 	public function index(){
+		redirect("/quiz", 'refresh');
+	}
+
+	public function quiz(){
 		$this->data['title']="Quiz";
 		$this->data['edit_question_access']=0;
 		$this->data['remove_question_access']=0;
@@ -55,7 +59,7 @@ class Home extends CI_Controller {
 		$this->load->view('templates/footer' ,$this->data);
 	}
 
-	public function quiz($page , $group , $sub_group, $question_level, $language, $transliterate_language){
+	public function quiz_questions($page , $group , $sub_group, $question_level, $language, $transliterate_language){
 		// $this->data['title']="Quiz page";
 		$per_page = 10;
 		$start = ($page -1 ) * $per_page;

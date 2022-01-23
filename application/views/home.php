@@ -185,12 +185,34 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     const LOCK_ICON = "<i class='fa fa-lock' aria-hidden='true'></i>";
     const UNLOCK_ICON = "<i class='fa fa-unlock-alt' aria-hidden='true'></i>";
     const EDIT_ICON = "<i class='fa fa-pencil' aria-hidden='true'></i>";
+    const GROUP = 'gp';
+    const SUB_GROUP = 'sgp';
+    const LEVEL = 'lvl';
+    const LANGUAGE = 'lg';
+    const SHOW_IMAGES = 'img';
+    const PAGE_NUMBER = 'page';
  
     function escapeSpecialChars(str) {
         return str.replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\t/g, "\\t");
     }
+
+    function updateSemanticUrl(queryObj) {
+
+        let queryParams = new URLSearchParams(window.location.search);
+        // Set new or modify existing page value
+        for (const prop in queryObj) {
+            queryParams.set(prop, queryObj[prop]);
+        }
+        // Replace current querystring with the new one
+        history.replaceState(null, null, "?" + queryParams.toString());
+    }
     
-    $(function() {   
+    function getQueryParamvalue(key){
+        let queryParams = new URLSearchParams(window.location.search);
+        return queryParams.get(key);
+    }
+    
+    $(function() {
         // onload setting the default group value and initializing the search filter for group
         $('#group_id').attr("data-previous-value", <?php echo $defaut_group->group_id; ?>);
         initGroupSelectize();
@@ -295,17 +317,39 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         //     get_pagination_data(selected_group , selected_sub_group , selected_question_level, selected_language, selected_transliterate_language, show_images);
         // }); 
 
+        /* updating dropdown values based on query params, if value exists */
+        getQueryParamvalue(GROUP) && $("#group_id").data('selectize').setValue(getQueryParamvalue(GROUP));
+        getQueryParamvalue(SUB_GROUP) && $("#sub_group_id").val(getQueryParamvalue(SUB_GROUP));
+        getQueryParamvalue(LEVEL) && $("#question_level_id").val(getQueryParamvalue(LEVEL));
+        getQueryParamvalue(LANGUAGE) && $("#language").val(getQueryParamvalue(LANGUAGE));
+        getQueryParamvalue(SHOW_IMAGES) && $("#show_images").prop("checked",getQueryParamvalue(SHOW_IMAGES));
+        
         selected_group = $("#group_id").val();
         selected_sub_group = $("#sub_group_id").val();
         selected_question_level = $("#question_level_id").val();
         selected_language = $("#language").val();
         selected_transliterate_language = $("#transliterate_language").val();
         show_images = $("#show_images").is(':checked');
+        page_number = getQueryParamvalue(PAGE_NUMBER) || 1;
+        // TODO: refactor the page number reset to 1 logic
+        $("#sub_group_id , #question_level_id, #language,#group_id").change(function (e) { 
+            updateSemanticUrl({[PAGE_NUMBER] : 1});
+        });
+        updateSemanticUrl({
+            [GROUP] :selected_group,
+            [SUB_GROUP]:selected_sub_group,
+            [LEVEL]:selected_question_level,
+            [LANGUAGE]:selected_language,
+            [SHOW_IMAGES]:show_images,
+            [PAGE_NUMBER]:page_number
+        });
         // console.log("selected_question_level" , selected_question_level);
         // on page load fetching quiz data , pages_count and filtering sub groups
-        load_quiz_data(1, selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
+        load_quiz_data(page_number, selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
         get_pagination_data(selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
-        filter_sub_groups(); 
+        filter_sub_groups();
+        /* updating the sub_group dropdown value again, as the filter_sub_groups() method will re-render the dropdown */
+        getQueryParamvalue(SUB_GROUP) && $("#sub_group_id").val(getQueryParamvalue(SUB_GROUP));
     });
 
     function loadData() {
@@ -324,7 +368,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         selected_language = $("#language").val();
         selected_transliterate_language = $("#transliterate_language").val();
         show_images = $("#show_images").is(':checked');
-        load_quiz_data(1, selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
+        page_number = getQueryParamvalue(PAGE_NUMBER) || 1;
+        updateSemanticUrl({
+            [GROUP] : selected_group,
+            [SUB_GROUP] :selected_sub_group,
+            [LEVEL] : selected_question_level,
+            [LANGUAGE] : selected_language,
+            [SHOW_IMAGES]:show_images,
+            [PAGE_NUMBER]:page_number
+        });
+        load_quiz_data(page_number, selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
         get_pagination_data(selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
     }
 
@@ -451,6 +504,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
     // api call to get quiz data and mount it on DOM
     function load_quiz_data(page , group , sub_group , question_level, language_id, transliterate_language,  show_images){
+        /* updating page number in the semantic URL */
+        updateSemanticUrl({[PAGE_NUMBER] : page});
         // console.log(sub_group);
         $(".pagination li").removeClass("active");
         $(`.pagination li:nth-child(${page})`).addClass("active");
@@ -460,7 +515,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 accepts: {
                     contentType: "application/json"
                 },
-                url: "<?= base_url() ?>home/quiz/"+page+"/"+group+"/"+sub_group+"/"+question_level+"/"+language_id+"/"+transliterate_language,
+                url: "<?= base_url() ?>home/quiz_questions/"+page+"/"+group+"/"+sub_group+"/"+question_level+"/"+language_id+"/"+transliterate_language,
                 dataType: "text",
                 success: function (data) {
                     var question_answers_list =  JSON.parse(data);
