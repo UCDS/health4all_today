@@ -317,10 +317,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         selected_transliterate_language = $("#transliterate_language").val();
         show_images = $("#show_images").is(':checked');
         updateSemanticUrl({
-            GROUP :selected_group,
-            SUB_GROUP:selected_sub_group,
-            LEVEL:selected_question_level,
-            LANGUAGE:selected_language
+            [GROUP] :selected_group,
+            [SUB_GROUP]:selected_sub_group,
+            [LEVEL]:selected_question_level,
+            [LANGUAGE]:selected_language
         });
         // console.log("selected_question_level" , selected_question_level);
         // on page load fetching quiz data , pages_count and filtering sub groups
@@ -346,10 +346,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         selected_transliterate_language = $("#transliterate_language").val();
         show_images = $("#show_images").is(':checked');
         updateSemanticUrl({
-            GROUP :selected_group,
-            SUB_GROUP:selected_sub_group,
-            LEVEL:selected_question_level,
-            LANGUAGE:selected_language
+            [GROUP] : selected_group,
+            [SUB_GROUP] :selected_sub_group,
+            [LEVEL] : selected_question_level,
+            [LANGUAGE] : selected_language
         });
         load_quiz_data(1, selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
         get_pagination_data(selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
