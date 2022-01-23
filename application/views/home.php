@@ -460,7 +460,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 accepts: {
                     contentType: "application/json"
                 },
-                url: "<?= base_url() ?>home/quiz/"+page+"/"+group+"/"+sub_group+"/"+question_level+"/"+language_id+"/"+transliterate_language,
+                url: "<?= base_url() ?>home/quiz_questions/"+page+"/"+group+"/"+sub_group+"/"+question_level+"/"+language_id+"/"+transliterate_language,
                 dataType: "text",
                 success: function (data) {
                     var question_answers_list =  JSON.parse(data);
