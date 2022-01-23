@@ -189,6 +189,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     const SUB_GROUP = 'sgp';
     const LEVEL = 'lvl';
     const LANGUAGE = 'lg';
+    const SHOW_IMAGES = 'img';
  
     function escapeSpecialChars(str) {
         return str.replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\t/g, "\\t");
@@ -320,7 +321,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         getQueryParamvalue(SUB_GROUP) && $("#sub_group_id").val(getQueryParamvalue(SUB_GROUP));
         getQueryParamvalue(LEVEL) && $("#question_level_id").val(getQueryParamvalue(LEVEL));
         getQueryParamvalue(LANGUAGE) && $("#language").val(getQueryParamvalue(LANGUAGE));
-
+        getQueryParamvalue(SHOW_IMAGES) && $("#show_images").prop("checked",getQueryParamvalue(SHOW_IMAGES));
+        
         selected_group = $("#group_id").val();
         selected_sub_group = $("#sub_group_id").val();
         selected_question_level = $("#question_level_id").val();
@@ -331,7 +333,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             [GROUP] :selected_group,
             [SUB_GROUP]:selected_sub_group,
             [LEVEL]:selected_question_level,
-            [LANGUAGE]:selected_language
+            [LANGUAGE]:selected_language,
+            [SHOW_IMAGES]:show_images,
         });
         // console.log("selected_question_level" , selected_question_level);
         // on page load fetching quiz data , pages_count and filtering sub groups
@@ -362,7 +365,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             [GROUP] : selected_group,
             [SUB_GROUP] :selected_sub_group,
             [LEVEL] : selected_question_level,
-            [LANGUAGE] : selected_language
+            [LANGUAGE] : selected_language,
+            [SHOW_IMAGES]:show_images,
         });
         load_quiz_data(1, selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
         get_pagination_data(selected_group, selected_sub_group, selected_question_level, selected_language, selected_transliterate_language, show_images);
