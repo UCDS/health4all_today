@@ -204,7 +204,11 @@ class User_model extends CI_Model {
 
     // get all users list
     function get_users_list(){
-        
+        $this->db->select("username , user_id, CONCAT(last_name,' ', first_name) as full_name")
+        ->from('user');
+        $query=$this->db->get();
+		
+		return $query->result();
     }
 
     // get user personal information
