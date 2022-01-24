@@ -436,4 +436,17 @@ class Admin extends CI_Controller {
 			show_404();
 		}
 	}
+
+	public function users() {
+		if($this->session->userdata('logged_in')){
+			$this->load->helper('form');
+			$this->load->library('form_validation');
+			$this->data['title']="Update Users";
+			$this->load->view('templates/header',$this->data);
+			$this->load->view('admin/users',$this->data);
+			$this->load->view('templates/footer' , $this->data);
+		} else{
+			show_404();
+		}
+	}
 }

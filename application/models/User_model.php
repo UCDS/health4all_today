@@ -201,4 +201,14 @@ class User_model extends CI_Model {
 		
 		return $query->result();
     }
+
+    // get all users list
+    function get_users_list(){
+        
+    }
+
+    // get user personal information
+    function get_user_info($user_id) {
+
+    }
 }
