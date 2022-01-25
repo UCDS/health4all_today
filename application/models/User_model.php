@@ -213,6 +213,18 @@ class User_model extends CI_Model {
 
     // get user personal information
     function get_user_info($user_id) {
-
+        $this->db->select("user.username, user.first_name, user.last_name, user.gender, user.email, user.default_language_id, user.phone, user.note, user.admin, user.active_status,
+         created_user.first_name as created_user_first_name, created_user.last_name  as created_user_last_name, user.created_datetime, 
+         updated_user.first_name as last_updated_user_first_name, updated_user.last_name  as last_updated_user_last_name, user.updated_datetime,")
+        ->where('user.user_id',$user_id)
+        ->join('user as created_user','created_user.user_id=user.created_by','left')
+        ->join('user as updated_user','updated_user.user_id=user.updated_by','left')
+        ->from('user');
+        $query=$this->db->get();
+        if($query){
+          return $query->row();
+        }else{
+          return false;
+        }
     }
 }
