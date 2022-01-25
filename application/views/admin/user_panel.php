@@ -10,6 +10,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     .container{
         margin-top:5px;
     }
+    .user-function-checkbox{
+        width:20px;
+        height:20px;
+    }
+    
 </style>
 <div class="container">
     <div class="card ">
@@ -17,7 +22,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <h4> Update Users </h4>
         </div>
         <div class="card-body">
-            <div class="row" style="margin-top:1rem;">
+            <div class="row" style="margin-top:1rem;margin-bottom:0.5rem;">
                 <div class="col-md-6">
                     <select id="search_username" name="username" placeholder="Search username" onchange="getUserInformation(this);">
                     </select>
@@ -25,17 +30,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </div>
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active" id="auth-update-tab" data-toggle="tab" href="#auth-update" role="tab" aria-controls="auth-update" aria-selected="true">User Info</a>
+                    <a class="nav-link" id="auth-update-tab" data-toggle="tab" href="#auth-update" role="tab" aria-controls="auth-update" aria-selected="true">User Info</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="user-functions-tab" data-toggle="tab" href="#user-functions" role="tab" aria-controls="user-functions" aria-selected="false">User Authorization</a>
+                    <a class="nav-link active" id="user-functions-tab" data-toggle="tab" href="#user-functions" role="tab" aria-controls="user-functions" aria-selected="false">User Authorization</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Contact</a>
                 </li>
             </ul>
             <div class="tab-content" id="userTabsContent">
-                <div class="tab-pane fade show active" id="auth-update" role="tabpanel" aria-labelledby="auth-update-tab">
+                <div class="tab-pane fade" id="auth-update" role="tabpanel" aria-labelledby="auth-update-tab">
                     <div class="row">
                         <div class="form-group col-md-6 col-lg-3 col-xs-12">
                             <label for="firstName">First Name<span class="star" style="color:red"> *</span></label>
@@ -102,7 +107,27 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             </div>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="user-functions" role="tabpanel" aria-labelledby="user-functions-tab">
+                <div class="tab-pane fade show active" id="user-functions" role="tabpanel" aria-labelledby="user-functions-tab">
+                    <div class="row" style="margin-top:1rem;" >
+                        <table id="table-sort" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center">#</th>
+                                    <th style="text-align:center">User function name</th>
+                                    <th style="text-align:center">View</th>
+                                    <th style="text-align:center">Add</th>
+                                    <th style="text-align:center">Edit</th>
+                                    <th style="text-align:center">Remove</th>
+                                    <th style="text-align:center">Status</th>
+                                    <th style="text-align:center">Created by</th>
+                                    <th style="text-align:center">Updated by</th>
+                                </tr>
+                            </thead>
+                            <tbody id="user-functions-data">
+
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -127,12 +152,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             success: function (response) {
                 const data = JSON.parse(response);
                 populateUserPersonalInfo(data.user_info);
+                poupulateUserFunctionsInfo(data.user_functions);
             }
         });
     }
     
-    function populateUserPersonalInfo(userInfo){
-        console.log(userInfo);
+    function populateUserPersonalInfo(userInfo) {
         $("#username").val(userInfo?.username);
         $("#first_name").val(userInfo?.first_name);
         $("#last_name").val(userInfo?.last_name);
@@ -141,6 +166,26 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         $("#default_language").val(userInfo?.default_language_id);
         $("#note").val(userInfo?.note);
         $("#status").prop("checked", !!userInfo?.active_status);
+    }
+
+    function poupulateUserFunctionsInfo(userFunctions) {
+        /* removing previous data */
+        $("#user-functions-data").empty();
+        $.each(userFunctions, function (index, userFunction) { 
+             $("#user-functions-data").append(`
+                <tr>
+                    <td style="text-align:center;">${index+1}</td>
+                    <td style="text-align:center;">${userFunction.user_function_display}</td>
+                    <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${userFunction.view ? 'checked' : ''} /></td>
+                    <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${userFunction.add ? 'checked' : ''} /></td>
+                    <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${userFunction.edit ? 'checked' : ''} /></td>
+                    <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${userFunction.remove ? 'checked' : ''} /></td>
+                    <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${userFunction.active ? 'checked' : ''} /></td>
+                    <td>To be filled</td>
+                    <td>To be filled</td>
+                </tr>
+             `);
+        });
     }
     
 
