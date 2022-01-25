@@ -228,4 +228,17 @@ class User_model extends CI_Model {
           return false;
         }
     }
+
+    function update_user($user_id, $data) {
+        $this->db->where('user_id',$user_id);
+        $this->db->update('user',$data);
+        $this->db->trans_complete();
+		if($this->db->trans_status() === FALSE) {
+			$this->db->trans_rollback();
+			return false;
+		}
+		else {
+            return true;
+        }
+    }
 }
