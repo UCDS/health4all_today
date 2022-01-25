@@ -30,17 +30,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </div>
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link" id="auth-update-tab" data-toggle="tab" href="#auth-update" role="tab" aria-controls="auth-update" aria-selected="true">User Info</a>
+                    <a class="nav-link active" id="auth-update-tab" data-toggle="tab" href="#auth-update" role="tab" aria-controls="auth-update" aria-selected="true">User Info</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" id="user-functions-tab" data-toggle="tab" href="#user-functions" role="tab" aria-controls="user-functions" aria-selected="false">User Authorization</a>
+                    <a class="nav-link" id="user-functions-tab" data-toggle="tab" href="#user-functions" role="tab" aria-controls="user-functions" aria-selected="false">User Authorization</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Contact</a>
                 </li>
             </ul>
             <div class="tab-content" id="userTabsContent">
-                <div class="tab-pane fade" id="auth-update" role="tabpanel" aria-labelledby="auth-update-tab">
+                <div class="tab-pane fade show active" id="auth-update" role="tabpanel" aria-labelledby="auth-update-tab">
                     <div class="row">
                         <div class="form-group col-md-6 col-lg-3 col-xs-12">
                             <label for="firstName">First Name<span class="star" style="color:red"> *</span></label>
@@ -97,6 +97,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <label for="note">Note</label>
                             <textarea class="form-control" id="note" name="note" rows="2" placeholder="Enter note here..."></textarea>
                         </div>
+                        <div class="form-group col-md-6 col-lg-6 col-xs-12">
+                            <button class="btn btn-md btn-primary btn-block" type="button" onclick="updateUserInformation()">Submit</button>
+                        </div>
                     </div>
                     <div class="row">
                             <div class="col-md-6">
@@ -107,7 +110,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             </div>
                     </div>
                 </div>
-                <div class="tab-pane fade show active" id="user-functions" role="tabpanel" aria-labelledby="user-functions-tab">
+                <div class="tab-pane fade" id="user-functions" role="tabpanel" aria-labelledby="user-functions-tab">
                     <div class="row" style="margin-top:1rem;" >
                         <table id="table-sort" class="table table-bordered table-striped">
                             <thead>
@@ -153,6 +156,31 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 const data = JSON.parse(response);
                 populateUserPersonalInfo(data.user_info);
                 poupulateUserFunctionsInfo(data.user_functions);
+            }
+        });
+    }
+
+    function updateUserInformation(){
+        const userId = $("#search_username").val();
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "<?= base_url() ?>admin/update_user/"+userId,
+            data: {
+                first_name: $('#first_name').val(),
+                last_name: $('#last_name').val(),
+                phone: $('#phone').val(),
+                default_language_id: $('#fefault_language').val(),
+                note: $('#note').val(),
+                email: $('#email').val(),
+                active_status: $('#status').is(':checked') ? 1 : 0,
+            },
+            success: function (response) {
+                // TODO: add sweet alert
+                console.log(response);
+            },
+            error: function(error) {
+                // TODO: add sweet alert
             }
         });
     }

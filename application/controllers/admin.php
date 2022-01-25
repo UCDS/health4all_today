@@ -443,6 +443,18 @@ class Admin extends CI_Controller {
 		print json_encode($data);
 	}
 
+	public function update_user($user_id) {
+		if($this->session->userdata('logged_in')){
+			$data = $this->input->post();
+			if($this->user_model->update_user($user_id, $data)){
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			show_404();
+		}
+	}
 	public function users() {
 		if($this->session->userdata('logged_in')){
 			$this->load->helper('form');
