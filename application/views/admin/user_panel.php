@@ -1,0 +1,171 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+?>
+
+
+<style>
+    label{
+        font-weight:bold;
+    }
+    .container{
+        margin-top:5px;
+    }
+</style>
+<div class="container">
+    <div class="card ">
+        <div class="card-header bg-primary text-white">
+            <h4> Update Users </h4>
+        </div>
+        <div class="card-body">
+            <div class="row" style="margin-top:1rem;">
+                <div class="col-md-6">
+                    <select id="search_username" name="username" placeholder="Search username" onchange="getUserInformation(this);">
+                    </select>
+                </div>
+            </div>
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="auth-update-tab" data-toggle="tab" href="#auth-update" role="tab" aria-controls="auth-update" aria-selected="true">User Info</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="user-functions-tab" data-toggle="tab" href="#user-functions" role="tab" aria-controls="user-functions" aria-selected="false">User Authorization</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Contact</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="userTabsContent">
+                <div class="tab-pane fade show active" id="auth-update" role="tabpanel" aria-labelledby="auth-update-tab">
+                    <div class="row">
+                        <div class="form-group col-md-6 col-lg-3 col-xs-12">
+                            <label for="firstName">First Name<span class="star" style="color:red"> *</span></label>
+                            <input type="text" class="form-control" name="first_name" id="first_name" placeholder="First Name">
+                        </div>
+                        <div class="form-group col-md-6 col-lg-3 col-xs-12">
+                            <label for="lastName">Last Name<span class="star" style="color:red"> *</span></label>
+                            <input type="text" class="form-control" name="last_name" id="last_name" placeholder="Last Name">
+                        </div>
+                        <div class="form-group col-md-6 col-lg-3 col-xs-12">
+                            <label for="phoneNumber">Phone Number<span class="star" style="color:red"> *</span></label>
+                            <input type="text" class="form-control" name="phone" id="phone" placeholder="Phone Number">
+                        </div>
+                        <div class="form-group col-md-6 col-lg-3 col-xs-12">
+                            <label for="languageId">Select default language<span class="star" style="color:red"> *</span></label>
+                            <select class="form-control"  name="default_language" id="default_language" required>
+                                <option value="" selected disabled>Default language</option>
+                                <?php
+                                    foreach($languages as $r){ ?>
+                                    <option value="<?php echo $r->language_id;?>"    
+                                    <?php if($this->input->post('language') == $r->language_id) echo " selected "; ?>
+                                    ><?php echo $r->language;?></option>    
+                                    <?php }  ?>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6 col-lg-3 col-xs-12">
+                            <label for="gender">Gender<span class="star" style="color:red"> *</span></label> <br/>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="gender" id="Male" value="1">
+                                <label class="form-check-label" for="inlineRadio1">Male</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="gender" id="Female" value="2">
+                                <label class="form-check-label" for="inlineRadio2">Female</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="gender" id="Other" value="3">
+                                <label class="form-check-label" for="inlineRadio3">Other</label>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6 col-lg-3 col-xs-12">
+                            <label for="username">Username<span class="star" style="color:red"> *</span></label>
+                            <input type="text" class="form-control" name="username" id="username" placeholder="username">
+                        </div>
+                        <div class="form-group col-md-6 col-lg-4 col-xs-12">
+                            <label for="email">Email<span class="star" style="color:red"> *</span></label>
+                            <input type="email" class="form-control" name="email" id="email" placeholder="email">
+                        </div>
+                        <div class="form-group col-md-4 col-lg-2 col-xs-12" style="display:inline-flex; margin-top: 2.2rem;">
+                            <input  type="checkbox" name="status" id="status" style="width:25px;height:25px;">
+                            <label for="user-satus" style="padding-left:10px;">User Status</label>
+                        </div>
+                        <div class="form-group col-md-6 col-lg-6 col-xs-12">
+                            <label for="note">Note</label>
+                            <textarea class="form-control" id="note" name="note" rows="2" placeholder="Enter note here..."></textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                            <div class="col-md-6">
+                                <b> Created By :</b> 
+                            </div>
+                            <div class="col-md-6">
+                                <b> Last Updated By :</b> 
+                            </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="user-functions" role="tabpanel" aria-labelledby="user-functions-tab">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $(function () {
+        initUsersListSelectize();
+    });
+
+    function getUserInformation(element) {
+        const userId = $(element).val();
+        $.ajax({
+            type: "GET",
+            accepts: {
+                contentType: "application/json"
+            },
+            url: "<?= base_url() ?>admin/user/"+userId,
+            dataType: "text",
+            success: function (response) {
+                const data = JSON.parse(response);
+                populateUserPersonalInfo(data.user_info);
+            }
+        });
+    }
+    
+    function populateUserPersonalInfo(userInfo){
+        console.log(userInfo);
+        $("#username").val(userInfo?.username);
+        $("#first_name").val(userInfo?.first_name);
+        $("#last_name").val(userInfo?.last_name);
+        $("#phone").val(userInfo?.phone);
+        $("#email").val(userInfo?.email);
+        $("#default_language").val(userInfo?.default_language_id);
+        $("#note").val(userInfo?.note);
+        $("#status").prop("checked", !!userInfo?.active_status);
+    }
+    
+
+    function initUsersListSelectize(){
+        var users =  <?php echo json_encode($users_list) ?>;
+        var selectize = $('#search_username').selectize({
+            valueField: 'user_id',
+	        labelField: 'full_name',
+            sortField: 'full_name',
+            searchField: ['full_name', 'username'],
+            options: users,
+            create: false,
+            render: {
+                option: function(item, escape) {
+                    return `<div>
+                                <span class="title">
+                                    <span class="option-name">${escape(item.full_name)}</span>
+                                </span>
+                            </div>`;
+                }
+    	    },
+            load: function(query, callback) {
+                if (!query.length) return callback();
+            },
+
+        });
+    }
+</script>

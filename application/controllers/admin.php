@@ -449,8 +449,9 @@ class Admin extends CI_Controller {
 			$this->load->library('form_validation');
 			$this->data['title']="Update Users";
 			$this->load->view('templates/header',$this->data);
+			$this->data['languages'] = $this->master_model->get_languages();
 			$this->data['users_list'] =  $this->user_model->get_users_list();
-			$this->load->view('admin/users',$this->data);
+			$this->load->view('admin/user_panel',$this->data);
 			$this->load->view('templates/footer' , $this->data);
 		} else{
 			show_404();
