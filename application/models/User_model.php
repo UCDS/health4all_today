@@ -180,7 +180,7 @@ class User_model extends CI_Model {
 
     //user_function() takes user ID as parameter and returns a list of all the functions the user has access to.
 	function user_function($user_id){
-		$this->db->select('user_function_id,user_function,add,edit,view,remove')
+		$this->db->select('link_id, user_function_id,user_function, user_function_display,add,edit,view,remove')
             ->from('user')
             ->join('user_function_link','user.user_id=user_function_link.user_id')
             ->join('user_function','user_function_link.function_id=user_function.user_function_id')
