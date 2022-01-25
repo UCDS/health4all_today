@@ -437,6 +437,12 @@ class Admin extends CI_Controller {
 		}
 	}
 
+	public function user($user_id) {
+		$data['user_info'] = $this->user_model->get_user_info($user_id);
+		$data['user_functions'] = $this->user_model->user_function($user_id);
+		print json_encode($data);
+	}
+
 	public function users() {
 		if($this->session->userdata('logged_in')){
 			$this->load->helper('form');
