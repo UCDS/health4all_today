@@ -97,6 +97,11 @@ class Admin extends CI_Controller {
 		$username = $this->input->post('username');
 		$result = $this->user_model->login($username, $password);
 		if($result) {
+			// checking if user is deactivated
+			if(!$result->active_status) {
+				$this->form_validation->set_message('check_database','Login de-activated. Please contact administrator!');
+	     		return false;
+			}
 			$sess_array = array(
 				'user_id' => $result->user_id,
 				'username' => $result->username,
