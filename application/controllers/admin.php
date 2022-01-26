@@ -452,9 +452,13 @@ class Admin extends CI_Controller {
 		if($this->session->userdata('logged_in')){
 			$data = $this->input->post();
 			if($this->user_model->update_user($user_id, $data)){
-				return true;
+				$this->response['statusCode']=200;
+				$this->response['statusText']="user information updated!";
+				echo json_encode($this->response);
 			} else {
-				return false;
+				$this->response['statusCode']=500;
+				$this->response['statusText']="Failed to updated user information!";
+				echo json_encode($this->response);
 			}
 		} else {
 			show_404();

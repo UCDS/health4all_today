@@ -176,11 +176,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 active_status: $('#status').is(':checked') ? 1 : 0,
             },
             success: function (response) {
-                // TODO: add sweet alert
-                console.log(response);
-            },
-            error: function(error) {
-                // TODO: add sweet alert
+                    swal({
+                        title: response?.statusCode === 200 ? "Success" : "Failed",
+                        text: response?.statusText,
+                        type: response?.statusCode === 200 ? "success" : "error",
+                        timer: 2000
+                    })
             }
         });
     }
