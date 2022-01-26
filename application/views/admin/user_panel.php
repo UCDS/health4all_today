@@ -227,16 +227,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <tr>
                     <td style="text-align:center;">${index+1}</td>
                     <td style="text-align:center;">${userFunction.user_function_display}</td>
-                    <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${userFunction.view ? 'checked' : ''} /></td>
-                    <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${userFunction.add ? 'checked' : ''} /></td>
-                    <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${userFunction.edit ? 'checked' : ''} /></td>
-                    <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${userFunction.remove ? 'checked' : ''} /></td>
-                    <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${userFunction.active ? 'checked' : ''} /></td>
+                    <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${isChecked(userFunction.view)} /></td>
+                    <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${isChecked(userFunction.add)} /></td>
+                    <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${isChecked(userFunction.edit)} /></td>
+                    <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${isChecked(userFunction.remove)} /></td>
+                    <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${isChecked(userFunction.active)} /></td>
                     <td>To be filled</td>
                     <td>To be filled</td>
                 </tr>
              `);
         });
+    }
+
+    function isChecked(val){
+        return val==='1' ? 'checked' : '';
     }
     
     function initUsersListSelectize(){
