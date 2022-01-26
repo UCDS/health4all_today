@@ -14,6 +14,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         width:20px;
         height:20px;
     }
+    .panel-info {
+        margin-top:1rem;
+        text-align:center;
+        justify-content:center;
+    }
     
 </style>
 <div class="container">
@@ -22,7 +27,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <h4> Update Users </h4>
         </div>
         <div class="card-body">
-            <div class="row" style="margin-top:1rem;margin-bottom:0.5rem;">
+            <div class="row" style="margin-top:1rem;margin-bottom:0.5rem; justify-content:center">
                 <div class="col-md-6">
                     <select id="search_username" name="username" placeholder="Search username" onchange="getUserInformation(this);">
                     </select>
@@ -133,6 +138,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     </div>
                 </div>
             </div>
+            <div class="row panel-info">
+                <div class="col-md-10 alert alert-info">Please select a user !</div>
+            </div>
         </div>
     </div>
 </div>
@@ -141,9 +149,23 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
     $(function () {
         initUsersListSelectize();
+        handleDisplayTabs();
     });
 
+    /* shows tab-content when a user is selected */
+    function handleDisplayTabs(){
+        const isUserSelected = !!$("#search_username").val();
+        if(!isUserSelected){
+            $(".tab-content").hide();
+            $(".panel-info").show();
+        } else {
+            $(".tab-content").show();
+            $(".panel-info").hide();
+        }
+    }
+    
     function getUserInformation(element) {
+        handleDisplayTabs();
         const userId = $(element).val();
         $.ajax({
             type: "GET",
@@ -217,7 +239,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         });
     }
     
-
     function initUsersListSelectize(){
         var users =  <?php echo json_encode($users_list) ?>;
         var selectize = $('#search_username').selectize({
