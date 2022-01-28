@@ -29,7 +29,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <div class="card-body">
             <div class="row" style="margin-top:1rem;margin-bottom:0.5rem; justify-content:center">
                 <div class="col-md-6">
-                    <select id="search_username" name="username" placeholder="Search username" onchange="getUserInformation(this);">
+                    <select id="search_username" name="username" placeholder="Search username" onchange="getUserInformation();">
                     </select>
                 </div>
             </div>
@@ -102,16 +102,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <label for="note">Note</label>
                             <textarea class="form-control" id="note" name="note" rows="2" placeholder="Enter note here..."></textarea>
                         </div>
-                        <div class="form-group col-md-6 col-lg-6 col-xs-12">
+                        <div class="form-group col-md-12 col-lg-12 col-xs-12">
                             <button class="btn btn-md btn-primary btn-block" type="button" onclick="updateUserInformation()">Submit</button>
                         </div>
                     </div>
                     <div class="row">
                             <div class="col-md-6">
                                 <b> Created By :</b> 
+                                <span id="created-by"></span>
                             </div>
                             <div class="col-md-6">
                                 <b> Last Updated By :</b> 
+                                <span id="updated-by"></span>
                             </div>
                     </div>
                 </div>
@@ -164,9 +166,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         }
     }
     
-    function getUserInformation(element) {
+    function getUserInformation() {
         handleDisplayTabs();
-        const userId = $(element).val();
+        const userId = $("#search_username").val();
         $.ajax({
             type: "GET",
             accepts: {
@@ -204,11 +206,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         type: response?.statusCode === 200 ? "success" : "error",
                         timer: 2000
                     })
+                    getUserInformation();
             }
         });
     }
     
     function populateUserPersonalInfo(userInfo) {
+        const {
+            created_user_first_name, created_user_last_name, created_datetime, last_updated_user_first_name, last_updated_user_last_name, updated_datetime 
+            } = userInfo;
         $("#username").val(userInfo?.username);
         $("#first_name").val(userInfo?.first_name);
         $("#last_name").val(userInfo?.last_name);
@@ -217,6 +223,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         $("#default_language").val(userInfo?.default_language_id);
         $("#note").val(userInfo?.note);
         $("#status").prop("checked", isChecked(userInfo?.active_status));
+        $("#created-by").empty();
+        $("#updated-by").empty();
+        $("#created-by").append(`${created_user_first_name || ''} ${created_user_last_name || ''}, ${formatTimestamp(created_datetime)}`);
+        $("#updated-by").append(`${last_updated_user_first_name || ''} ${last_updated_user_last_name || ''}, ${formatTimestamp(updated_datetime)} `);
     }
 
     function poupulateUserFunctionsInfo(userFunctions) {
@@ -266,5 +276,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             },
 
         });
+    }
+    function formatTimestamp(timeStamp){
+        if(timeStamp == null) return '';
+        const date = new Date(timeStamp);
+        let formattedDate = date.toDateString();
+        formattedDate = formattedDate.substr(formattedDate.indexOf(' ') + 1)
+        const time = date.toLocaleTimeString();
+        return formattedDate+' '+time;
     }
 </script>
