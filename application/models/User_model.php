@@ -230,6 +230,8 @@ class User_model extends CI_Model {
     }
 
     function update_user($user_id, $data) {
+        $data['updated_by'] = $this->session->userdata('logged_in')['user_id'];
+        $data['updated_datetime'] = date("Y-m-d H:i:s");
         $this->db->where('user_id',$user_id);
         $this->db->update('user',$data);
         $this->db->trans_complete();
