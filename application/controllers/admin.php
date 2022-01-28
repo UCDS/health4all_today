@@ -464,7 +464,7 @@ class Admin extends CI_Controller {
 			show_404();
 		}
 	}
-	public function users() {
+	public function user_panel() {
 		if($this->session->userdata('logged_in')){
 			$this->load->helper('form');
 			$this->load->library('form_validation');

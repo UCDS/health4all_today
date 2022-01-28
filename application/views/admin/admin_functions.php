@@ -97,7 +97,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       <div class="card">
         <div class="card-body">
           <p class="card-text">Update user authorization-authentication</p>
-          <a href="<?php echo base_url();?>admin/users" class="btn btn-primary">User Module</a>
+          <a href="<?php echo base_url();?>admin/user_panel" class="btn btn-primary">User Module</a>
         </div>
       </div>
     </div>
