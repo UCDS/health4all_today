@@ -443,13 +443,17 @@ class Admin extends CI_Controller {
 	}
 
 	public function user($user_id) {
-		$data['user_info'] = $this->user_model->get_user_info($user_id);
-		$data['user_functions'] = $this->user_model->user_function($user_id);
-		print json_encode($data);
+		if($this->session->userdata('logged_in')['admin']==1){
+			$data['user_info'] = $this->user_model->get_user_info($user_id);
+			$data['user_functions'] = $this->user_model->user_function($user_id);
+			print json_encode($data);
+		} else {
+			show_404();
+		}
 	}
 
 	public function update_user($user_id) {
-		if($this->session->userdata('logged_in')){
+		if($this->session->userdata('logged_in')['admin']==1){
 			$data = $this->input->post();
 			if($this->user_model->update_user($user_id, $data)){
 				$this->response['statusCode']=200;
@@ -465,7 +469,7 @@ class Admin extends CI_Controller {
 		}
 	}
 	public function user_panel() {
-		if($this->session->userdata('logged_in')){
+		if($this->session->userdata('logged_in')['admin']==1){
 			$this->load->helper('form');
 			$this->load->library('form_validation');
 			$this->data['title']="Update Users";
