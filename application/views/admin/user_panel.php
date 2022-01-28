@@ -57,7 +57,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         </div>
                         <div class="form-group col-md-6 col-lg-3 col-xs-12">
                             <label for="phoneNumber">Phone Number<span class="star" style="color:red"> *</span></label>
-                            <input type="text" class="form-control" name="phone" id="phone" placeholder="Phone Number">
+                            <input type="number" class="form-control" name="phone" id="phone"  pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==12) return false;"  placeholder="Phone Number">
                         </div>
                         <div class="form-group col-md-6 col-lg-3 col-xs-12">
                             <label for="languageId">Select default language<span class="star" style="color:red"> *</span></label>
@@ -92,7 +92,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         </div>
                         <div class="form-group col-md-6 col-lg-4 col-xs-12">
                             <label for="email">Email<span class="star" style="color:red"> *</span></label>
-                            <input type="email" class="form-control" name="email" id="email" placeholder="email">
+                            <input type="email" class="form-control" name="email" id="email" maxlength ="100" placeholder="email">
                         </div>
                         <div class="form-group col-md-4 col-lg-2 col-xs-12" style="display:inline-flex; margin-top: 2.2rem;">
                             <input  type="checkbox" name="status" id="status" style="width:25px;height:25px;">
@@ -216,7 +216,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         $("#email").val(userInfo?.email);
         $("#default_language").val(userInfo?.default_language_id);
         $("#note").val(userInfo?.note);
-        $("#status").prop("checked", !!userInfo?.active_status);
+        $("#status").prop("checked", isChecked(userInfo?.active_status));
     }
 
     function poupulateUserFunctionsInfo(userFunctions) {
