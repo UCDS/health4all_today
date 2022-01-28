@@ -180,12 +180,13 @@ class User_model extends CI_Model {
 
     //user_function() takes user ID as parameter and returns a list of all the functions the user has access to.
 	function user_function($user_id){
-		$this->db->select('user_function_id,user_function,add,edit,view,remove')
+		$this->db->select('link_id, user_function_id,user_function, user_function_display,add,edit,view,remove, active')
             ->from('user')
             ->join('user_function_link','user.user_id=user_function_link.user_id')
             ->join('user_function','user_function_link.function_id=user_function.user_function_id')
             ->where('user_function_link.user_id',$user_id)
-            ->where('user_function_link.active','1');
+            ->where('user_function_link.active','1')
+            ->order_by('user_function_display','asc');
 		$query=$this->db->get();
 		
 		return $query->result();
@@ -200,5 +201,46 @@ class User_model extends CI_Model {
 		$query=$this->db->get();
 		
 		return $query->result();
+    }
+
+    // get all users list
+    function get_users_list(){
+        $this->db->select("username , user_id, CONCAT(last_name,' ', first_name) as full_name")
+        ->from('user');
+        $query=$this->db->get();
+		
+		return $query->result();
+    }
+
+    // get user personal information
+    function get_user_info($user_id) {
+        $this->db->select("user.username, user.first_name, user.last_name, user.gender, user.email, user.default_language_id, user.phone, user.note, user.admin, user.active_status,
+         created_user.first_name as created_user_first_name, created_user.last_name  as created_user_last_name, user.created_datetime, 
+         updated_user.first_name as last_updated_user_first_name, updated_user.last_name  as last_updated_user_last_name, user.updated_datetime,")
+        ->where('user.user_id',$user_id)
+        ->join('user as created_user','created_user.user_id=user.created_by','left')
+        ->join('user as updated_user','updated_user.user_id=user.updated_by','left')
+        ->from('user');
+        $query=$this->db->get();
+        if($query){
+          return $query->row();
+        }else{
+          return false;
+        }
+    }
+
+    function update_user($user_id, $data) {
+        $data['updated_by'] = $this->session->userdata('logged_in')['user_id'];
+        $data['updated_datetime'] = date("Y-m-d H:i:s");
+        $this->db->where('user_id',$user_id);
+        $this->db->update('user',$data);
+        $this->db->trans_complete();
+		if($this->db->trans_status() === FALSE) {
+			$this->db->trans_rollback();
+			return false;
+		}
+		else {
+            return true;
+        }
     }
 }

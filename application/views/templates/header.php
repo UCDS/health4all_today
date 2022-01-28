@@ -16,6 +16,9 @@
     <script src="<?php echo base_url();?>assets/js/sweetalert.min.js"></script>
 
     <style>
+        input[type='checkbox']{
+            cursor: pointer;
+        }
        .navbar
         {
             background-color: #f8f8f8;
@@ -35,6 +38,13 @@
           font-size: 3.5rem;
         }
       }
+      input[type=number]::-webkit-inner-spin-button, 
+      input[type=number]::-webkit-outer-spin-button { 
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        margin: 0; 
+    }
     </style>
     <!-- Custom styles for this template -->
     <!-- <link href="sticky-footer-navbar.css" rel="stylesheet"> -->

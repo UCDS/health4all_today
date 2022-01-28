@@ -97,6 +97,11 @@ class Admin extends CI_Controller {
 		$username = $this->input->post('username');
 		$result = $this->user_model->login($username, $password);
 		if($result) {
+			// checking if user is deactivated
+			if(!$result->active_status) {
+				$this->form_validation->set_message('check_database','Login de-activated. Please contact administrator!');
+	     		return false;
+			}
 			$sess_array = array(
 				'user_id' => $result->user_id,
 				'username' => $result->username,
@@ -433,6 +438,47 @@ class Admin extends CI_Controller {
 				show_404();
 			}
 		} else {
+			show_404();
+		}
+	}
+
+	public function user($user_id) {
+		if($this->session->userdata('logged_in')['admin']==1){
+			$data['user_info'] = $this->user_model->get_user_info($user_id);
+			$data['user_functions'] = $this->user_model->user_function($user_id);
+			print json_encode($data);
+		} else {
+			show_404();
+		}
+	}
+
+	public function update_user($user_id) {
+		if($this->session->userdata('logged_in')['admin']==1){
+			$data = $this->input->post();
+			if($this->user_model->update_user($user_id, $data)){
+				$this->response['statusCode']=200;
+				$this->response['statusText']="user information updated!";
+				echo json_encode($this->response);
+			} else {
+				$this->response['statusCode']=500;
+				$this->response['statusText']="Failed to updated user information!";
+				echo json_encode($this->response);
+			}
+		} else {
+			show_404();
+		}
+	}
+	public function user_panel() {
+		if($this->session->userdata('logged_in')['admin']==1){
+			$this->load->helper('form');
+			$this->load->library('form_validation');
+			$this->data['title']="Update Users";
+			$this->load->view('templates/header',$this->data);
+			$this->data['languages'] = $this->master_model->get_languages();
+			$this->data['users_list'] =  $this->user_model->get_users_list();
+			$this->load->view('admin/user_panel',$this->data);
+			$this->load->view('templates/footer' , $this->data);
+		} else{
 			show_404();
 		}
 	}

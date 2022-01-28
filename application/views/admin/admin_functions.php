@@ -8,6 +8,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 </style>
 
 <!-- Begin page content -->
+<?php 
+  $logged_in=$this->session->userdata('logged_in');
+?>
 <main role="main" >
 <div class="container">
   <br>
@@ -92,7 +95,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         </div>
       </div>
     </div>
-  <?php } ?>
+  <?php } if($logged_in['admin'] == 1) { ?>
+    <div class="col-sm-4">
+      <div class="card">
+        <div class="card-body">
+          <p class="card-text">Update user authorization-authentication</p>
+          <a href="<?php echo base_url();?>admin/user_panel" class="btn btn-primary">User Module</a>
+        </div>
+      </div>
+    </div>
+    <?php } ?>
 </div>
   </div>
 </main>
