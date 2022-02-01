@@ -119,29 +119,62 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </div>
                 <div class="tab-pane fade" id="user-functions" role="tabpanel" aria-labelledby="user-functions-tab">
                     <div class="row" style="margin-top:1rem;" >
-                        <table id="table-sort" class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th style="text-align:center">#</th>
-                                    <th style="text-align:center">User function name</th>
-                                    <th style="text-align:center">View</th>
-                                    <th style="text-align:center">Add</th>
-                                    <th style="text-align:center">Edit</th>
-                                    <th style="text-align:center">Remove</th>
-                                    <th style="text-align:center">Status</th>
-                                    <th style="text-align:center">Created by</th>
-                                    <th style="text-align:center">Updated by</th>
-                                </tr>
-                            </thead>
-                            <tbody id="user-functions-data">
-
-                            </tbody>
-                        </table>
+                        <div class="col-md-12 form-group">
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addUserFunctionModal">
+                                Add user function
+                            </button>
+                        </div>
+                        <div class="col-md-12 form-group">    
+                            <table id="table-sort" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align:center">#</th>
+                                        <th style="text-align:center">User function name</th>
+                                        <th style="text-align:center">View</th>
+                                        <th style="text-align:center">Add</th>
+                                        <th style="text-align:center">Edit</th>
+                                        <th style="text-align:center">Remove</th>
+                                        <th style="text-align:center">Status</th>
+                                        <th style="text-align:center">Created by</th>
+                                        <th style="text-align:center">Updated by</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="user-functions-data">
+                                    
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="row panel-info">
                 <div class="col-md-10 alert alert-info">Please select a user !</div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="addUserFunctionModal" tabindex="-1" role="dialog" aria-labelledby="addUserFunctionModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addUserFunctionModalTitle">Access to New User Function</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                       <label for="View">View</label> <input type="checkbox" name="View" id="View">
+                       <label for="Add">Add</label> <input type="checkbox" name="Add" id="Add">
+                       <label for="Edit">Edit</label> <input type="checkbox" name="Edit" id="Edit">
+                       <label for="Remove">Remove</label> <input type="checkbox" name="Remove" id="Remove">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
             </div>
         </div>
     </div>
