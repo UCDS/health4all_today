@@ -20,6 +20,7 @@ class Admin extends CI_Controller {
 		$this->data['title']="Home";
 		if($this->session->userdata('logged_in')){
 			$add_user_access = 0;
+			$edit_user_access = 0;
 			$add_question_access = 0;
 			$add_group_access=0;
 			$add_sub_group_access=0;
@@ -29,6 +30,7 @@ class Admin extends CI_Controller {
 			$edit_question_sequence_access=0;
 			foreach($this->data['functions'] as $f){
 				if($f->user_function=="user" && $f->add) 	$add_user_access=1;  	
+				if($f->user_function=="user" && $f->edit) 	$edit_user_access=1;  	
 				if($f->user_function=="question" && $f->add) 	$add_question_access=1;  	
 				if($f->user_function=="group" && $f->add)	$add_group_access=1;  	
 				if($f->user_function=="sub_group" && $f->add)	$add_sub_group_access=1;  	
@@ -40,6 +42,7 @@ class Admin extends CI_Controller {
 			$this->data['title']="Home";
 			$this->data['userdata']=$this->session->userdata('logged_in');
 			$this->data['add_user_access']=$add_user_access;
+			$this->data['edit_user_access']=$edit_user_access;
 			$this->data['add_question_access']=$add_question_access;
 			$this->data['add_group_access']=$add_group_access;
 			$this->data['add_sub_group_access']=$add_sub_group_access;
@@ -108,7 +111,6 @@ class Admin extends CI_Controller {
 				'first_name' => $result->first_name,
 				'last_name' => $result->last_name,
 				'email'=>$result->email,
-				'admin'=>$result->admin,
 				'default_language_id'=>$result->default_language_id,
 				);
 			$this->session->set_userdata('logged_in', $sess_array);
@@ -443,41 +445,74 @@ class Admin extends CI_Controller {
 	}
 
 	public function user($user_id) {
-		if($this->session->userdata('logged_in')['admin']==1){
-			$data['user_info'] = $this->user_model->get_user_info($user_id);
-			$data['user_functions'] = $this->user_model->user_function($user_id);
-			print json_encode($data);
+		if($this->session->userdata('logged_in')){
+			$edit_user_access = 0;
+			foreach($this->data['functions'] as $f){
+				if($f->user_function=="user"){ 
+					if($f->edit)
+						$edit_user_access=1;  	
+				}	
+			}
+			if($edit_user_access){
+				$data['user_info'] = $this->user_model->get_user_info($user_id);
+				$data['user_functions'] = $this->user_model->user_function($user_id);
+				print json_encode($data);
+			} else {
+				show_404();
+			}
 		} else {
 			show_404();
 		}
 	}
 
 	public function update_user($user_id) {
-		if($this->session->userdata('logged_in')['admin']==1){
-			$data = $this->input->post();
-			if($this->user_model->update_user($user_id, $data)){
-				$this->response['statusCode']=200;
-				$this->response['statusText']="user information updated!";
-				echo json_encode($this->response);
+		if($this->session->userdata('logged_in')){
+			$edit_user_access = 0;
+			foreach($this->data['functions'] as $f){
+				if($f->user_function=="user"){ 
+					if($f->edit)
+						$edit_user_access=1;  	
+				}	
+			}
+			if($edit_user_access){
+				$data = $this->input->post();
+				if($this->user_model->update_user($user_id, $data)){
+					$this->response['statusCode']=200;
+					$this->response['statusText']="user information updated!";
+					echo json_encode($this->response);
+				} else {
+					$this->response['statusCode']=500;
+					$this->response['statusText']="Failed to updated user information!";
+					echo json_encode($this->response);
+				}
 			} else {
-				$this->response['statusCode']=500;
-				$this->response['statusText']="Failed to updated user information!";
-				echo json_encode($this->response);
+				show_404();	
 			}
 		} else {
 			show_404();
 		}
 	}
 	public function user_panel() {
-		if($this->session->userdata('logged_in')['admin']==1){
-			$this->load->helper('form');
-			$this->load->library('form_validation');
-			$this->data['title']="Update Users";
-			$this->load->view('templates/header',$this->data);
-			$this->data['languages'] = $this->master_model->get_languages();
-			$this->data['users_list'] =  $this->user_model->get_users_list();
-			$this->load->view('admin/user_panel',$this->data);
-			$this->load->view('templates/footer' , $this->data);
+		if($this->session->userdata('logged_in')){
+			$edit_user_access = 0;
+			foreach($this->data['functions'] as $f){
+				if($f->user_function=="question_sequence"){ 
+					if($f->edit)
+						$edit_user_access=1;  	
+				}	
+			}
+			if($edit_user_access){
+				$this->load->helper('form');
+				$this->load->library('form_validation');
+				$this->data['title']="Update Users";
+				$this->load->view('templates/header',$this->data);
+				$this->data['languages'] = $this->master_model->get_languages();
+				$this->data['users_list'] =  $this->user_model->get_users_list();
+				$this->load->view('admin/user_panel',$this->data);
+				$this->load->view('templates/footer' , $this->data);
+			} else {
+				show_404();
+			}
 		} else{
 			show_404();
 		}

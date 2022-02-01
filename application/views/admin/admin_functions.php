@@ -95,7 +95,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         </div>
       </div>
     </div>
-  <?php } if($logged_in['admin'] == 1) { ?>
+  <?php } if($edit_user_access) { ?>
     <div class="col-sm-4">
       <div class="card">
         <div class="card-body">
