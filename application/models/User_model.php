@@ -260,11 +260,11 @@ class User_model extends CI_Model {
     }
 
     // update a user's user_function values
-    function update_user_function_access($user_id){
+    function update_user_function($user_function_link_id, $data){
         $data['updated_by'] = $this->session->userdata('logged_in')['user_id'];
         $data['updated_datetime'] = date("Y-m-d H:i:s");
         $this->db->trans_start(); //Transaction begins
-        $this->db->where('user_id',$user_id);
+        $this->db->where('link_id',$user_function_link_id);
         $this->db->update('user_function_link',$data);
         $this->db->trans_complete(); //Transaction Ends
 		if($this->db->trans_status() === FALSE) {
