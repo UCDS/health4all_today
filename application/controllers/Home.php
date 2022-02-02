@@ -10,7 +10,7 @@ class Home extends CI_Controller {
 		if($this->session->userdata('logged_in')){
 			$userdata = $this->session->userdata('logged_in');
 			$user_id = $userdata['user_id'];
-			$this->data['functions']=$this->user_model->user_function($user_id);
+			$this->data['functions']=$this->user_model->user_function($user_id, TRUE);
 			$this->data['user_languages']=$this->user_model->user_languages($user_id);
 		}
 		$this->data['banner_text'] = $this->master_model->get_banner_text();
