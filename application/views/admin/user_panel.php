@@ -120,7 +120,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <div class="tab-pane fade" id="user-functions" role="tabpanel" aria-labelledby="user-functions-tab">
                     <div class="row" style="margin-top:1rem;" >
                         <div class="col-md-12 form-group">
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addUserFunctionModal">
+                            <button type="button" id="add-user-function" class="btn btn-primary" data-toggle="modal" data-target="#addUserFunctionModal">
                                 Add user function
                             </button>
                         </div>
@@ -276,11 +276,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${isChecked(userFunction.add)} /></td>
                     <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${isChecked(userFunction.edit)} /></td>
                     <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${isChecked(userFunction.remove)} /></td>
-                    <td style="text-align:center;"><button class='btn ${isChecked(userFunction.active) ? 'btn-success' : 'btn-danger'} round-button'  onClick="toggle_question_status(${userFunction.link_id})" >${ isChecked(userFunction.active) ? UNLOCK_ICON : LOCK_ICON }</button> </td>
+                    <td style="text-align:center;"><button  class='btn ${isChecked(userFunction.active) ? 'user-function-enabled btn-success' : 'user-function-disabled btn-danger'} round-button'  onClick="toggle_question_status(${userFunction.link_id})" >${ isChecked(userFunction.active) ? UNLOCK_ICON : LOCK_ICON }</button> </td>
                     <td>To be filled</td>
                     <td>To be filled</td>
                 </tr>
              `);
+        });
+        tippy(".user-function-enabled", {
+            content :   'user function enabled'
+        });
+        tippy(".user-function-disabled", {
+            content :   'user function disabled'
         });
     }
 
@@ -320,4 +326,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         const time = date.toLocaleTimeString();
         return formattedDate+' '+time;
     }
+    
+    // tooltips
+    tippy("#add-user-function", {
+        content :   'add user function'
+    });
+    
 </script>
