@@ -181,6 +181,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 </div>
 
 <script>
+    const LOCK_ICON = "<i class='fa fa-lock' aria-hidden='true'></i>";
+    const UNLOCK_ICON = "<i class='fa fa-unlock-alt' aria-hidden='true'></i>";
 
     $(function () {
         initUsersListSelectize();
@@ -274,7 +276,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${isChecked(userFunction.add)} /></td>
                     <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${isChecked(userFunction.edit)} /></td>
                     <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${isChecked(userFunction.remove)} /></td>
-                    <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${isChecked(userFunction.active)} /></td>
+                    <td style="text-align:center;"><button class='btn ${isChecked(userFunction.active) ? 'btn-success' : 'btn-danger'} round-button'  onClick="toggle_question_status(${userFunction.link_id})" >${ isChecked(userFunction.active) ? UNLOCK_ICON : LOCK_ICON }</button> </td>
                     <td>To be filled</td>
                     <td>To be filled</td>
                 </tr>
