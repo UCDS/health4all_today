@@ -243,4 +243,51 @@ class User_model extends CI_Model {
             return true;
         }
     }
+
+    // add new user function for a user
+    function add_user_function($data) {
+        $data['created_by'] = $this->session->userdata('logged_in')['user_id'];
+        $this->db->trans_start(); //Transaction begins
+        $this->db->insert('user_function_link',$data);
+        $this->db->trans_complete(); //Transaction Ends
+        if($this->db->trans_status() === FALSE) {
+			$this->db->trans_rollback();
+			return false;
+		}
+		else {
+            return true;
+        }
+    }
+
+    // update a user's user_function values
+    function update_user_function_access($user_id){
+        $data['updated_by'] = $this->session->userdata('logged_in')['user_id'];
+        $data['updated_datetime'] = date("Y-m-d H:i:s");
+        $this->db->trans_start(); //Transaction begins
+        $this->db->where('user_id',$user_id);
+        $this->db->update('user_function_link',$data);
+        $this->db->trans_complete(); //Transaction Ends
+		if($this->db->trans_status() === FALSE) {
+			$this->db->trans_rollback();
+			return false;
+		}
+		else {
+            return true;
+        }
+    }
+
+    // remove user_function for a user
+    function remove_user_function($user_function_link_id){
+        $data['deleted_by'] = $this->session->userdata('logged_in')['user_id'];
+        $this->db->trans_start(); //Transaction begins
+        $this->db->where('link_id',$user_function_link_id);
+        $delete_user_function_link = $this->db->delete('user_function_link');
+        $this->db->trans_complete(); //Transaction Ends
+        if(!$delete_user_function_link){
+            $this->db->trans_rollback();
+            return false;
+        }
+        return true;
+    }
+
 }
