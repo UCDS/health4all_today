@@ -492,6 +492,7 @@ class Admin extends CI_Controller {
 			show_404();
 		}
 	}
+
 	public function user_panel() {
 		if($this->session->userdata('logged_in')){
 			$edit_user_access = 0;
@@ -514,6 +515,89 @@ class Admin extends CI_Controller {
 				show_404();
 			}
 		} else{
+			show_404();
+		}
+	}
+
+	public function add_user_function_link() {
+		if($this->session->userdata('logged_in')){
+			$add_user_function_access = 0;
+			foreach($this->data['functions'] as $f){
+				if($f->user_function=="user"){ 
+					if($f->add)
+						$add_user_function_access=1;  	
+				}	
+			}
+			if($add_user_function_access){
+				$data = $this->input->post();
+				if($this->user_model->add_user_function($data)){
+					$this->response['statusCode']=200;
+					$this->response['statusText']="User function added successfully!";
+					echo json_encode($this->response);
+				} else {
+					$this->response['statusCode']=500;
+					$this->response['statusText']="Failed to add user function !";
+					echo json_encode($this->response);
+				}
+			} else {
+				show_404();	
+			}
+		} else {
+			show_404();
+		}
+	}
+
+	public function update_user_function_link($user_function_link_id) {
+		if($this->session->userdata('logged_in')){
+			$edit_user_function_access = 0;
+			foreach($this->data['functions'] as $f){
+				if($f->user_function=="user"){ 
+					if($f->edit)
+						$edit_user_function_access=1;  	
+				}	
+			}
+			if($edit_user_function_access){
+				$data = $this->input->post();
+				if($this->user_model->update_user_function($user_function_link_id, $data)){
+					$this->response['statusCode']=200;
+					$this->response['statusText']="User function values updated!";
+					echo json_encode($this->response);
+				} else {
+					$this->response['statusCode']=500;
+					$this->response['statusText']="Failed to updated user function values!";
+					echo json_encode($this->response);
+				}
+			} else {
+				show_404();	
+			}
+		} else {
+			show_404();
+		}
+	}
+
+	public function remove_user_function_link($user_function_link_id){
+		if($this->session->userdata('logged_in')){
+			$remove_user_function_access = 0;
+			foreach($this->data['functions'] as $f){
+				if($f->user_function=="user"){ 
+					if($f->remove)
+						$remove_user_function_access=1;  	
+				}	
+			}
+			if($remove_user_function_access){
+				if($this->user_model->remove_user_function($user_function_link_id)){
+					$this->response['statusCode']=200;
+					$this->response['statusText']="Removed user function successfully!";
+					echo json_encode($this->response);
+				} else {
+					$this->response['statusCode']=500;
+					$this->response['statusText']="Failed to remove user function!";
+					echo json_encode($this->response);
+				}
+			} else {
+				show_404();	
+			}
+		} else {
 			show_404();
 		}
 	}
