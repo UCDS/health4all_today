@@ -32,7 +32,10 @@
         -ms-user-select: none;
         user-select: none;
       }
-
+      .round-button{
+          border-radius:100%;
+          border: solid 1px;
+      }
       @media (min-width: 768px) {
         .bd-placeholder-img-lg {
           font-size: 3.5rem;
