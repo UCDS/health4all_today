@@ -227,7 +227,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 first_name: $('#first_name').val(),
                 last_name: $('#last_name').val(),
                 phone: $('#phone').val(),
-                default_language_id: $('#fefault_language').val(),
+                default_language_id: $('#default_language').val(),
                 note: $('#note').val(),
                 email: $('#email').val(),
                 active_status: $('#status').is(':checked') ? 1 : 0,
