@@ -135,6 +135,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                         <th style="text-align:center">Edit</th>
                                         <th style="text-align:center">Remove</th>
                                         <th style="text-align:center">Status</th>
+                                        <th style="text-align:center">Actions</th>
                                         <th style="text-align:center">Created by</th>
                                         <th style="text-align:center">Updated by</th>
                                     </tr>
@@ -183,6 +184,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <script>
     const LOCK_ICON = "<i class='fa fa-lock' aria-hidden='true'></i>";
     const UNLOCK_ICON = "<i class='fa fa-unlock-alt' aria-hidden='true'></i>";
+    const EDIT_ICON = "<i class='fa fa-pencil' aria-hidden='true'></i>";
+    const TRASH_ICON = "<i class='fa fa-trash' aria-hidden='true'></i>";
 
     $(function () {
         initUsersListSelectize();
@@ -265,6 +268,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     }
 
     function poupulateUserFunctionsInfo(userFunctions) {
+        const hasDeleteUserFunctionAccess = <?php echo $remove_user_function_access; ?>
         /* removing previous data */
         $("#user-functions-data").empty();
         $.each(userFunctions, function (index, userFunction) { 
@@ -277,6 +281,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${isChecked(userFunction.edit)} /></td>
                     <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${isChecked(userFunction.remove)} /></td>
                     <td style="text-align:center;"><button  class='btn ${isChecked(userFunction.active) ? 'user-function-enabled btn-success' : 'user-function-disabled btn-danger'} round-button'  onClick="toggle_question_status(${userFunction.link_id})" >${ isChecked(userFunction.active) ? UNLOCK_ICON : LOCK_ICON }</button> </td>
+                    <td style="text-align:center;">
+                        <button class='btn round-button edit-user-function-access'>${EDIT_ICON}</button>
+                        ${ hasDeleteUserFunctionAccess == 1 ? `<button class='btn btn-danger round-button delete-user-function-access'>${TRASH_ICON}</button>`: ''}
+                    </td>
                     <td>To be filled</td>
                     <td>To be filled</td>
                 </tr>
@@ -287,6 +295,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         });
         tippy(".user-function-disabled", {
             content :   'user function disabled'
+        });
+        tippy(".edit-user-function-access", {
+            content :   'Edit user function values'
+        });
+        tippy(".delete-user-function-access", {
+            content :   'Delete user function access'
         });
     }
 

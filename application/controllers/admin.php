@@ -496,10 +496,13 @@ class Admin extends CI_Controller {
 	public function user_panel() {
 		if($this->session->userdata('logged_in')){
 			$edit_user_access = 0;
+			$remove_user_function_access = 0;
 			foreach($this->data['functions'] as $f){
-				if($f->user_function=="question_sequence"){ 
+				if($f->user_function=="user"){ 
 					if($f->edit)
 						$edit_user_access=1;  	
+					if($f->remove)
+						$remove_user_function_access=1;  	
 				}	
 			}
 			if($edit_user_access){
@@ -507,6 +510,7 @@ class Admin extends CI_Controller {
 				$this->load->library('form_validation');
 				$this->data['title']="Update Users";
 				$this->load->view('templates/header',$this->data);
+				$this->data['remove_user_function_access']=$remove_user_function_access;
 				$this->data['languages'] = $this->master_model->get_languages();
 				$this->data['users_list'] =  $this->user_model->get_users_list();
 				$this->load->view('admin/user_panel',$this->data);
