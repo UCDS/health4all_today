@@ -129,7 +129,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 <thead>
                                     <tr>
                                         <th style="text-align:center">#</th>
-                                        <th style="text-align:center">User function name</th>
+                                        <th style="text-align:center">User Function</th>
                                         <th style="text-align:center">View</th>
                                         <th style="text-align:center">Add</th>
                                         <th style="text-align:center">Edit</th>
@@ -249,6 +249,50 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         });
     }
     
+    function deleteUserFunction(link_id){
+        swal({
+            title: "Are you sure?",
+            text: "You want to delete the user function access!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonClass: "btn btn-outline-secondary",
+            cancelButtonText: "Cancel!",
+            closeOnConfirm: false,
+            closeOnCancel: false
+            },
+            function(isConfirm) {
+            if (isConfirm) {
+                $.ajax({
+                    type: "DELETE",
+                    accepts: {
+                        contentType: "application/json"
+                    },
+                    url: "<?= base_url() ?>admin/remove_user_function_link/"+link_id,
+                    dataType: "text",
+                    success: function (response) {
+                        getUserInformation()
+                        swal({
+                            title: "Success",
+                            text: "User function has been deleted!",
+                            type: "success",
+                            timer: 2000
+                        });
+                    }
+                });
+            } else {
+                swal({
+                    title: "Cancelled",
+                    text: "User function is safe!",
+                    type: "error",
+                    timer: 2000
+                })
+            }
+        });  
+    }
+
+
     function populateUserPersonalInfo(userInfo) {
         const {
             created_user_first_name, created_user_last_name, created_datetime, last_updated_user_first_name, last_updated_user_last_name, updated_datetime 
@@ -283,7 +327,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <td style="text-align:center;"><button  class='btn ${isChecked(userFunction.active) ? 'user-function-enabled btn-success' : 'user-function-disabled btn-danger'} round-button'  onClick="toggle_question_status(${userFunction.link_id})" >${ isChecked(userFunction.active) ? UNLOCK_ICON : LOCK_ICON }</button> </td>
                     <td style="text-align:center;">
                         <button class='btn round-button edit-user-function-access'>${EDIT_ICON}</button>
-                        ${ hasDeleteUserFunctionAccess == 1 ? `<button class='btn btn-danger round-button delete-user-function-access'>${TRASH_ICON}</button>`: ''}
+                        ${ hasDeleteUserFunctionAccess == 1 ? `<button class='btn btn-danger round-button delete-user-function-access' onClick='deleteUserFunction(${userFunction.link_id})'>${TRASH_ICON}</button>`: ''}
                     </td>
                     <td>To be filled</td>
                     <td>To be filled</td>
