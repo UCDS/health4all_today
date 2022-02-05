@@ -109,11 +109,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <div class="row">
                             <div class="col-md-6">
                                 <b> Created By :</b> 
-                                <span id="created-by"></span>
+                                <span id="user-info-created-by"></span>
                             </div>
                             <div class="col-md-6">
                                 <b> Last Updated By :</b> 
-                                <span id="updated-by"></span>
+                                <span id="user-info-updated-by"></span>
                             </div>
                     </div>
                 </div>
@@ -124,8 +124,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 Add user function
                             </button>
                         </div>
-                        <div class="col-md-12 form-group">    
-                            <table id="table-sort" class="table table-bordered table-striped">
+                        <div class="col-md-12 form-group">
+                            <table id="table-sort" class="table table-bordered table-striped" >
                                 <thead>
                                     <tr>
                                         <th style="text-align:center">#</th>
@@ -305,10 +305,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         $("#default_language").val(userInfo?.default_language_id);
         $("#note").val(userInfo?.note);
         $("#status").prop("checked", isChecked(userInfo?.active_status));
-        $("#created-by").empty();
-        $("#updated-by").empty();
-        $("#created-by").append(`${created_user_first_name || ''} ${created_user_last_name || ''}, ${formatTimestamp(created_datetime)}`);
-        $("#updated-by").append(`${last_updated_user_first_name || ''} ${last_updated_user_last_name || ''}, ${formatTimestamp(updated_datetime)} `);
+        $("#user-info-created-by").empty();
+        $("#user-info-updated-by").empty();
+        $("#user-info-created-by").append(`${created_user_first_name || ''} ${created_user_last_name || ''}, ${formatTimestamp(created_datetime)}`);
+        $("#user-info-updated-by").append(`${last_updated_user_first_name || ''} ${last_updated_user_last_name || ''}, ${formatTimestamp(updated_datetime)} `);
     }
 
     function poupulateUserFunctionsInfo(userFunctions) {
@@ -329,8 +329,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <button class='btn round-button edit-user-function-access'>${EDIT_ICON}</button>
                         ${ hasDeleteUserFunctionAccess == 1 ? `<button class='btn btn-danger round-button delete-user-function-access' onClick='deleteUserFunction(${userFunction.link_id})'>${TRASH_ICON}</button>`: ''}
                     </td>
-                    <td>To be filled</td>
-                    <td>To be filled</td>
+                    <td>${userFunction?.created_user_first_name || ''} ${userFunction?.created_user_last_name || ''}, ${formatTimestamp(userFunction?.link_created_datetime)}</td>
+                    <td>${userFunction?.created_user_first_name || ''} ${userFunction?.created_user_last_name || ''}, ${formatTimestamp(userFunction?.link_created_datetime)}</td>
+                    
                 </tr>
              `);
         });

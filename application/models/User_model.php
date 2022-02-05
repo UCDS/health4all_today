@@ -183,10 +183,11 @@ class User_model extends CI_Model {
         if($active_only) {
             $this->db->where('user_function_link.active','1');
         }
-		$this->db->select('link_id, user_function_id,user_function, user_function_display,add,edit,view,remove, active')
-            ->from('user')
-            ->join('user_function_link','user.user_id=user_function_link.user_id')
+		$this->db->select('link_id, user_function_id,user_function, user_function_display,add,edit,view,remove, active, 
+        created_user.first_name as created_user_first_name, created_user.last_name  as created_user_last_name, user_function_link.created_datetime as link_created_datetime')
+            ->from('user_function_link')
             ->join('user_function','user_function_link.function_id=user_function.user_function_id')
+            ->join('user as created_user','created_user.user_id=user_function_link.created_by','left')
             ->where('user_function_link.user_id',$user_id)
             ->order_by('user_function_display','asc');
 		$query=$this->db->get();
