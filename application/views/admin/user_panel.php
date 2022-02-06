@@ -288,6 +288,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         timer: 2000
                     })
                     getUserInformation();
+                    $('#addUserFunctionModal .close').click();
             }
         });
     }
