@@ -456,6 +456,12 @@ class Admin extends CI_Controller {
 			if($edit_user_access){
 				$data['user_info'] = $this->user_model->get_user_info($user_id);
 				$data['user_functions'] = $this->user_model->user_function($user_id, NULL);
+				// TODO:improve user_functions fetching functinality, get all user_functions with a flag which indicates whether it has authorized to user or not
+				$user_authorized_functions = array();
+				foreach ($data['user_functions'] as $key => $value) {
+					array_push($user_authorized_functions,$value->user_function_id);
+				}
+				$data['user_unauthorized_functions'] = $this->user_model->get_user_unauthorized_functions_list($user_id, $user_authorized_functions);
 				print json_encode($data);
 			} else {
 				show_404();
