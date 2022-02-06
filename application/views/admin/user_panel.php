@@ -152,7 +152,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <div class="col-md-10 alert alert-info">Please select a user !</div>
             </div>
             <div class="row panel-info" id="no-authorized-user-func-alert">
-                <div class="col-md-10 alert alert-info">No authorized functions exists!</div>
+                <div class="col-md-10 alert alert-info"><b>No authorized</b> user functions exists!</div>
             </div>
         </div>
     </div>
@@ -319,7 +319,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     }
 
     function poupulateUserFunctionsInfo(userFunctions, user_unauthorized_functions)  {
-        const hasDeleteUserFunctionAccess = <?php echo $remove_user_function_access; ?>
+        const hasDeleteUserFunctionAccess = <?php echo $remove_user_function_access; ?>;
         if(userFunctions.length == 0){
             /* if user functons list is empty, showing a information box */
             $("#no-authorized-user-func-alert").show();
