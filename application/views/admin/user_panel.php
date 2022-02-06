@@ -352,6 +352,24 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         });  
     }
 
+    function toggleUserFunctionStatus(link_id, status){
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "<?= base_url() ?>admin/toggle_user_func_link_status/"+link_id+"/"+status,
+            data: {},
+            success: function (response) {
+                    swal({
+                        title: response?.statusCode === 200 ? "Success" : "Failed",
+                        text: response?.statusText,
+                        type: response?.statusCode === 200 ? "success" : "error",
+                        timer: 2000
+                    })
+                    getUserInformation();
+
+            }
+        });
+    }
 
     function populateUserPersonalInfo(userInfo) {
         const {
@@ -390,7 +408,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${isChecked(userFunction.add)} /></td>
                         <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${isChecked(userFunction.edit)} /></td>
                         <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${isChecked(userFunction.remove)} /></td>
-                        <td style="text-align:center;"><button  class='btn ${isChecked(userFunction.active) ? 'user-function-enabled btn-success' : 'user-function-disabled btn-danger'} round-button'  onClick="toggle_question_status(${userFunction.link_id})" >${ isChecked(userFunction.active) ? UNLOCK_ICON : LOCK_ICON }</button> </td>
+                        <td style="text-align:center;"><button  class='btn ${isChecked(userFunction.active) ? 'user-function-enabled btn-success' : 'user-function-disabled btn-danger'} round-button'  onClick="toggleUserFunctionStatus(${userFunction.link_id}, ${isChecked(userFunction.active) ? 0 : 1  })" >${ isChecked(userFunction.active) ? UNLOCK_ICON : LOCK_ICON }</button> </td>
                         <td style="text-align:center;">
                             <button class='btn round-button edit-user-function-access'>${EDIT_ICON}</button>
                             ${ hasDeleteUserFunctionAccess == 1 ? `<button class='btn btn-danger round-button delete-user-function-access' onClick='deleteUserFunction(${userFunction.link_id})'>${TRASH_ICON}</button>`: ''}

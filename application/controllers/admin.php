@@ -574,7 +574,34 @@ class Admin extends CI_Controller {
 					echo json_encode($this->response);
 				} else {
 					$this->response['statusCode']=500;
-					$this->response['statusText']="Failed to updated user function values!";
+					$this->response['statusText']="Failed to update user function values!";
+					echo json_encode($this->response);
+				}
+			} else {
+				show_404();	
+			}
+		} else {
+			show_404();
+		}
+	}
+
+	public function toggle_user_func_link_status($link_id, $status){
+		if($this->session->userdata('logged_in')){
+			$edit_user_function_access = 0;
+			foreach($this->data['functions'] as $f){
+				if($f->user_function=="user"){ 
+					if($f->edit)
+						$edit_user_function_access=1;  	
+				}	
+			}
+			if($edit_user_function_access){
+				if($this->user_model->toggle_user_func_link_status($link_id, $status)){
+					$this->response['statusCode']=200;
+					$this->response['statusText']="User function status updated!";
+					echo json_encode($this->response);
+				} else {
+					$this->response['statusCode']=500;
+					$this->response['statusText']="Failed to update user function status!";
 					echo json_encode($this->response);
 				}
 			} else {
