@@ -293,6 +293,25 @@ class User_model extends CI_Model {
         return true;
     }
 
+    function toggle_user_func_link_status($user_function_link_id, $status){
+        $data = array(
+            'updated_datetime'=>date("Y-m-d H:i:s"),
+            'updated_by'=>$this->session->userdata('logged_in')['user_id'],
+            'active'=>$status
+        );
+        $this->db->trans_start(); //Transaction begins
+        $this->db->where('link_id',$user_function_link_id);
+        $this->db->update('user_function_link',$data);
+        $this->db->trans_complete(); //Transaction Ends
+		if($this->db->trans_status() === FALSE) {
+			$this->db->trans_rollback();
+			return false;
+		}
+		else {
+            return true;
+        }
+    }
+
     function get_user_unauthorized_functions_list($authotized_user_functions){
         if(!empty(!empty($authotized_user_functions))){
             $this->db->where_not_in('user_function_id',  $authotized_user_functions);
