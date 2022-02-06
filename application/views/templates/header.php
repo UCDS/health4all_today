@@ -12,6 +12,8 @@
     <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/css/youseelogo.css" media='screen,print'>
   
     <script src="<?php echo base_url();?>assets/js/jquery.min.js"></script>
+    <script src="<?php echo base_url();?>assets/js/popper.min.js"></script>
+    <script src="<?php echo base_url();?>assets/js/tippy-bundle.umd.min.js"></script>
     <script src="<?php echo base_url();?>assets/js/bootstrap.min.js"></script>
     <script src="<?php echo base_url();?>assets/js/sweetalert.min.js"></script>
 
@@ -32,7 +34,10 @@
         -ms-user-select: none;
         user-select: none;
       }
-
+      .round-button{
+          border-radius:100%;
+          border: solid 1px;
+      }
       @media (min-width: 768px) {
         .bd-placeholder-img-lg {
           font-size: 3.5rem;

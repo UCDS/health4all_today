@@ -179,13 +179,16 @@ class User_model extends CI_Model {
     }
 
     //user_function() takes user ID as parameter and returns a list of all the functions the user has access to.
-	function user_function($user_id){
-		$this->db->select('link_id, user_function_id,user_function, user_function_display,add,edit,view,remove, active')
-            ->from('user')
-            ->join('user_function_link','user.user_id=user_function_link.user_id')
+	function user_function($user_id , $active_only){
+        if($active_only) {
+            $this->db->where('user_function_link.active','1');
+        }
+		$this->db->select('link_id, user_function_id,user_function, user_function_display,add,edit,view,remove, active, 
+        created_user.first_name as created_user_first_name, created_user.last_name  as created_user_last_name, user_function_link.created_datetime as link_created_datetime')
+            ->from('user_function_link')
             ->join('user_function','user_function_link.function_id=user_function.user_function_id')
+            ->join('user as created_user','created_user.user_id=user_function_link.created_by','left')
             ->where('user_function_link.user_id',$user_id)
-            ->where('user_function_link.active','1')
             ->order_by('user_function_display','asc');
 		$query=$this->db->get();
 		
@@ -214,7 +217,7 @@ class User_model extends CI_Model {
 
     // get user personal information
     function get_user_info($user_id) {
-        $this->db->select("user.username, user.first_name, user.last_name, user.gender, user.email, user.default_language_id, user.phone, user.note, user.admin, user.active_status,
+        $this->db->select("user.username, user.first_name, user.last_name, user.gender, user.email, user.default_language_id, user.phone, user.note, user.active_status,
          created_user.first_name as created_user_first_name, created_user.last_name  as created_user_last_name, user.created_datetime, 
          updated_user.first_name as last_updated_user_first_name, updated_user.last_name  as last_updated_user_last_name, user.updated_datetime,")
         ->where('user.user_id',$user_id)
@@ -243,4 +246,81 @@ class User_model extends CI_Model {
             return true;
         }
     }
+
+    // add new user function for a user
+    function add_user_function($data) {
+        $data['created_by'] = $this->session->userdata('logged_in')['user_id'];
+        $this->db->trans_start(); //Transaction begins
+        $this->db->insert('user_function_link',$data);
+        $this->db->trans_complete(); //Transaction Ends
+        if($this->db->trans_status() === FALSE) {
+			$this->db->trans_rollback();
+			return false;
+		}
+		else {
+            return true;
+        }
+    }
+
+    // update a user's user_function values
+    function update_user_function($user_function_link_id, $data){
+        $data['updated_by'] = $this->session->userdata('logged_in')['user_id'];
+        $data['updated_datetime'] = date("Y-m-d H:i:s");
+        $this->db->trans_start(); //Transaction begins
+        $this->db->where('link_id',$user_function_link_id);
+        $this->db->update('user_function_link',$data);
+        $this->db->trans_complete(); //Transaction Ends
+		if($this->db->trans_status() === FALSE) {
+			$this->db->trans_rollback();
+			return false;
+		}
+		else {
+            return true;
+        }
+    }
+
+    // remove user_function for a user
+    function remove_user_function($user_function_link_id){
+        $data['deleted_by'] = $this->session->userdata('logged_in')['user_id'];
+        $this->db->trans_start(); //Transaction begins
+        $this->db->where('link_id',$user_function_link_id);
+        $delete_user_function_link = $this->db->delete('user_function_link');
+        $this->db->trans_complete(); //Transaction Ends
+        if(!$delete_user_function_link){
+            $this->db->trans_rollback();
+            return false;
+        }
+        return true;
+    }
+
+    function toggle_user_func_link_status($user_function_link_id, $status){
+        $data = array(
+            'updated_datetime'=>date("Y-m-d H:i:s"),
+            'updated_by'=>$this->session->userdata('logged_in')['user_id'],
+            'active'=>$status
+        );
+        $this->db->trans_start(); //Transaction begins
+        $this->db->where('link_id',$user_function_link_id);
+        $this->db->update('user_function_link',$data);
+        $this->db->trans_complete(); //Transaction Ends
+		if($this->db->trans_status() === FALSE) {
+			$this->db->trans_rollback();
+			return false;
+		}
+		else {
+            return true;
+        }
+    }
+
+    function get_user_unauthorized_functions_list($authotized_user_functions){
+        if(!empty(!empty($authotized_user_functions))){
+            $this->db->where_not_in('user_function_id',  $authotized_user_functions);
+        }
+        $this->db->select('*')
+            ->from('user_function')
+            ->order_by('user_function_display','asc');
+        $query = $this->db->get();
+        return $query->result();
+    }
+
 }

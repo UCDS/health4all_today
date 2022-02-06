@@ -17,10 +17,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         color:blue;
         height:4rem;
     }
-    .round-button{
-        border-radius:100%;
-        border: solid 1px;
-    }
     .answer-option {
         cursor: pointer;
         margin-top: 3px;

@@ -19,6 +19,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         text-align:center;
         justify-content:center;
     }
+    select {
+        cursor: pointer;
+    }
     
 </style>
 <div class="container">
@@ -109,45 +112,107 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <div class="row">
                             <div class="col-md-6">
                                 <b> Created By :</b> 
-                                <span id="created-by"></span>
+                                <span id="user-info-created-by"></span>
                             </div>
                             <div class="col-md-6">
                                 <b> Last Updated By :</b> 
-                                <span id="updated-by"></span>
+                                <span id="user-info-updated-by"></span>
                             </div>
                     </div>
                 </div>
                 <div class="tab-pane fade" id="user-functions" role="tabpanel" aria-labelledby="user-functions-tab">
                     <div class="row" style="margin-top:1rem;" >
-                        <table id="table-sort" class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th style="text-align:center">#</th>
-                                    <th style="text-align:center">User function name</th>
-                                    <th style="text-align:center">View</th>
-                                    <th style="text-align:center">Add</th>
-                                    <th style="text-align:center">Edit</th>
-                                    <th style="text-align:center">Remove</th>
-                                    <th style="text-align:center">Status</th>
-                                    <th style="text-align:center">Created by</th>
-                                    <th style="text-align:center">Updated by</th>
-                                </tr>
-                            </thead>
-                            <tbody id="user-functions-data">
-
-                            </tbody>
-                        </table>
+                        <div class="col-md-12 form-group">
+                            <button type="button" id="add-user-function" class="btn btn-primary" data-toggle="modal" data-target="#addUserFunctionModal">
+                                Add user function
+                            </button>
+                        </div>
+                        <div class="col-md-12 form-group" id="user-functions-container">
+                            <table id="user-functions-table" class="table table-bordered table-striped" >
+                                <thead>
+                                    <tr>
+                                        <th style="text-align:center">#</th>
+                                        <th style="text-align:center">User Function</th>
+                                        <th style="text-align:center">View</th>
+                                        <th style="text-align:center">Add</th>
+                                        <th style="text-align:center">Edit</th>
+                                        <th style="text-align:center">Remove</th>
+                                        <th style="text-align:center">Status</th>
+                                        <th style="text-align:center">Actions</th>
+                                        <!-- <th style="text-align:center">Created by</th>
+                                        <th style="text-align:center">Updated by</th> -->
+                                    </tr>
+                                </thead>
+                                <tbody id="user-functions-data">
+                                    
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="row panel-info">
+            <div class="row panel-info" id="no-user-selected-alert">
                 <div class="col-md-10 alert alert-info">Please select a user !</div>
+            </div>
+            <div class="row panel-info" id="no-authorized-user-func-alert">
+                <div class="col-md-10 alert alert-info"><b>No authorized</b> user functions exists!</div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="addUserFunctionModal" tabindex="-1" role="dialog" aria-labelledby="addUserFunctionModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addUserFunctionModalTitle">Authorize New User Function</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="add_new_user_function"  method="POST">
+                    <div class="row">
+                        <div class="col-md-12 form-group">
+                            <span id="unauthorized-func-error" style="color:#FF0000;font-weight:unset;display:none"> Select a user function</span>
+                            <select name="unauthorized_functions" id="unauthorized-functions" class="form-control">
+                            </select>
+                        </div>
+                        <div class="col-md-3 form-group">
+                            <label for="View">View</label> <input type="checkbox" class="user-function-checkbox" name="View" id="new-user-func-view" >
+                        </div>
+                        <div class="col-md-3 form-group">
+                            <label for="Add">Add</label> <input type="checkbox" class="user-function-checkbox" name="Add" id="new-user-func-add">
+                        </div>
+                        <div class="col-md-3 form-group">
+                            <label for="Edit">Edit</label> <input type="checkbox" class="user-function-checkbox" name="Edit" id="new-user-func-edit">
+                        </div>
+                        <div class="col-md-3 form-group">
+                            <label for="Remove">Remove</label> <input type="checkbox" class="user-function-checkbox" name="Remove" id="new-user-func-remove">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onClick="addNewUserFunction()">Submit</button>
+            </div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
+    const LOCK_ICON = "<i class='fa fa-lock' aria-hidden='true'></i>";
+    const UNLOCK_ICON = "<i class='fa fa-unlock-alt' aria-hidden='true'></i>";
+    const EDIT_ICON = "<i class='fa fa-pencil' aria-hidden='true'></i>";
+    const TRASH_ICON = "<i class='fa fa-trash' aria-hidden='true'></i>";
+
+
+    $('#addUserFunctionModal').on('hidden.bs.modal', function (e) {
+        /* hiding required validation error */
+        $("#unauthorized-func-error").hide();
+        /* unchecking all checkboxes on modal  close */
+        $('#new-user-func-view, #new-user-func-add, #new-user-func-edit, #new-user-func-remove').prop('checked', false);
+    })
 
     $(function () {
         initUsersListSelectize();
@@ -159,11 +224,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         const isUserSelected = !!$("#search_username").val();
         if(!isUserSelected){
             $(".tab-content").hide();
-            $(".panel-info").show();
+            $("#no-user-selected-alert").show();
         } else {
             $(".tab-content").show();
-            $(".panel-info").hide();
+            $("#no-user-selected-alert").hide();
         }
+        $("#no-authorized-user-func-alert").hide();
     }
     
     function getUserInformation() {
@@ -179,7 +245,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             success: function (response) {
                 const data = JSON.parse(response);
                 populateUserPersonalInfo(data.user_info);
-                poupulateUserFunctionsInfo(data.user_functions);
+                poupulateUserFunctionsInfo(data.user_functions, data.user_unauthorized_functions);
             }
         });
     }
@@ -194,7 +260,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 first_name: $('#first_name').val(),
                 last_name: $('#last_name').val(),
                 phone: $('#phone').val(),
-                default_language_id: $('#fefault_language').val(),
+                default_language_id: $('#default_language').val(),
                 note: $('#note').val(),
                 email: $('#email').val(),
                 active_status: $('#status').is(':checked') ? 1 : 0,
@@ -210,7 +276,101 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             }
         });
     }
+
+    function addNewUserFunction(){
+        if(!$('#unauthorized-functions').val()) {
+            $("#unauthorized-func-error").show();
+            return false;
+        }
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "<?= base_url() ?>admin/add_user_function_link/",
+            data: {
+                view: $('#new-user-func-view').is(':checked') ? 1 : 0,
+                add: $('#new-user-func-add').is(':checked') ? 1 : 0,
+                edit: $('#new-user-func-edit').is(':checked') ? 1 : 0,
+                remove: $('#new-user-func-remove').is(':checked') ? 1 : 0,
+                user_id: $('#search_username').val(),
+                function_id: $('#unauthorized-functions').val(),
+            },
+            success: function (response) {
+                    swal({
+                        title: response?.statusCode === 200 ? "Success" : "Failed",
+                        text: response?.statusText,
+                        type: response?.statusCode === 200 ? "success" : "error",
+                        timer: 2000
+                    })
+                    getUserInformation();
+                    $('#addUserFunctionModal .close').click();
+                    $("#unauthorized-func-error").hide();
+                    $('#new-user-func-view, #new-user-func-add, #new-user-func-edit, #new-user-func-remove').prop('checked', false);
+            }
+        });
+    }
     
+    function deleteUserFunction(link_id){
+        swal({
+            title: "Are you sure?",
+            text: "You want to delete the user function access!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonClass: "btn btn-outline-secondary",
+            cancelButtonText: "Cancel!",
+            closeOnConfirm: false,
+            closeOnCancel: false
+            },
+            function(isConfirm) {
+            if (isConfirm) {
+                $.ajax({
+                    type: "DELETE",
+                    accepts: {
+                        contentType: "application/json"
+                    },
+                    url: "<?= base_url() ?>admin/remove_user_function_link/"+link_id,
+                    dataType: "text",
+                    success: function (response) {
+                        getUserInformation()
+                        swal({
+                            title: "Success",
+                            text: "User function has been deleted!",
+                            type: "success",
+                            timer: 2000
+                        });
+                    }
+                });
+            } else {
+                swal({
+                    title: "Cancelled",
+                    text: "User function is safe!",
+                    type: "error",
+                    timer: 2000
+                })
+            }
+        });  
+    }
+
+    function toggleUserFunctionStatus(link_id, status){
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "<?= base_url() ?>admin/toggle_user_func_link_status/"+link_id+"/"+status,
+            data: {},
+            success: function (response) {
+                    swal({
+                        title: response?.statusCode === 200 ? "Success" : "Failed",
+                        text: response?.statusText,
+                        type: response?.statusCode === 200 ? "success" : "error",
+                        timer: 2000
+                    })
+                    getUserInformation();
+
+            }
+        });
+    }
+
     function populateUserPersonalInfo(userInfo) {
         const {
             created_user_first_name, created_user_last_name, created_datetime, last_updated_user_first_name, last_updated_user_last_name, updated_datetime 
@@ -223,29 +383,61 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         $("#default_language").val(userInfo?.default_language_id);
         $("#note").val(userInfo?.note);
         $("#status").prop("checked", isChecked(userInfo?.active_status));
-        $("#created-by").empty();
-        $("#updated-by").empty();
-        $("#created-by").append(`${created_user_first_name || ''} ${created_user_last_name || ''}, ${formatTimestamp(created_datetime)}`);
-        $("#updated-by").append(`${last_updated_user_first_name || ''} ${last_updated_user_last_name || ''}, ${formatTimestamp(updated_datetime)} `);
+        $("#user-info-created-by").empty();
+        $("#user-info-updated-by").empty();
+        $("#user-info-created-by").append(`${created_user_first_name || ''} ${created_user_last_name || ''}, ${formatTimestamp(created_datetime)}`);
+        $("#user-info-updated-by").append(`${last_updated_user_first_name || ''} ${last_updated_user_last_name || ''}, ${formatTimestamp(updated_datetime)} `);
     }
 
-    function poupulateUserFunctionsInfo(userFunctions) {
-        /* removing previous data */
-        $("#user-functions-data").empty();
-        $.each(userFunctions, function (index, userFunction) { 
-             $("#user-functions-data").append(`
-                <tr>
-                    <td style="text-align:center;">${index+1}</td>
-                    <td style="text-align:center;">${userFunction.user_function_display}</td>
-                    <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${isChecked(userFunction.view)} /></td>
-                    <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${isChecked(userFunction.add)} /></td>
-                    <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${isChecked(userFunction.edit)} /></td>
-                    <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${isChecked(userFunction.remove)} /></td>
-                    <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${isChecked(userFunction.active)} /></td>
-                    <td>To be filled</td>
-                    <td>To be filled</td>
-                </tr>
-             `);
+    function poupulateUserFunctionsInfo(userFunctions, user_unauthorized_functions)  {
+        const hasDeleteUserFunctionAccess = <?php echo $remove_user_function_access; ?>;
+        if(userFunctions.length == 0){
+            /* if user functons list is empty, showing a information box */
+            $("#no-authorized-user-func-alert").show();
+            $("#user-functions-container").hide();
+        } else {
+            /* removing previous data */
+            $("#user-functions-container").show();
+            $("#user-functions-data").empty();
+            $.each(userFunctions, function (index, userFunction) { 
+                 $("#user-functions-data").append(`
+                    <tr>
+                        <td style="text-align:center;">${index+1}</td>
+                        <td style="text-align:left;">${userFunction.user_function_display}</td>
+                        <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${isChecked(userFunction.view)} /></td>
+                        <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${isChecked(userFunction.add)} /></td>
+                        <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${isChecked(userFunction.edit)} /></td>
+                        <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${isChecked(userFunction.remove)} /></td>
+                        <td style="text-align:center;"><button  class='btn ${isChecked(userFunction.active) ? 'user-function-enabled btn-success' : 'user-function-disabled btn-danger'} round-button'  onClick="toggleUserFunctionStatus(${userFunction.link_id}, ${isChecked(userFunction.active) ? 0 : 1  })" >${ isChecked(userFunction.active) ? UNLOCK_ICON : LOCK_ICON }</button> </td>
+                        <td style="text-align:center;">
+                            <button class='btn round-button edit-user-function-access'>${EDIT_ICON}</button>
+                            ${ hasDeleteUserFunctionAccess == 1 ? `<button class='btn btn-danger round-button delete-user-function-access' onClick='deleteUserFunction(${userFunction.link_id})'>${TRASH_ICON}</button>`: ''}
+                        </td>
+                        
+                    </tr>
+                 `);
+            });
+        }
+
+        /* removing previous options */
+        $("#unauthorized-functions").empty();
+        $("#unauthorized-functions").append(`<option value=""> New user function </option>`);
+        $.each(user_unauthorized_functions, function (indexInArray, userFunction) { 
+             $("#unauthorized-functions").append(`<option value='${userFunction.user_function_id}'>${userFunction.user_function_display}</option>`);
+        });
+
+        /*  tooltips  */
+        tippy(".user-function-enabled", {
+            content :   'user function enabled'
+        });
+        tippy(".user-function-disabled", {
+            content :   'user function disabled'
+        });
+        tippy(".edit-user-function-access", {
+            content :   'Edit user function values'
+        });
+        tippy(".delete-user-function-access", {
+            content :   'Delete user function access'
         });
     }
 
@@ -277,6 +469,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
         });
     }
+    
     function formatTimestamp(timeStamp){
         if(timeStamp == null) return '';
         const date = new Date(timeStamp);
@@ -285,4 +478,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         const time = date.toLocaleTimeString();
         return formattedDate+' '+time;
     }
+    
+    // tooltips
+    tippy("#add-user-function", {
+        content :   'add user function'
+    });
+    
 </script>
