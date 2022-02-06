@@ -163,7 +163,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addUserFunctionModalTitle">Access to New User Function</h5>
+                <h5 class="modal-title" id="addUserFunctionModalTitle">Authorize New User Function</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
@@ -172,10 +172,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <form id="add_new_user_function"  method="POST">
                     <div class="row">
                         <div class="col-md-12 form-group">
-                            <select name="unauthorized_functions" id="unauthorized-functions" class="form-control"></select>
+                            <span id="unauthorized-func-error" style="color:#FF0000;font-weight:unset;display:none"> Select a user function</span>
+                            <select name="unauthorized_functions" id="unauthorized-functions" class="form-control">
+                            </select>
                         </div>
                         <div class="col-md-3 form-group">
-                            <label for="View">View</label> <input type="checkbox" class="user-function-checkbox" name="View" id="new-user-func-view">
+                            <label for="View">View</label> <input type="checkbox" class="user-function-checkbox" name="View" id="new-user-func-view" >
                         </div>
                         <div class="col-md-3 form-group">
                             <label for="Add">Add</label> <input type="checkbox" class="user-function-checkbox" name="Add" id="new-user-func-add">
@@ -268,6 +270,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     }
 
     function addNewUserFunction(){
+        if(!$('#unauthorized-functions').val()) {
+            $("#unauthorized-functions").addClass("error");
+            $("#unauthorized-func-error").show();
+            return false;
+        }
         $.ajax({
             type: "POST",
             dataType: "json",
@@ -289,6 +296,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     })
                     getUserInformation();
                     $('#addUserFunctionModal .close').click();
+                    $("#unauthorized-func-error").hide();
+                    $('#new-user-func-view, #new-user-func-add, #new-user-func-edit, #new-user-func-remove').prop('checked', false);
             }
         });
     }
@@ -387,6 +396,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
         /* removing previous options */
         $("#unauthorized-functions").empty();
+        $("#unauthorized-functions").append(`<option value=""> New user function </option>`);
         $.each(user_unauthorized_functions, function (indexInArray, userFunction) { 
              $("#unauthorized-functions").append(`<option value='${userFunction.user_function_id}'>${userFunction.user_function_display}</option>`);
         });
