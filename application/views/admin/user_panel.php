@@ -139,8 +139,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                         <th style="text-align:center">Remove</th>
                                         <th style="text-align:center">Status</th>
                                         <th style="text-align:center">Actions</th>
-                                        <th style="text-align:center">Created by</th>
-                                        <th style="text-align:center">Updated by</th>
+                                        <!-- <th style="text-align:center">Created by</th>
+                                        <th style="text-align:center">Updated by</th> -->
                                     </tr>
                                 </thead>
                                 <tbody id="user-functions-data">
@@ -169,27 +169,29 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </button>
             </div>
             <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-12 form-group">
-                        <select name="unauthorized_functions" id="unauthorized-functions" class="form-control"></select>
+                <form id="add_new_user_function"  method="POST">
+                    <div class="row">
+                        <div class="col-md-12 form-group">
+                            <select name="unauthorized_functions" id="unauthorized-functions" class="form-control"></select>
+                        </div>
+                        <div class="col-md-3 form-group">
+                            <label for="View">View</label> <input type="checkbox" class="user-function-checkbox" name="View" id="new-user-func-view">
+                        </div>
+                        <div class="col-md-3 form-group">
+                            <label for="Add">Add</label> <input type="checkbox" class="user-function-checkbox" name="Add" id="new-user-func-add">
+                        </div>
+                        <div class="col-md-3 form-group">
+                            <label for="Edit">Edit</label> <input type="checkbox" class="user-function-checkbox" name="Edit" id="new-user-func-edit">
+                        </div>
+                        <div class="col-md-3 form-group">
+                            <label for="Remove">Remove</label> <input type="checkbox" class="user-function-checkbox" name="Remove" id="new-user-func-remove">
+                        </div>
                     </div>
-                    <div class="col-md-3 form-group">
-                        <label for="View">View</label> <input type="checkbox" class="user-function-checkbox" name="View" id="new-user-func-view">
-                    </div>
-                    <div class="col-md-3 form-group">
-                        <label for="Add">Add</label> <input type="checkbox" class="user-function-checkbox" name="Add" id="new-user-func-add">
-                    </div>
-                    <div class="col-md-3 form-group">
-                        <label for="Edit">Edit</label> <input type="checkbox" class="user-function-checkbox" name="Edit" id="new-user-func-edit">
-                    </div>
-                    <div class="col-md-3 form-group">
-                       <label for="Remove">Remove</label> <input type="checkbox" class="user-function-checkbox" name="Remove" id="new-user-func-remove">
-                    </div>
-                </div>
+                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary">Submit</button>
+                <button type="button" class="btn btn-primary" onClick="addNewUserFunction()">Submit</button>
             </div>
             </div>
         </div>
@@ -252,6 +254,31 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 note: $('#note').val(),
                 email: $('#email').val(),
                 active_status: $('#status').is(':checked') ? 1 : 0,
+            },
+            success: function (response) {
+                    swal({
+                        title: response?.statusCode === 200 ? "Success" : "Failed",
+                        text: response?.statusText,
+                        type: response?.statusCode === 200 ? "success" : "error",
+                        timer: 2000
+                    })
+                    getUserInformation();
+            }
+        });
+    }
+
+    function addNewUserFunction(){
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "<?= base_url() ?>admin/add_user_function_link/",
+            data: {
+                view: $('#new-user-func-view').is(':checked') ? 1 : 0,
+                add: $('#new-user-func-add').is(':checked') ? 1 : 0,
+                edit: $('#new-user-func-edit').is(':checked') ? 1 : 0,
+                remove: $('#new-user-func-remove').is(':checked') ? 1 : 0,
+                user_id: $('#search_username').val(),
+                function_id: $('#unauthorized-functions').val(),
             },
             success: function (response) {
                     swal({
@@ -351,8 +378,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <button class='btn round-button edit-user-function-access'>${EDIT_ICON}</button>
                             ${ hasDeleteUserFunctionAccess == 1 ? `<button class='btn btn-danger round-button delete-user-function-access' onClick='deleteUserFunction(${userFunction.link_id})'>${TRASH_ICON}</button>`: ''}
                         </td>
-                        <td>${userFunction?.created_user_first_name || ''} ${userFunction?.created_user_last_name || ''}, ${formatTimestamp(userFunction?.link_created_datetime)}</td>
-                        <td>${userFunction?.created_user_first_name || ''} ${userFunction?.created_user_last_name || ''}, ${formatTimestamp(userFunction?.link_created_datetime)}</td>
                         
                     </tr>
                  `);
