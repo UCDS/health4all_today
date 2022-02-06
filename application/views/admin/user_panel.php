@@ -19,6 +19,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         text-align:center;
         justify-content:center;
     }
+    select {
+        cursor: pointer;
+    }
     
 </style>
 <div class="container">
@@ -170,17 +173,23 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <div class="col-md-12 form-group">
                         <select name="unauthorized_functions" id="unauthorized-functions" class="form-control"></select>
                     </div>
-                    <div class="col-md-12 form-group">
-                       <label for="View">View</label> <input type="checkbox" name="View" id="View">
-                       <label for="Add">Add</label> <input type="checkbox" name="Add" id="Add">
-                       <label for="Edit">Edit</label> <input type="checkbox" name="Edit" id="Edit">
-                       <label for="Remove">Remove</label> <input type="checkbox" name="Remove" id="Remove">
+                    <div class="col-md-3 form-group">
+                        <label for="View">View</label> <input type="checkbox" class="user-function-checkbox" name="View" id="new-user-func-view">
+                    </div>
+                    <div class="col-md-3 form-group">
+                        <label for="Add">Add</label> <input type="checkbox" class="user-function-checkbox" name="Add" id="new-user-func-add">
+                    </div>
+                    <div class="col-md-3 form-group">
+                        <label for="Edit">Edit</label> <input type="checkbox" class="user-function-checkbox" name="Edit" id="new-user-func-edit">
+                    </div>
+                    <div class="col-md-3 form-group">
+                       <label for="Remove">Remove</label> <input type="checkbox" class="user-function-checkbox" name="Remove" id="new-user-func-remove">
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary">Submit</button>
             </div>
             </div>
         </div>
