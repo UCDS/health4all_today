@@ -124,8 +124,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 Add user function
                             </button>
                         </div>
-                        <div class="col-md-12 form-group">
-                            <table id="table-sort" class="table table-bordered table-striped" >
+                        <div class="col-md-12 form-group" id="user-functions-container">
+                            <table id="user-functions-table" class="table table-bordered table-striped" >
                                 <thead>
                                     <tr>
                                         <th style="text-align:center">#</th>
@@ -148,8 +148,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     </div>
                 </div>
             </div>
-            <div class="row panel-info">
+            <div class="row panel-info" id="no-user-selected-alert">
                 <div class="col-md-10 alert alert-info">Please select a user !</div>
+            </div>
+            <div class="row panel-info" id="no-authorized-user-func-alert">
+                <div class="col-md-10 alert alert-info">No authorized functions exists!</div>
             </div>
         </div>
     </div>
@@ -164,7 +167,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-12 form-group">
+                        <select name="unauthorized_functions" id="unauthorized-functions" class="form-control"></select>
+                    </div>
+                    <div class="col-md-12 form-group">
                        <label for="View">View</label> <input type="checkbox" name="View" id="View">
                        <label for="Add">Add</label> <input type="checkbox" name="Add" id="Add">
                        <label for="Edit">Edit</label> <input type="checkbox" name="Edit" id="Edit">
@@ -197,11 +203,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         const isUserSelected = !!$("#search_username").val();
         if(!isUserSelected){
             $(".tab-content").hide();
-            $(".panel-info").show();
+            $("#no-user-selected-alert").show();
         } else {
             $(".tab-content").show();
-            $(".panel-info").hide();
+            $("#no-user-selected-alert").hide();
         }
+        $("#no-authorized-user-func-alert").hide();
     }
     
     function getUserInformation() {
@@ -217,7 +224,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             success: function (response) {
                 const data = JSON.parse(response);
                 populateUserPersonalInfo(data.user_info);
-                poupulateUserFunctionsInfo(data.user_functions);
+                poupulateUserFunctionsInfo(data.user_functions, data.user_unauthorized_functions);
             }
         });
     }
@@ -311,30 +318,45 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         $("#user-info-updated-by").append(`${last_updated_user_first_name || ''} ${last_updated_user_last_name || ''}, ${formatTimestamp(updated_datetime)} `);
     }
 
-    function poupulateUserFunctionsInfo(userFunctions) {
+    function poupulateUserFunctionsInfo(userFunctions, user_unauthorized_functions)  {
         const hasDeleteUserFunctionAccess = <?php echo $remove_user_function_access; ?>
-        /* removing previous data */
-        $("#user-functions-data").empty();
-        $.each(userFunctions, function (index, userFunction) { 
-             $("#user-functions-data").append(`
-                <tr>
-                    <td style="text-align:center;">${index+1}</td>
-                    <td style="text-align:center;">${userFunction.user_function_display}</td>
-                    <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${isChecked(userFunction.view)} /></td>
-                    <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${isChecked(userFunction.add)} /></td>
-                    <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${isChecked(userFunction.edit)} /></td>
-                    <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${isChecked(userFunction.remove)} /></td>
-                    <td style="text-align:center;"><button  class='btn ${isChecked(userFunction.active) ? 'user-function-enabled btn-success' : 'user-function-disabled btn-danger'} round-button'  onClick="toggle_question_status(${userFunction.link_id})" >${ isChecked(userFunction.active) ? UNLOCK_ICON : LOCK_ICON }</button> </td>
-                    <td style="text-align:center;">
-                        <button class='btn round-button edit-user-function-access'>${EDIT_ICON}</button>
-                        ${ hasDeleteUserFunctionAccess == 1 ? `<button class='btn btn-danger round-button delete-user-function-access' onClick='deleteUserFunction(${userFunction.link_id})'>${TRASH_ICON}</button>`: ''}
-                    </td>
-                    <td>${userFunction?.created_user_first_name || ''} ${userFunction?.created_user_last_name || ''}, ${formatTimestamp(userFunction?.link_created_datetime)}</td>
-                    <td>${userFunction?.created_user_first_name || ''} ${userFunction?.created_user_last_name || ''}, ${formatTimestamp(userFunction?.link_created_datetime)}</td>
-                    
-                </tr>
-             `);
+        if(userFunctions.length == 0){
+            /* if user functons list is empty, showing a information box */
+            $("#no-authorized-user-func-alert").show();
+            $("#user-functions-container").hide();
+        } else {
+            /* removing previous data */
+            $("#user-functions-container").show();
+            $("#user-functions-data").empty();
+            $.each(userFunctions, function (index, userFunction) { 
+                 $("#user-functions-data").append(`
+                    <tr>
+                        <td style="text-align:center;">${index+1}</td>
+                        <td style="text-align:left;">${userFunction.user_function_display}</td>
+                        <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${isChecked(userFunction.view)} /></td>
+                        <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${isChecked(userFunction.add)} /></td>
+                        <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${isChecked(userFunction.edit)} /></td>
+                        <td style="text-align:center;"><input class="user-function-checkbox" type="checkbox" name="" id="" ${isChecked(userFunction.remove)} /></td>
+                        <td style="text-align:center;"><button  class='btn ${isChecked(userFunction.active) ? 'user-function-enabled btn-success' : 'user-function-disabled btn-danger'} round-button'  onClick="toggle_question_status(${userFunction.link_id})" >${ isChecked(userFunction.active) ? UNLOCK_ICON : LOCK_ICON }</button> </td>
+                        <td style="text-align:center;">
+                            <button class='btn round-button edit-user-function-access'>${EDIT_ICON}</button>
+                            ${ hasDeleteUserFunctionAccess == 1 ? `<button class='btn btn-danger round-button delete-user-function-access' onClick='deleteUserFunction(${userFunction.link_id})'>${TRASH_ICON}</button>`: ''}
+                        </td>
+                        <td>${userFunction?.created_user_first_name || ''} ${userFunction?.created_user_last_name || ''}, ${formatTimestamp(userFunction?.link_created_datetime)}</td>
+                        <td>${userFunction?.created_user_first_name || ''} ${userFunction?.created_user_last_name || ''}, ${formatTimestamp(userFunction?.link_created_datetime)}</td>
+                        
+                    </tr>
+                 `);
+            });
+        }
+
+        /* removing previous options */
+        $("#unauthorized-functions").empty();
+        $.each(user_unauthorized_functions, function (indexInArray, userFunction) { 
+             $("#unauthorized-functions").append(`<option value='${userFunction.user_function_id}'>${userFunction.user_function_display}</option>`);
         });
+
+        /*  tooltips  */
         tippy(".user-function-enabled", {
             content :   'user function enabled'
         });
@@ -377,6 +399,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
         });
     }
+    
     function formatTimestamp(timeStamp){
         if(timeStamp == null) return '';
         const date = new Date(timeStamp);
