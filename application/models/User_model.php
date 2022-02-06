@@ -294,9 +294,10 @@ class User_model extends CI_Model {
     }
 
     function get_user_unauthorized_functions_list($user_id, $authotized_user_functions){
-        $this->db->where_not_in('user_function_id', $authotized_user_functions);
+        $this->db->where_not_in('user_function_id', $authotized_user_functions || []);
         $this->db->select('*')
-            ->from('user_function');
+            ->from('user_function')
+            ->order_by('user_function_display','asc');
         $query = $this->db->get();
         return $query->result();
     }
