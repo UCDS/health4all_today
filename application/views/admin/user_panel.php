@@ -206,6 +206,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     const EDIT_ICON = "<i class='fa fa-pencil' aria-hidden='true'></i>";
     const TRASH_ICON = "<i class='fa fa-trash' aria-hidden='true'></i>";
 
+
+    $('#addUserFunctionModal').on('hidden.bs.modal', function (e) {
+        /* hiding required validation error */
+        $("#unauthorized-func-error").hide();
+        /* unchecking all checkboxes on modal  close */
+        $('#new-user-func-view, #new-user-func-add, #new-user-func-edit, #new-user-func-remove').prop('checked', false);
+    })
+
     $(function () {
         initUsersListSelectize();
         handleDisplayTabs();
@@ -271,7 +279,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
     function addNewUserFunction(){
         if(!$('#unauthorized-functions').val()) {
-            $("#unauthorized-functions").addClass("error");
             $("#unauthorized-func-error").show();
             return false;
         }
